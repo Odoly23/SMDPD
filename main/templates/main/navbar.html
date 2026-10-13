@@ -1,0 +1,39 @@
+{% load static %}
+<!-- SIDEBAR -->
+<nav class="side-navbar">
+	<div class="side-navbar-wrapper">
+		<div class="sidenav-header d-flex align-items-center justify-content-center">
+			<div class="sidenav-header-inner text-center">
+				<img src="{% static 'main/images/logo_plp.png' %}" alt="PLP" class="img-fluid rounded-circle logo-plp">
+				<h2 class="h5">SMDPD</h2>
+				<span>Partidu PLP</span>
+			</div>
+			<div class="sidenav-header-logo">
+				<a href="{% url 'home' %}" class="brand-small text-center"><img src="{% static 'main/images/logo_plp.png' %}" alt="PLP" class="rounded-circle"></a>
+			</div>
+		</div>
+		<div class="main-menu">
+			<h5 class="sidenav-heading">Menu</h5>
+			<ul id="side-main-menu" class="side-menu list-unstyled">
+				{% for it in nav_items %}
+					{% if it.children %}
+					<li{% if it.active %} class="active"{% endif %}>
+						<a href="#menu-{{ forloop.counter }}" aria-expanded="{% if it.active %}true{% else %}false{% endif %}" data-toggle="collapse"><i class="fa {{ it.icon }}"></i>{{ it.label }}</a>
+						<ul id="menu-{{ forloop.counter }}" class="collapse list-unstyled{% if it.active %} show{% endif %}">
+							{% for c in it.children %}
+							<li{% if c.active %} class="active"{% endif %}><a href="{{ c.url }}"><i class="fa {{ c.icon }}"></i>{{ c.label }}</a></li>
+							{% endfor %}
+						</ul>
+					</li>
+					{% else %}
+					<li{% if it.active %} class="active"{% endif %}><a href="{{ it.url }}"><i class="fa {{ it.icon }}"></i>{{ it.label }}</a></li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="nav-user">
+			<strong>{{ user.first_name|default:user.username }}</strong>
+			{{ nav_role|default:"-" }}
+		</div>
+	</div>
+</nav>

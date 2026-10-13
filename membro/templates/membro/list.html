@@ -1,0 +1,97 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header">{{ legend }} <span class="badge badge-primary">{{ total }}</span></div>
+			<div class="card-body">
+				<div class="mb-3 no-print">
+					{% if can_add %}<a class="btn btn-sm btn-primary" href="{% url 'membro-add' %}">Aumenta <i class="fa fa-plus"></i></a>{% endif %}
+					{% if can_aprova %}<a class="btn btn-sm btn-warning" href="{% url 'aprovasaun-list' %}">Hein Aprovasaun <i class="fa fa-check-square-o"></i></a>{% endif %}
+					<a class="btn btn-sm btn-outline-primary" href="?{{ qs }}{% if qs %}&{% endif %}export=csv"><i class="fa fa-file-excel-o"></i> Esporta CSV</a>
+					<button class="btn btn-sm btn-outline-secondary" type="button" onclick="window.print()"><i class="fa fa-print"></i> Imprime</button>
+				</div>
+				<form method="get" class="form-row mb-3 no-print">
+					<div class="col-md-3 mb-2"><input type="text" class="form-control form-control-sm" name="q" value="{{ f.q }}" placeholder="Buka naran / nu. eleitoral / nu. BI"></div>
+					<div class="col-md-2 mb-2">
+						<select class="form-control form-control-sm" name="municipality">
+							<option value="">Munisipiu hotu</option>
+							{% for m in municipios %}<option value="{{ m.pk }}"{% if f.municipality == m.pk|stringformat:"s" %} selected{% endif %}>{{ m.name }}</option>{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-2 mb-2">
+						<select class="form-control form-control-sm" name="organizasaun">
+							<option value="">Organizasaun hotu</option>
+							{% for o in organizasauns %}<option value="{{ o.pk }}"{% if f.organizasaun == o.pk|stringformat:"s" %} selected{% endif %}>{{ o.code }}</option>{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-1 mb-2">
+						<select class="form-control form-control-sm" name="sex">
+							<option value="">Sexu</option>
+							<option value="Mane"{% if f.sex == 'Mane' %} selected{% endif %}>Mane</option>
+							<option value="Feto"{% if f.sex == 'Feto' %} selected{% endif %}>Feto</option>
+						</select>
+					</div>
+					<div class="col-md-2 mb-2">
+						<select class="form-control form-control-sm" name="aprovasaun">
+							<option value="">Aprovasaun hotu</option>
+							<option value="Pendente"{% if f.aprovasaun == 'Pendente' %} selected{% endif %}>Pendente</option>
+							<option value="Aprovadu"{% if f.aprovasaun == 'Aprovadu' %} selected{% endif %}>Aprovadu</option>
+							<option value="Rejeitadu"{% if f.aprovasaun == 'Rejeitadu' %} selected{% endif %}>Rejeitadu</option>
+						</select>
+					</div>
+					<div class="col-md-2 mb-2">
+						<button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-search"></i> Buka</button>
+						<a class="btn btn-sm btn-outline-secondary" href="{% url 'membro-list' %}">Hamoos</a>
+					</div>
+				</form>
+				<div class="table-responsive">
+					<table class="table table-sm table-hover">
+						<thead>
+							<tr>
+								<th>NU.</th><th>NU. ELEITORAL</th><th>NARAN</th><th>SEXU</th><th>IDADE</th><th>MUNISIPIU</th><th>SUKU</th>
+								<th>ALDEIA</th><th>ORGANIZASAUN</th><th>STATUS</th><th>APROVASAUN</th><th class="no-print">#</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for obj in page %}
+							<tr>
+								<td>{{ page.start_index|add:forloop.counter0 }}</td>
+								<td>{{ obj.nu_eleitoral }}</td>
+								<td><a href="{% url 'membro-detail' obj.hashed %}">{{ obj.nome }}</a></td>
+								<td>{{ obj.sex }}</td>
+								<td>{{ obj.age }}</td>
+								<td>{{ obj.municipality }}</td>
+								<td>{{ obj.village }}</td>
+								<td>{{ obj.aldeia }}</td>
+								<td>{{ obj.organizasaun|default_if_none:"-" }}</td>
+								<td><span class="badge badge-{{ obj.status|lower }}">{{ obj.status }}</span></td>
+								<td><span class="badge badge-{{ obj.aprovasaun|lower }}">{{ obj.aprovasaun }}</span></td>
+								<td class="no-print"><a class="btn btn-sm btn-primary" href="{% url 'membro-detail' obj.hashed %}" title="Detalha"><i class="fa fa-eye"></i></a></td>
+							</tr>
+						{% empty %}
+							<tr><td colspan="12" class="text-center text-gray">Laiha data.</td></tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				{% if page.paginator.num_pages > 1 %}
+				<nav class="no-print" aria-label="Pájina">
+					<ul class="pagination pagination-sm justify-content-center mb-0">
+						{% if page.has_previous %}
+						<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page=1">&laquo;</a></li>
+						<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.previous_page_number }}">Antes</a></li>
+						{% endif %}
+						<li class="page-item active"><span class="page-link">{{ page.number }} / {{ page.paginator.num_pages }}</span></li>
+						{% if page.has_next %}
+						<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.next_page_number }}">Tuir</a></li>
+						<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.paginator.num_pages }}">&raquo;</a></li>
+						{% endif %}
+					</ul>
+				</nav>
+				{% endif %}
+			</div> <!--end card-body-->
+		</div> <!--end card-->
+	</div> <!--end col-->
+</div> <!--end row-->
+{% endblock %}

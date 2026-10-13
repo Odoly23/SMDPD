@@ -1,0 +1,41 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header">{{ legend }}</div>
+			<div class="card-body">
+				<form method="post" action="{% url 'aprovasaun-bulk' %}">{% csrf_token %}
+					<button class="btn btn-sm btn-primary mb-3" type="submit"><i class="fa fa-check"></i> Aprova ne'ebé hili</button>
+					<div class="table-responsive">
+						<table class="table table-sm datatable" width="100%">
+							<thead>
+								<tr><th><input type="checkbox" id="check-all"></th><th>Nu.</th><th>Nu. Eleitoral</th><th>Naran</th><th>Sexu</th><th>Munisipiu</th><th>Suku</th><th>Aldeia</th><th>Data Input</th><th>#</th></tr>
+							</thead>
+							<tbody>
+								{% for obj in objects %}
+								<tr>
+									<td><input type="checkbox" name="hashid" value="{{ obj.hashed }}"></td>
+									<td>{{ forloop.counter }}</td>
+									<td>{{ obj.nu_eleitoral }}</td>
+									<td><a href="{% url 'membro-detail' obj.hashed %}">{{ obj.nome }}</a></td>
+									<td>{{ obj.sex }}</td>
+									<td>{{ obj.municipality }}</td>
+									<td>{{ obj.village }}</td>
+									<td>{{ obj.aldeia }}</td>
+									<td>{{ obj.datetime|date:"d/m/Y H:i" }}</td>
+									<td><a class="btn btn-sm btn-danger" href="{% url 'aprovasaun-rejeita' obj.hashed %}" title="Rejeita"><i class="fa fa-times"></i></a></td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>$('#check-all').on('change', function () { $('input[name=hashid]').prop('checked', this.checked); });</script>
+{% endblock %}

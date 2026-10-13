@@ -1,0 +1,90 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="text-center mb-3">
+	<h4 class="text-muted">{{ legend|upper }}</h4>
+	<a class="btn btn-sm btn-outline-primary no-print" href="{% url 'report-chart' %}"><i class="fa fa-bar-chart"></i> Hare Grafik</a>
+	<button class="btn btn-sm btn-outline-secondary no-print" type="button" onclick="window.print()"><i class="fa fa-print"></i> Imprime</button>
+</div>
+<div class="card">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-4 text-center"><span class="stat-label">Total Membru</span><h4 class="stat-number"><a href="{% url 'membro-list' %}">{{ tot.total }}</a></h4></div>
+			<div class="col-4 text-center"><span class="stat-label">Total Mane</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?sex=Mane">{{ tot.mane }}</a></h4></div>
+			<div class="col-4 text-center"><span class="stat-label">Total Feto</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?sex=Feto">{{ tot.feto }}</a></h4></div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-4 text-center"><span class="stat-label">Hein Aprovasaun</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?aprovasaun=Pendente">{{ tot.pendente }}</a></h4></div>
+			<div class="col-4 text-center"><span class="stat-label">Aprovadu</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?aprovasaun=Aprovadu">{{ tot.aprovadu }}</a></h4></div>
+			<div class="col-4 text-center"><span class="stat-label">Rejeitadu</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?aprovasaun=Rejeitadu">{{ tot.rejeitadu }}</a></h4></div>
+		</div>
+		<hr>
+		<div class="row">
+			{% for o in por_org %}
+			<div class="col-6 col-md-2 text-center"><span class="stat-label">Total {{ o.name }}</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?organizasaun={{ o.id }}">{{ o.total }}</a></h4></div>
+			{% endfor %}
+			<div class="col-6 col-md-2 text-center"><span class="stat-label">Laiha Organizasaun</span><h4 class="stat-number">{{ tot.sem_org }}</h4></div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-3">
+		<div class="card"><div class="card-header bg-primary">Membru Por Munisipiu</div><div class="card-body">
+			<table class="table table-sm"><thead><tr><th>Munisipiu</th><th>Total</th></tr></thead><tbody>
+				{% for r in por_munisipiu %}<tr><td>{{ r.name }}</td><td><a href="{% url 'membro-list' %}?municipality={{ r.id }}">{{ r.total }}</a></td></tr>
+				{% empty %}<tr><td colspan="2">Laiha data.</td></tr>{% endfor %}
+			</tbody></table>
+		</div></div>
+	</div>
+	<div class="col-md-3">
+		<div class="card"><div class="card-header bg-warning">Membru Por Postu</div><div class="card-body">
+			<table class="table table-sm"><thead><tr><th>Postu</th><th>Total</th></tr></thead><tbody>
+				{% for r in por_postu %}<tr><td>{{ r.name }}</td><td><a href="{% url 'membro-list' %}?post={{ r.id }}">{{ r.total }}</a></td></tr>
+				{% empty %}<tr><td colspan="2">Laiha data.</td></tr>{% endfor %}
+			</tbody></table>
+		</div></div>
+	</div>
+	<div class="col-md-3">
+		<div class="card"><div class="card-header bg-primary">Membru Por Suku</div><div class="card-body">
+			<table class="table table-sm"><thead><tr><th>Suku</th><th>Total</th></tr></thead><tbody>
+				{% for r in por_suku %}<tr><td>{{ r.name }}</td><td><a href="{% url 'membro-list' %}?village={{ r.id }}">{{ r.total }}</a></td></tr>
+				{% empty %}<tr><td colspan="2">Laiha data.</td></tr>{% endfor %}
+			</tbody></table>
+		</div></div>
+	</div>
+	<div class="col-md-3">
+		<div class="card"><div class="card-header bg-warning">Membru Por Aldeia</div><div class="card-body">
+			<table class="table table-sm"><thead><tr><th>Aldeia</th><th>Total</th></tr></thead><tbody>
+				{% for r in por_aldeia %}<tr><td>{{ r.name }}</td><td><a href="{% url 'membro-list' %}?aldeia={{ r.id }}">{{ r.total }}</a></td></tr>
+				{% empty %}<tr><td colspan="2">Laiha data.</td></tr>{% endfor %}
+			</tbody></table>
+		</div></div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4">
+		<div class="card"><div class="card-header bg-primary">Membru Por Status</div><div class="card-body">
+			<table class="table table-sm"><thead><tr><th>Status</th><th>Total</th></tr></thead><tbody>
+				{% for r in por_status %}<tr><td>{{ r.name }}</td><td><a href="{% url 'membro-list' %}?status={{ r.id }}">{{ r.total }}</a></td></tr>
+				{% empty %}<tr><td colspan="2">Laiha data.</td></tr>{% endfor %}
+			</tbody></table>
+		</div></div>
+	</div>
+	<div class="col-md-4">
+		<div class="card"><div class="card-header bg-warning">Membru Tuir Tinan Tama PLP</div><div class="card-body">
+			<table class="table table-sm"><thead><tr><th>Tinan Tama</th><th>Total</th></tr></thead><tbody>
+				{% for r in por_tinan %}<tr><td>{{ r.name }}</td><td><a href="{% url 'membro-list' %}?hakbit={{ r.id }}">{{ r.total }}</a></td></tr>
+				{% empty %}<tr><td colspan="2">Laiha data.</td></tr>{% endfor %}
+			</tbody></table>
+		</div></div>
+	</div>
+	<div class="col-md-4">
+		<div class="card"><div class="card-header bg-primary">Pozisaun Ativu Iha Struktura</div><div class="card-body">
+			<table class="table table-sm"><thead><tr><th>Nivel</th><th>Total</th></tr></thead><tbody>
+				{% for r in por_nivel %}<tr><td><a href="{% url 'struktura-list' r.name|lower %}">{{ r.name }}</a></td><td>{{ r.total }}</td></tr>{% endfor %}
+			</tbody></table>
+		</div></div>
+	</div>
+</div>
+{% endblock %}

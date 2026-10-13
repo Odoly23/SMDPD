@@ -1,0 +1,37 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header">{{ legend }}</div>
+			<div class="card-body">
+				<a class="btn btn-sm btn-primary mb-3" href="{% url 'master-add' tipu %}">Aumenta <i class="fa fa-plus"></i></a>
+				{% if tipu == 'postu' or tipu == 'suku' or tipu == 'aldeia' %}
+				<p class="text-gray"><small>Postu, suku no aldeia tenke rejista iha ne'e molok halo input membru.</small></p>
+				{% endif %}
+				<div class="table-responsive">
+					<table class="table table-sm datatable" width="100%">
+						<thead>
+							<tr><th>Nu.</th>{% for h in headers %}<th>{{ h }}</th>{% endfor %}<th>#</th></tr>
+						</thead>
+						<tbody>
+							{% for obj, cells in rows %}
+							<tr>
+								<td>{{ forloop.counter }}</td>
+								{% for c in cells %}<td>{{ c }}</td>{% endfor %}
+								<td>
+									<a class="btn btn-sm btn-success" href="{% url 'master-update' tipu obj.pk %}" title="Edita"><i class="fa fa-edit"></i></a>
+									<form class="d-inline" method="post" action="{% url 'master-del' tipu obj.pk %}" onsubmit="return confirm('Ita boot Hakarak Hamoos?');">{% csrf_token %}
+										<button class="btn btn-sm btn-danger" type="submit" title="Hamoos"><i class="fa fa-times"></i></button>
+									</form>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

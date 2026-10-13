@@ -1,0 +1,67 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% block content %}
+{% if not group %}
+	<div class="alert alert-warning">Konta ida ne'e seidauk iha peran. Kontaktu Admin.</div>
+{% elif group == 'admin' %}
+	<div class="text-center mb-3 mt-1"><h3 class="text-muted">BAINHIRA, {{ user.first_name|default:user.username|upper }}</h3></div>
+	<p class="text-center">Admin jere uzuáriu, data master (munisipiu, postu, suku, aldeia, departamentu, organizasaun) no hare historia mudansa data.</p>
+	<div class="text-center">
+		<a class="btn btn-primary" href="{% url 'user-list' %}"><i class="fa fa-user-circle"></i> Uzuáriu</a>
+		<a class="btn btn-primary" href="{% url 'master-list' 'departamentu' %}"><i class="fa fa-briefcase"></i> Departamentu</a>
+		<a class="btn btn-primary" href="{% url 'master-list' 'suku' %}"><i class="fa fa-map-marker"></i> Suku</a>
+		<a class="btn btn-primary" href="{% url 'historia-list' %}"><i class="fa fa-history"></i> Historia</a>
+	</div>
+{% else %}
+	<section class="dashboard-counts no-padding-bottom">
+		<div class="card"><div class="card-body"><div class="row">
+			<div class="col-6 col-md-3 mb-2">
+				<div class="d-flex align-items-center justify-content-center text-center">
+					<div class="icon mr-3"><i class="fa fa-users fa-2x text-primary"></i></div>
+					<div><span class="stat-label">Total Membru</span><h4 class="stat-number"><a href="{% url 'membro-list' %}">{{ counts.total }}</a></h4></div>
+				</div>
+			</div>
+			<div class="col-6 col-md-3 mb-2">
+				<div class="d-flex align-items-center justify-content-center text-center">
+					<div class="icon mr-3"><i class="fa fa-hourglass-half fa-2x text-warning"></i></div>
+					<div><span class="stat-label">Hein Aprovasaun</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?aprovasaun=Pendente">{{ counts.pendente }}</a></h4></div>
+				</div>
+			</div>
+			<div class="col-6 col-md-3 mb-2">
+				<div class="d-flex align-items-center justify-content-center text-center">
+					<div class="icon mr-3"><i class="fa fa-check-circle fa-2x text-success"></i></div>
+					<div><span class="stat-label">Aprovadu</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?aprovasaun=Aprovadu">{{ counts.aprovadu }}</a></h4></div>
+				</div>
+			</div>
+			<div class="col-6 col-md-3 mb-2">
+				<div class="d-flex align-items-center justify-content-center text-center">
+					<div class="icon mr-3"><i class="fa fa-times-circle fa-2x text-danger"></i></div>
+					<div><span class="stat-label">Rejeitadu</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?aprovasaun=Rejeitadu">{{ counts.rejeitadu }}</a></h4></div>
+				</div>
+			</div>
+		</div></div></div>
+	</section>
+	<div class="row mt-4">
+		<div class="col-md-6">
+			<div class="card"><div class="card-header">Sexu</div><div class="card-body"><div style="height: 240px;"><canvas id="chart_sexo"></canvas></div></div></div>
+		</div>
+		<div class="col-md-6">
+			<div class="card"><div class="card-header">Idade</div><div class="card-body"><div style="height: 240px;"><canvas id="chart_idade"></canvas></div></div></div>
+		</div>
+	</div>
+	<div class="text-center">
+		<a class="btn btn-outline-primary" href="{% url 'report-dash' %}"><i class="fa fa-table"></i> Rekap</a>
+		<a class="btn btn-outline-primary" href="{% url 'report-chart' %}"><i class="fa fa-bar-chart"></i> Grafik Kompletu</a>
+	</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if group and group != 'admin' %}
+<script src="{% static 'main/js_custom/Chart.min.js' %}"></script>
+<script src="{% static 'main/js_custom/charts.js' %}"></script>
+<script>
+	grafik('chart_sexo', "{% url 'api-gender' %}", 'doughnut', 'Sexu');
+	grafik('chart_idade', "{% url 'api-age' %}", 'bar', 'Membru');
+</script>
+{% endif %}
+{% endblock %}

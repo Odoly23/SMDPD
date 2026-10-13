@@ -1,0 +1,32 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header">{{ legend }}</div>
+			<div class="card-body">
+				<a class="btn btn-sm btn-primary mb-3" href="{% url 'user-add' %}">Aumenta <i class="fa fa-plus"></i></a>
+				<div class="table-responsive">
+					<table class="table table-sm datatable" width="100%">
+						<thead><tr><th>Nu.</th><th>Username</th><th>Naran</th><th>Email</th><th>Peran</th><th>Área</th><th>Ativu</th><th>#</th></tr></thead>
+						<tbody>
+							{% for o in objects %}
+							<tr>
+								<td>{{ forloop.counter }}</td>
+								<td>{{ o.obj.username }}</td>
+								<td>{{ o.obj.first_name }}</td>
+								<td>{{ o.obj.email|default:"-" }}</td>
+								<td>{{ o.role }}</td>
+								<td>{{ o.area }}</td>
+								<td><span class="badge badge-{% if o.obj.is_active %}sim{% else %}lae{% endif %}">{% if o.obj.is_active %}Sim{% else %}Lae{% endif %}</span></td>
+								<td><a class="btn btn-sm btn-success" href="{% url 'user-update' o.obj.pk %}" title="Edita"><i class="fa fa-edit"></i></a></td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

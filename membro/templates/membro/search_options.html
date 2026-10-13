@@ -1,0 +1,5 @@
+{% for m in objects %}
+<option value="{{ m.pk }}">{{ m.nome }} ({{ m.nu_eleitoral }}) - {{ m.village }}/{{ m.aldeia }}</option>
+{% empty %}
+<option value="">--- Laiha membru aprovadu ne'ebé hetan ---</option>
+{% endfor %}

@@ -1,0 +1,38 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% block crumbs %}
+<li class="breadcrumb-item"><a href="{% url 'report-dash' %}">Rekap</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ legend }}</li>
+{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Sexu</div><div class="card-body"><div style="height:280px"><canvas id="c_sexo"></canvas></div></div></div></div>
+	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Idade</div><div class="card-body"><div style="height:280px"><canvas id="c_idade"></canvas></div></div></div></div>
+</div>
+<div class="row">
+	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Aprovasaun</div><div class="card-body"><div style="height:280px"><canvas id="c_aprovasaun"></canvas></div></div></div></div>
+	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Status</div><div class="card-body"><div style="height:280px"><canvas id="c_status"></canvas></div></div></div></div>
+</div>
+<div class="row">
+	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Munisipiu</div><div class="card-body"><div style="height:320px"><canvas id="c_munisipiu"></canvas></div></div></div></div>
+	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Organizasaun</div><div class="card-body"><div style="height:320px"><canvas id="c_org"></canvas></div></div></div></div>
+</div>
+<div class="row">
+	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Estado Civil</div><div class="card-body"><div style="height:280px"><canvas id="c_marital"></canvas></div></div></div></div>
+	<div class="col-md-6"><div class="card"><div class="card-header">Membru Tuir Tinan Tama PLP</div><div class="card-body"><div style="height:280px"><canvas id="c_hakbit"></canvas></div></div></div></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'main/js_custom/Chart.min.js' %}"></script>
+<script src="{% static 'main/js_custom/charts.js' %}"></script>
+<script>
+	grafik('c_sexo', "{% url 'api-gender' %}", 'doughnut', 'Sexu');
+	grafik('c_idade', "{% url 'api-age' %}", 'bar', 'Membru');
+	grafik('c_aprovasaun', "{% url 'api-aprovasaun' %}", 'pie', 'Aprovasaun');
+	grafik('c_status', "{% url 'api-status' %}", 'pie', 'Status');
+	grafik('c_munisipiu', "{% url 'api-munisipiu' %}", 'horizontalBar', 'Membru');
+	grafik('c_org', "{% url 'api-organizasaun' %}", 'bar', 'Membru');
+	grafik('c_marital', "{% url 'api-marital' %}", 'pie', 'Estado Civil');
+	grafik('c_hakbit', "{% url 'api-hakbit' %}", 'bar', 'Membru');
+</script>
+{% endblock %}

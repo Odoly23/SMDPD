@@ -1,0 +1,33 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header">{{ legend }}</div>
+			<div class="card-body">
+				<div class="mb-3 no-print">
+					<a class="btn btn-sm btn-outline-primary" href="{% url 'historia-list' %}">Hotu</a>
+					{% for a in aksauns %}<a class="btn btn-sm btn-outline-primary" href="?aksaun={{ a|urlencode }}">{{ a }}</a>{% endfor %}
+				</div>
+				<p class="text-gray"><small>Hatudu to'o {{ limite }} rejistu ikus.</small></p>
+				<div class="table-responsive">
+					<table class="table table-sm datatable" width="100%">
+						<thead><tr><th>Data</th><th>Aksaun</th><th>Membru</th><th>Husi</th><th>Detalhe</th></tr></thead>
+						<tbody>
+							{% for h in objects %}
+							<tr>
+								<td>{{ h.datetime|date:"d/m/Y H:i" }}</td>
+								<td>{{ h.aksaun }}</td>
+								<td>{% if h.membro %}<a href="{% url 'membro-detail' h.membro.hashed %}">{{ h.membro_nome }}</a>{% else %}{{ h.membro_nome }}{% endif %}</td>
+								<td>{{ h.user.get_username|default:"-" }}</td>
+								<td class="pre-wrap">{{ h.detalhe }}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

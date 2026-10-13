@@ -1,0 +1,58 @@
+/* Tambahan SMDPD ba tema Bootstrapious (style.default.css) */
+.sidenav-header .logo-plp { width: 56px; height: 56px; }
+.sidenav-header h2 { color: #fff; font-size: 1.1rem; }
+.side-navbar .sidenav-header span { color: #adb5bd; }
+.side-navbar .sidenav-header img { object-fit: cover; }
+.side-navbar .brand-small img { width: 36px; height: 36px; margin: 4px 0; }
+.side-navbar li ul a { display: block; }
+.side-navbar .nav-user { padding: 12px; font-size: .75rem; color: #adb5bd; border-top: 1px solid #4a4947; margin-top: 10px; }
+.side-navbar .nav-user strong { color: #fff; display: block; }
+.side-navbar.shrink .nav-user { display: none; }
+
+nav.navbar .navbar-brand { font-weight: 500; letter-spacing: .05em; }
+nav.navbar .nav-menu > li { position: relative; margin-left: 1rem; }
+nav.navbar .nav-menu .nav-link { padding: 0; }
+nav.navbar .dropdown-menu { min-width: 16rem; }
+nav.navbar .dropdown-menu a.dropdown-item { display: block; white-space: normal; }
+nav.navbar .dropdown-menu .dropdown-header { padding: .25rem .75rem; }
+nav.navbar .dropdown-menu button.dropdown-item { background: none; border: 0; width: 100%; text-align: left; }
+nav.navbar a.notif-btn .badge { top: -8px; right: -10px; border-radius: 10px; }
+
+.breadcrumb-holder .breadcrumb { background: none; padding: 12px 0; }
+.breadcrumb-holder .breadcrumb a { display: inline; }
+
+.page > section.content { padding: 1.5rem 0 4rem; }
+.card-header { font-weight: 500; color: #555; text-transform: uppercase; letter-spacing: .03em; font-size: .9rem; }
+.card-header.bg-primary, .card-header.bg-warning { color: #fff; }
+.card-header.bg-warning { color: #212529; }
+.card-body table { color: #555; }
+.table thead th { border-top: 0; font-weight: 500; font-size: .8rem; text-transform: uppercase; color: #777; }
+.pre-wrap { white-space: pre-wrap; }
+.foto-membro { width: 130px; height: 160px; object-fit: cover; border: 1px solid #ddd; }
+.no-print { }
+
+.stat-label { display: block; font-size: .8rem; color: #868e96; text-transform: uppercase; letter-spacing: .05em; }
+.stat-number { font-size: 2rem; font-weight: 300; color: #33b35a; margin: 0; }
+.stat-number a { color: #33b35a; }
+
+.badge-pendente { background: #ffc107; color: #212529; }
+.badge-aprovadu { background: #33b35a; color: #fff; }
+.badge-rejeitadu { background: #dc3545; color: #fff; }
+.badge-ativu, .badge-sim { background: #33b35a; color: #fff; }
+.badge-inativu, .badge-lae { background: #868e96; color: #fff; }
+.badge-falesidu { background: #343a40; color: #fff; }
+
+.login-page { min-height: 100vh; background: linear-gradient(135deg, #00a8e8 0%, #00a8e8 50%, #1aa64a 50%, #1aa64a 100%); }
+.login-page .form-inner { text-align: center; }
+.login-page .logo-plp { width: 110px; height: 110px; margin-bottom: 10px; }
+.login-page .form-inner h1 { font-size: 1.4rem; color: #393836; }
+.login-page form { text-align: left; }
+.login-page .copyrights p { color: #fff; }
+.login-page .copyrights a { color: #fff; }
+
+.struktura-unit td { background: #f0f6f2; font-weight: 500; }
+
+@media print {
+	.side-navbar, nav.navbar, .no-print, .breadcrumb-holder, footer { display: none !important; }
+	.page { width: 100% !important; position: static; }
+}

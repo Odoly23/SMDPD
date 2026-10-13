@@ -1,0 +1,41 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header">{{ legend }}</div>
+			<div class="card-body">
+				{% if can_aloka %}<a class="btn btn-sm btn-primary mb-3" href="{% url 'alokasaun-add' %}?nivel={{ nivel }}">Aloka Pozisaun <i class="fa fa-plus"></i></a>{% endif %}
+				<div class="table-responsive">
+					<table class="table table-sm datatable" width="100%">
+						<thead>
+							<tr><th>Nu.</th>{% if nivel != 'nasional' %}<th>Unidade</th>{% endif %}<th>Pozisaun</th><th>Naran</th><th>Data Hahu</th><th>Data Termina</th><th>Ativu</th>{% if can_aloka %}<th>#</th>{% endif %}</tr>
+						</thead>
+						<tbody>
+							{% for obj in objects %}
+							<tr>
+								<td>{{ forloop.counter }}</td>
+								{% if nivel != 'nasional' %}<td>{{ obj.unit|default:"-" }}</td>{% endif %}
+								<td><strong>{{ obj.pozisaun }}</strong></td>
+								<td><a href="{% url 'membro-detail' obj.membro.hashed %}">{{ obj.membro.nome }}</a></td>
+								<td>{{ obj.data_hahu|date:"d/m/Y" }}</td>
+								<td>{{ obj.data_termina|date:"d/m/Y"|default:"-" }}</td>
+								<td><span class="badge badge-{{ obj.ativu|lower }}">{{ obj.ativu }}</span></td>
+								{% if can_aloka %}
+								<td>
+									<a class="btn btn-sm btn-success" href="{% url 'alokasaun-update' obj.pk %}" title="Edita"><i class="fa fa-edit"></i></a>
+									<form class="d-inline" method="post" action="{% url 'alokasaun-del' obj.pk %}" onsubmit="return confirm('Ita boot Hakarak Hamoos?');">{% csrf_token %}
+										<button class="btn btn-sm btn-danger" type="submit" title="Hamoos"><i class="fa fa-times"></i></button>
+									</form>
+								</td>
+								{% endif %}
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
