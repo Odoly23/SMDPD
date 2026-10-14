@@ -5,6 +5,7 @@ from config.models import HashedModel
 class Municipality(models.Model):
 	code = models.CharField(max_length=5, null=True, blank=True, verbose_name="Kódigu")
 	name = models.CharField(max_length=100, verbose_name="Naran Munisipiu")
+	hckey = models.CharField(max_length=10, blank=True, default="", verbose_name="Xave Mapa (Highcharts)")
 
 	class Meta:
 		ordering = ['name']

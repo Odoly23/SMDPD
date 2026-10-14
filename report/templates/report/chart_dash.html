@@ -6,6 +6,9 @@
 {% endblock %}
 {% block content %}
 <div class="row">
+	<div class="col-12"><div class="card"><div class="card-body"><div id="map-container" data-url="{% url 'api-mapa-munisipiu' %}" style="height: 520px; max-width: 100%;"></div></div></div></div>
+</div>
+<div class="row">
 	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Sexu</div><div class="card-body"><div style="height:280px"><canvas id="c_sexo"></canvas></div></div></div></div>
 	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Idade</div><div class="card-body"><div style="height:280px"><canvas id="c_idade"></canvas></div></div></div></div>
 </div>
@@ -24,6 +27,9 @@
 {% endblock %}
 {% block scripts %}
 <script src="{% static 'main/js_custom/Chart.min.js' %}"></script>
+<script src="{% static 'main/js_custom/highmaps.js' %}"></script>
+<script src="{% static 'main/js_custom/tl-all.js' %}"></script>
+<script src="{% static 'main/js_custom/mapa.js' %}"></script>
 <script src="{% static 'main/js_custom/charts.js' %}"></script>
 <script>
 	grafik('c_sexo', "{% url 'api-gender' %}", 'doughnut', 'Sexu');

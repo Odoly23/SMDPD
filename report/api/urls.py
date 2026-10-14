@@ -5,6 +5,7 @@ urlpatterns = [
 	path('gender/', views.APIGender.as_view(), name='api-gender'),
 	path('aprovasaun/', views.APIAprovasaun.as_view(), name='api-aprovasaun'),
 	path('munisipiu/', views.APIMunisipiu.as_view(), name='api-munisipiu'),
+	path('mapa/munisipiu/', views.APIMapaMunisipiu.as_view(), name='api-mapa-munisipiu'),
 	path('postu/', views.APIPostu.as_view(), name='api-postu'),
 	path('suku/', views.APISuku.as_view(), name='api-suku'),
 	path('aldeia/', views.APIAldeia.as_view(), name='api-aldeia'),

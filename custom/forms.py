@@ -31,11 +31,11 @@ class MasterForm(forms.ModelForm):
 
 
 class MunicipalityForm(MasterForm):
-	columns = ['code', 'name']
+	columns = ['code', 'name', 'hckey']
 
 	class Meta:
 		model = Municipality
-		fields = ['code', 'name']
+		fields = ['code', 'name', 'hckey']
 
 	def clean_name(self):
 		name = super().clean_name()

@@ -326,6 +326,16 @@ class ReportTests(BaseData):
 		for name in ('api-age', 'api-hakbit', 'api-munisipiu', 'api-organizasaun', 'api-marital', 'api-status', 'api-aprovasaun', 'api-postu', 'api-suku', 'api-aldeia'):
 			self.assertEqual(self.client.get(reverse(name)).status_code, 200, name)
 
+	def test_api_mapa_munisipiu(self):
+		self.mun1.hckey, self.mun2.hckey = 'tl-DL', 'tl-bc'
+		self.mun1.save(); self.mun2.save()
+		self.login(roles.PRESIDENTE)
+		d = dict(map(tuple, self.client.get(reverse('api-mapa-munisipiu')).json()))
+		self.assertEqual(d, {'tl-dl': 1, 'tl-bc': 1})
+		self.login(roles.KOORD_MUN)  # hare munisipiu rasik deit
+		d = dict(map(tuple, self.client.get(reverse('api-mapa-munisipiu')).json()))
+		self.assertEqual(d, {'tl-dl': 1, 'tl-bc': 0})
+
 	def test_api_admin_proibidu(self):
 		self.login(roles.ADMIN)
 		self.assertEqual(self.client.get(reverse('api-gender')).status_code, 403)

@@ -5,6 +5,7 @@ from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from config import roles
+from custom.models import Municipality
 from config.user_utils import c_user_group, membro_scope
 
 
@@ -37,6 +38,15 @@ class APIAprovasaun(BaseAPI):
 
 class APIMunisipiu(BaseAPI):
 	field = 'municipality__name'
+
+
+class APIMapaMunisipiu(BaseAPI):
+	"""Total membru ba munisipiu ida-ida ho formatu [[xave_mapa, total], ...] ba Highcharts Maps."""
+
+	def get(self, request, format=None):
+		total = {r['municipality_id']: r['n'] for r in membro_scope(request.user).order_by().values('municipality_id').annotate(n=Count('id', distinct=True))}
+		data = [[m.hckey.lower(), total.get(m.pk, 0)] for m in Municipality.objects.exclude(hckey='')]
+		return Response(data)
 
 
 class APIPostu(BaseAPI):

@@ -53,7 +53,7 @@ def _master(tipu):
 def _rows(tipu):
 	if tipu == 'munisipiu':
 		qs = Municipality.objects.annotate(p=Count('administrativepost', distinct=True), m=Count('membro', distinct=True))
-		return ['Kódigu', 'Naran Munisipiu', 'Total Postu', 'Total Membru'], [(o, [o.code or '-', o.name, o.p, o.m]) for o in qs]
+		return ['Kódigu', 'Naran Munisipiu', 'Xave Mapa', 'Total Postu', 'Total Membru'], [(o, [o.code or '-', o.name, o.hckey or '-', o.p, o.m]) for o in qs]
 	if tipu == 'postu':
 		qs = AdministrativePost.objects.select_related('municipality').annotate(v=Count('village', distinct=True), m=Count('membro', distinct=True))
 		return ['Munisipiu', 'Naran Postu', 'Total Suku', 'Total Membru'], [(o, [o.municipality, o.name, o.v, o.m]) for o in qs]

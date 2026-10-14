@@ -31,6 +31,10 @@ Membru foun ka edita sei hetan estatutu *Pendente* to'o Presidente Nasionál apr
 
 Menu **Struktura → Painel** hatudu total membru ba **Entidade** (Orgaun/Movimentu no Struktura), lista **Orgaun/Movimentu** ida-ida (ho paginasaun) no total ba nivel **Struktura** (Nasionál, Departamentu, Munisipal, Postu Administrativu, Suku, Aldeia). `seed_inisial` rejista orgaun/movimentu ne'ebé hatudu iha painel; Admin bele aumenta seluk iha Data Master.
 
+## Mapa Timor-Leste
+
+Halaman **Grafik** hatudu mapa Timor-Leste (Highcharts Maps, lokal iha `main/static/main/js_custom/`) ho total membru tuir munisipiu. Data husi API `report/api/mapa/munisipiu/` ([[xave, total], ...]) tuir área uzuáriu. Munisipiu ida-ida iha *Xave Mapa* (`hckey`, ez. `tl-dl` ba Dili) ne'ebé bele edita iha Data Master → Munisipiu. Atauro seidauk iha iha mapa.
+
 ## Apps
 
 - `Core` — projetu Django (settings, urls)
