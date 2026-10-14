@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				subtitle: { text: '' },
 				lang: { noData: 'Laiha data' },
 				mapNavigation: { enabled: true, buttonOptions: { verticalAlign: 'bottom' } },
-				colorAxis: { min: 0, minColor: '#e6f6ee', maxColor: '#00a853' },
+				colorAxis: { min: 0, minColor: '#e8fbea', maxColor: '#04d419' },
 				series: [{
 					name: 'Munisipiu',
 					nullColor: '#E0E0E0',

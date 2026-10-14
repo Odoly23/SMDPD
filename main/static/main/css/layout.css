@@ -1,6 +1,6 @@
 :root {
-  --navy:    #00a853;   /* hijau bendera PLP */
-  --navy-dk: #00672f;   /* hijau tua */
+  --navy:    #04d419;   /* hijau bendera PLP */
+  --navy-dk: #02760f;   /* hijau tua */
   --white:   #ffffff;
   --kuning:  #f9d71c;   /* kuning logo PLP */
   --biru:    #02b0ed;   /* biru bendera PLP */
@@ -95,7 +95,7 @@ body {
   display: flex; align-items: center; gap: 9px; border-radius: 0;
 }
 .nav-links .dropdown-item i { width: 18px; text-align: center; color: var(--navy); }
-.nav-links .dropdown-item:hover { background: #e6f6ee; color: black; }
+.nav-links .dropdown-item:hover { background: #e8fbea; color: black; }
 .nav-links .dropdown-item.text-danger:hover { background: #fff0f0; }
 .nav-links .dropdown-item.text-danger i { color: #dc3545; }
 .nav-links .dropdown-header { color: #666; line-height: 1.3; padding: 10px 16px; }

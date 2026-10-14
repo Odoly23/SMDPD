@@ -13,17 +13,17 @@
 .btn-warning:hover { background: #e6c300; border-color: #e6c300; color: #212529; }
 
 .stat-label { display: block; font-size: .8rem; color: #868e96; text-transform: uppercase; letter-spacing: .05em; }
-.stat-number { font-size: 2rem; font-weight: 300; color: #00a853; margin: 0; }
-.stat-number a { color: #00a853; }
+.stat-number { font-size: 2rem; font-weight: 300; color: #04d419; margin: 0; }
+.stat-number a { color: #04d419; }
 
 .badge-pendente { background: #f9d71c; color: #212529; }
-.badge-aprovadu { background: #00a853; color: #fff; }
+.badge-aprovadu { background: #04d419; color: #fff; }
 .badge-rejeitadu { background: #dc3545; color: #fff; }
-.badge-ativu, .badge-sim { background: #00a853; color: #fff; }
+.badge-ativu, .badge-sim { background: #04d419; color: #fff; }
 .badge-inativu, .badge-lae { background: #868e96; color: #fff; }
 .badge-falesidu { background: #343a40; color: #fff; }
 
-.login-page { min-height: 100vh; background: linear-gradient(135deg, #02b0ed 0%, #02b0ed 50%, #00a853 50%, #00a853 100%); }
+.login-page { min-height: 100vh; background: linear-gradient(135deg, #02b0ed 0%, #02b0ed 50%, #04d419 50%, #04d419 100%); }
 .login-page .form-inner { text-align: center; border-bottom: 3px solid #f9d71c; }
 .login-page .logo-plp { width: 110px; height: 110px; margin-bottom: 10px; }
 .login-page .form-inner h1 { font-size: 1.4rem; color: #393836; }
