@@ -35,7 +35,7 @@ Membru foun ka edita sei hetan estatutu *Pendente* to'o Presidente Nasionál apr
 - `membro` — membru, pozisaun iha struktura (`Alokasaun`), historia mudansa, aprovasaun
 - `user` — uzuáriu no área ida-ida (`UserScope`)
 - `notif` — notifikasaun
-- `report` — rekap, grafik no API
+- `report` — relatoriu, grafik no API
 - `main` — layout, login, dashboard, static (tema Bootstrapious)
 
 ## Instala

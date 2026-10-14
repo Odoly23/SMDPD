@@ -12,27 +12,27 @@
 					<button class="btn btn-sm btn-outline-secondary" type="button" onclick="window.print()"><i class="fa fa-print"></i> Imprime</button>
 				</div>
 				<form method="get" class="form-row mb-3 no-print">
-					<div class="col-md-3 mb-2"><input type="text" class="form-control form-control-sm" name="q" value="{{ f.q }}" placeholder="Buka naran / nu. eleitoral / nu. BI"></div>
-					<div class="col-md-2 mb-2">
+					<div class="col-12 col-md-6 col-xl-3 mb-2"><input type="text" class="form-control form-control-sm" name="q" value="{{ f.q }}" placeholder="Buka naran / nu. eleitoral / nu. BI"></div>
+					<div class="col-6 col-md-3 col-xl-2 mb-2">
 						<select class="form-control form-control-sm" name="municipality">
 							<option value="">Munisipiu hotu</option>
 							{% for m in municipios %}<option value="{{ m.pk }}"{% if f.municipality == m.pk|stringformat:"s" %} selected{% endif %}>{{ m.name }}</option>{% endfor %}
 						</select>
 					</div>
-					<div class="col-md-2 mb-2">
+					<div class="col-6 col-md-3 col-xl-2 mb-2">
 						<select class="form-control form-control-sm" name="organizasaun">
 							<option value="">Organizasaun hotu</option>
 							{% for o in organizasauns %}<option value="{{ o.pk }}"{% if f.organizasaun == o.pk|stringformat:"s" %} selected{% endif %}>{{ o.code }}</option>{% endfor %}
 						</select>
 					</div>
-					<div class="col-md-1 mb-2">
+					<div class="col-6 col-md-3 col-xl-1 mb-2">
 						<select class="form-control form-control-sm" name="sex">
 							<option value="">Sexu</option>
 							<option value="Mane"{% if f.sex == 'Mane' %} selected{% endif %}>Mane</option>
 							<option value="Feto"{% if f.sex == 'Feto' %} selected{% endif %}>Feto</option>
 						</select>
 					</div>
-					<div class="col-md-2 mb-2">
+					<div class="col-6 col-md-3 col-xl-2 mb-2">
 						<select class="form-control form-control-sm" name="aprovasaun">
 							<option value="">Aprovasaun hotu</option>
 							<option value="Pendente"{% if f.aprovasaun == 'Pendente' %} selected{% endif %}>Pendente</option>
@@ -40,7 +40,7 @@
 							<option value="Rejeitadu"{% if f.aprovasaun == 'Rejeitadu' %} selected{% endif %}>Rejeitadu</option>
 						</select>
 					</div>
-					<div class="col-md-2 mb-2">
+					<div class="col-6 col-md-3 col-xl-2 mb-2">
 						<button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-search"></i> Buka</button>
 						<a class="btn btn-sm btn-outline-secondary" href="{% url 'membro-list' %}">Hamoos</a>
 					</div>
@@ -49,23 +49,23 @@
 					<table class="table table-sm table-hover">
 						<thead>
 							<tr>
-								<th>NU.</th><th>NU. ELEITORAL</th><th>NARAN</th><th>SEXU</th><th>IDADE</th><th>MUNISIPIU</th><th>SUKU</th>
-								<th>ALDEIA</th><th>ORGANIZASAUN</th><th>STATUS</th><th>APROVASAUN</th><th class="no-print">#</th>
+								<th>NU.</th><th class="d-none d-lg-table-cell">NU. ELEITORAL</th><th>NARAN</th><th>SEXU</th><th class="d-none d-lg-table-cell">IDADE</th><th class="d-none d-md-table-cell">MUNISIPIU</th><th class="d-none d-lg-table-cell">SUKU</th>
+								<th class="d-none d-lg-table-cell">ALDEIA</th><th class="d-none d-lg-table-cell">ORGANIZASAUN</th><th class="d-none d-lg-table-cell">STATUS</th><th>APROVASAUN</th><th class="no-print">#</th>
 							</tr>
 						</thead>
 						<tbody>
 						{% for obj in page %}
 							<tr>
 								<td>{{ page.start_index|add:forloop.counter0 }}</td>
-								<td>{{ obj.nu_eleitoral }}</td>
+								<td class="d-none d-lg-table-cell">{{ obj.nu_eleitoral }}</td>
 								<td><a href="{% url 'membro-detail' obj.hashed %}">{{ obj.nome }}</a></td>
 								<td>{{ obj.sex }}</td>
-								<td>{{ obj.age }}</td>
-								<td>{{ obj.municipality }}</td>
-								<td>{{ obj.village }}</td>
-								<td>{{ obj.aldeia }}</td>
-								<td>{{ obj.organizasaun|default_if_none:"-" }}</td>
-								<td><span class="badge badge-{{ obj.status|lower }}">{{ obj.status }}</span></td>
+								<td class="d-none d-lg-table-cell">{{ obj.age }}</td>
+								<td class="d-none d-md-table-cell">{{ obj.municipality }}</td>
+								<td class="d-none d-lg-table-cell">{{ obj.village }}</td>
+								<td class="d-none d-lg-table-cell">{{ obj.aldeia }}</td>
+								<td class="d-none d-lg-table-cell">{{ obj.organizasaun|default_if_none:"-" }}</td>
+								<td class="d-none d-lg-table-cell"><span class="badge badge-{{ obj.status|lower }}">{{ obj.status }}</span></td>
 								<td><span class="badge badge-{{ obj.aprovasaun|lower }}">{{ obj.aprovasaun }}</span></td>
 								<td class="no-print"><a class="btn btn-sm btn-primary" href="{% url 'membro-detail' obj.hashed %}" title="Detalha"><i class="fa fa-eye"></i></a></td>
 							</tr>

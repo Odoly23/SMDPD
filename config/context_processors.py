@@ -54,7 +54,7 @@ def _menu(request, group):
 		items.append(_grupu(request, 'Struktura', 'fa-sitemap', [
 			_item(request, label, icon, 'struktura-list', args=(slug,), names=('struktura-list', 'alokasaun-add', 'alokasaun-update'),
 				match_kwargs={'nivel': slug} if slug else None) for slug, label, icon in STRUKTURA]))
-		items.append(_item(request, 'Rekap', 'fa-table', 'report-dash'))
+		items.append(_item(request, 'Relatoriu', 'fa-table', 'report-dash'))
 		items.append(_item(request, 'Grafik', 'fa-bar-chart', 'report-chart'))
 		if group in roles.HISTORIA_ROLES:
 			items.append(_item(request, 'Historia', 'fa-history', 'historia-list'))

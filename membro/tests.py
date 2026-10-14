@@ -285,7 +285,7 @@ class ReportTests(BaseData):
 		self.login(roles.ADMIN)
 		self.assertEqual(self.client.get(reverse('api-gender')).status_code, 403)
 
-	def test_rekap_departamentu_la_duplika(self):
+	def test_relatoriu_departamentu_la_duplika(self):
 		for poz in ('Membru', 'Koordenador'):
 			Alokasaun.objects.create(membro=self.m1, nivel='Departamentu', pozisaun=poz, departamentu=self.dep, data_hahu=datetime.date(2026, 1, 1))
 		self.login(roles.KOORD_DEP)

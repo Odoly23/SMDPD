@@ -7,7 +7,7 @@ from config.user_utils import c_user_group, membro_scope, alokasaun_scope
 
 
 def _rows(qs, id_field, name_field):
-	"""Rekap total membru per unidade nu'udar lista {id, name, total}."""
+	"""Relatoriu total membru per unidade nu'udar lista {id, name, total}."""
 	rows = qs.values(id_field, name_field).annotate(total=Count('id', distinct=True)).order_by(name_field)
 	return [{'id': r[id_field], 'name': r[name_field], 'total': r['total']} for r in rows]
 
@@ -38,7 +38,7 @@ def Dash(request):
 		'por_tinan': _rows(qs.filter(data_hakbit__isnull=False), 'data_hakbit__year', 'data_hakbit__year'),
 		'por_nivel': [{'name': n, 'total': struktura.filter(nivel=n).count()} for n in
 			['Nasional', 'Departamentu', 'Munisipiu', 'Suku', 'Aldeia', 'Organizasaun']],
-		'title': 'Rekapitulasaun Membru', 'legend': 'Rekapitulasaun Membru'
+		'title': 'Relatoriu Membru', 'legend': 'Relatoriu Membru'
 	}
 	return render(request, 'report/dash.html', context)
 

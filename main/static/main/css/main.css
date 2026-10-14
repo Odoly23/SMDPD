@@ -32,17 +32,17 @@ nav.navbar a.notif-btn .badge { top: -8px; right: -10px; border-radius: 10px; }
 .no-print { }
 
 .stat-label { display: block; font-size: .8rem; color: #868e96; text-transform: uppercase; letter-spacing: .05em; }
-.stat-number { font-size: 2rem; font-weight: 300; color: #33b35a; margin: 0; }
-.stat-number a { color: #33b35a; }
+.stat-number { font-size: 2rem; font-weight: 300; color: #00a853; margin: 0; }
+.stat-number a { color: #00a853; }
 
 .badge-pendente { background: #ffc107; color: #212529; }
-.badge-aprovadu { background: #33b35a; color: #fff; }
+.badge-aprovadu { background: #00a853; color: #fff; }
 .badge-rejeitadu { background: #dc3545; color: #fff; }
-.badge-ativu, .badge-sim { background: #33b35a; color: #fff; }
+.badge-ativu, .badge-sim { background: #00a853; color: #fff; }
 .badge-inativu, .badge-lae { background: #868e96; color: #fff; }
 .badge-falesidu { background: #343a40; color: #fff; }
 
-.login-page { min-height: 100vh; background: linear-gradient(135deg, #00a8e8 0%, #00a8e8 50%, #1aa64a 50%, #1aa64a 100%); }
+.login-page { min-height: 100vh; background: linear-gradient(135deg, #02b0ed 0%, #02b0ed 50%, #00a853 50%, #00a853 100%); }
 .login-page .form-inner { text-align: center; }
 .login-page .logo-plp { width: 110px; height: 110px; margin-bottom: 10px; }
 .login-page .form-inner h1 { font-size: 1.4rem; color: #393836; }
@@ -56,3 +56,28 @@ nav.navbar a.notif-btn .badge { top: -8px; right: -10px; border-radius: 10px; }
 	.side-navbar, nav.navbar, .no-print, .breadcrumb-holder, footer { display: none !important; }
 	.page { width: 100% !important; position: static; }
 }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1199px) {
+	.side-navbar .nav-user { display: none; }
+	.side-navbar .sidenav-heading { font-size: .65rem; }
+	.page > section.content { padding-top: 1rem; }
+}
+@media (max-width: 767px) {
+	.container-fluid { padding-left: 12px; padding-right: 12px; }
+	.card-body { padding: 1rem; }
+	.card-header { padding: .8rem 1rem; }
+	.stat-number { font-size: 1.6rem; }
+	nav.navbar .navbar-brand { margin-left: 4px; }
+	nav.navbar .dropdown-menu { min-width: 0; }
+	.btn { white-space: normal; }
+	.foto-membro { width: 110px; height: 135px; }
+	.table td, .table th { padding: .4rem .35rem; }
+	.page-link { padding: .35rem .6rem; }
+	.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter { text-align: left; }
+	.dataTables_wrapper .dataTables_filter input { width: 100%; margin-left: 0; display: block; }
+	.login-page .form-inner { padding: 28px 18px; }
+}
+.table-responsive { -webkit-overflow-scrolling: touch; }
+img { max-width: 100%; }
+canvas { max-width: 100%; }
