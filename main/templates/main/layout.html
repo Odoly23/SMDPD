@@ -14,83 +14,35 @@
 		<link rel="stylesheet" href="{% static 'main/font-awesome/css/font-awesome.min.css' %}">
 		<link rel="stylesheet" href="{% static 'main/css/dataTables.bootstrap4.min.css' %}">
 		<link rel="stylesheet" href="{% static 'main/css/style.default.css' %}">
+		<link rel="stylesheet" href="{% static 'main/css/layout.css' %}">
 		<link rel="stylesheet" href="{% static 'main/css/main.css' %}">
 	</head>
 
 	<body>
 		{% include 'main/navbar.html' %}
-		<div class="page">
-			<header class="header">
-				<nav class="navbar">
-					<div class="container-fluid">
-						<div class="navbar-holder d-flex align-items-center justify-content-between">
-							<div class="navbar-header">
-								<a id="toggle-btn" href="#" class="menu-btn" title="Menu"><i class="fa fa-bars"></i></a>
-								<a href="{% url 'home' %}" class="navbar-brand">
-									<div class="brand-text d-inline-block"><strong>SMDPD</strong> <small class="d-none d-lg-inline">Sistema Managemen Dadus Membru PLP</small></div>
-								</a>
-							</div>
-							<ul class="nav-menu list-unstyled d-flex flex-row align-items-center">
-								<li class="nav-item dropdown">
-									<a id="notifications" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link notif-btn" title="Notifikasaun">
-										<i class="fa fa-bell"></i>{% if notif_total %}<span class="badge badge-warning">{{ notif_total }}</span>{% endif %}
-									</a>
-									<ul aria-labelledby="notifications" class="dropdown-menu list-unstyled">
-										{% for n in notif_recent %}
-										<li><a rel="nofollow" href="{% url 'notif-loke' n.pk %}" class="dropdown-item"><i class="fa fa-envelope"></i> {{ n.mesaun|truncatechars:60 }}</a></li>
-										{% empty %}
-										<li><span class="dropdown-item text-gray">Laiha notifikasaun foun.</span></li>
-										{% endfor %}
-										<li><a rel="nofollow" href="{% url 'notif-list' %}" class="dropdown-item text-center"><strong>Hare hotu</strong></a></li>
-									</ul>
-								</li>
-								<li class="nav-item dropdown">
-									<a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle" title="{{ user.username }}">
-										<i class="fa fa-user-circle"></i> <span class="d-none d-sm-inline">{{ user.first_name|default:user.username }}</span>
-									</a>
-									<div class="dropdown-menu">
-										<span class="dropdown-header">{{ user.username }}{% if nav_role %}<br>{{ nav_role }}{% endif %}</span>
-										<a class="dropdown-item" href="{% url 'change-password' %}"><i class="fa fa-key"></i> Troka Password</a>
-										<form method="post" action="{% url 'logout' %}">{% csrf_token %}
-											<button class="dropdown-item text-danger" type="submit"><i class="fa fa-sign-out"></i> Sai</button>
-										</form>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</nav>
-			</header>
 
-			<div class="breadcrumb-holder">
-				<div class="container-fluid">
-					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
-						{% block crumbs %}{% if legend and legend != 'Varanda' %}<li class="breadcrumb-item active" aria-current="page">{{ legend }}</li>{% endif %}{% endblock %}
-					</ol>
-				</div>
-			</div>
-
-			<section class="content">
-				<div class="container-fluid">
-					{% if messages %}
-						{% for message in messages %}
-							<div class="alert alert-{{ message.tags }} p-2">{{ message }}</div>
-						{% endfor %}
-					{% endif %}
+		<div class="page-wrapper">
+			<div class="container">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+					{% block crumbs %}{% if legend and legend != 'Varanda' %}<li class="breadcrumb-item active" aria-current="page">{{ legend }}</li>{% endif %}{% endblock %}
+				</ol>
+				{% if messages %}
+					{% for message in messages %}
+						<div class="alert alert-{{ message.tags }} p-2">{{ message }}</div>
+					{% endfor %}
+				{% endif %}
+				<div class="main-content">
 					{% block content %}{% endblock %}
 				</div>
-			</section>
-
-			<footer class="main-footer">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-sm-6"><p>&copy; {% now "Y" %} PLP &middot; SMDPD</p></div>
-						<div class="col-sm-6 text-right"><p>Partidu Libertasaun Popular</p></div>
-					</div>
-				</div>
-			</footer>
+			</div>
 		</div>
+
+		<footer>
+			<div class="container">
+				&copy; {% now "Y" %} <strong>SMDPD</strong> <span class="d-none d-sm-inline">&middot; Partidu Libertasaun Popular (PLP), Timor-Leste</span>
+			</div>
+		</footer>
 
 		<script src="{% static 'main/js/jquery.min.js' %}"></script>
 		<script src="{% static 'main/js/bootstrap.min.js' %}"></script>

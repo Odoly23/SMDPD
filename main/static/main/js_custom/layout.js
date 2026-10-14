@@ -1,17 +1,13 @@
-/* Sidebar dashboard: shrink (desktop) ka show (mobile). Hanesan tema Bootstrapious. */
-$(function () {
-	var largura = function () { return $(window).outerWidth(); };
-	if (largura() > 1194) { $('nav.side-navbar').removeClass('shrink'); }
-	$('#toggle-btn').on('click', function (e) {
-		e.preventDefault();
-		$(this).toggleClass('active');
-		if (largura() > 1194) {
-			$('nav.side-navbar').toggleClass('shrink');
-			$('.page').toggleClass('active');
-		} else {
-			$('nav.side-navbar').toggleClass('show-sm');
-			$('.page').toggleClass('active-sm');
-		}
-	});
-	$('.alert-dismissible-auto').delay(6000).fadeOut(600);
-});
+/* Sidebar mobile: geser dari kiri dan dorong konten (CSS: body.sb-open). */
+(function () {
+	var btn = document.getElementById('btn-ham');
+	var sb = document.getElementById('sidebar');
+	if (!btn || !sb) { return; }
+	function setOpen(open) {
+		sb.classList.toggle('active', open);
+		document.body.classList.toggle('sb-open', open);
+		btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+	}
+	btn.addEventListener('click', function () { setOpen(!sb.classList.contains('active')); });
+	window.addEventListener('resize', function () { if (window.innerWidth >= 992) { setOpen(false); } });
+})();

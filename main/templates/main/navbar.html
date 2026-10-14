@@ -1,39 +1,85 @@
 {% load static %}
-<!-- SIDEBAR -->
-<nav class="side-navbar">
-	<div class="side-navbar-wrapper">
-		<div class="sidenav-header d-flex align-items-center justify-content-center">
-			<div class="sidenav-header-inner text-center">
-				<img src="{% static 'main/images/logo_plp.png' %}" alt="PLP" class="img-fluid rounded-circle logo-plp">
-				<h2 class="h5">SMDPD</h2>
-				<span>Partidu PLP</span>
-			</div>
-			<div class="sidenav-header-logo">
-				<a href="{% url 'home' %}" class="brand-small text-center"><img src="{% static 'main/images/logo_plp.png' %}" alt="PLP" class="rounded-circle"></a>
-			</div>
+<!-- TOPBAR -->
+<div class="topbar">
+	<div class="container">
+		<div class="tb-left">
+			<span><i class="fa fa-flag"></i> <span class="d-none d-sm-inline">Partidu Libertasaun Popular &middot; Timor-Leste</span><span class="d-sm-none">PLP</span></span>
+			<span><i class="fa fa-calendar"></i> {% now "d/m/Y" %}</span>
 		</div>
-		<div class="main-menu">
-			<h5 class="sidenav-heading">Menu</h5>
-			<ul id="side-main-menu" class="side-menu list-unstyled">
-				{% for it in nav_items %}
-					{% if it.children %}
-					<li{% if it.active %} class="active"{% endif %}>
-						<a href="#menu-{{ forloop.counter }}" aria-expanded="{% if it.active %}true{% else %}false{% endif %}" data-toggle="collapse"><i class="fa {{ it.icon }}"></i>{{ it.label }}</a>
-						<ul id="menu-{{ forloop.counter }}" class="collapse list-unstyled{% if it.active %} show{% endif %}">
-							{% for c in it.children %}
-							<li{% if c.active %} class="active"{% endif %}><a href="{{ c.url }}"><i class="fa {{ c.icon }}"></i>{{ c.label }}</a></li>
-							{% endfor %}
-						</ul>
-					</li>
-					{% else %}
-					<li{% if it.active %} class="active"{% endif %}><a href="{{ it.url }}"><i class="fa {{ it.icon }}"></i>{{ it.label }}</a></li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</div>
-		<div class="nav-user">
-			<strong>{{ user.first_name|default:user.username }}</strong>
-			{{ nav_role|default:"-" }}
+		<div class="tb-right">
+			{% if user.is_authenticated %}<span><i class="fa fa-user"></i> {{ user.username }}{% if nav_role and nav_role|lower != user.username|lower %}<span class="d-none d-md-inline"> &middot; {{ nav_role }}</span>{% endif %}</span>{% endif %}
 		</div>
 	</div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="main-navbar">
+	<div class="container">
+		<a class="brand" href="{% if user.is_authenticated %}{% url 'home' %}{% else %}{% url 'login' %}{% endif %}">
+			<img src="{% static 'main/images/logo_plp.png' %}" alt="PLP"><span>SMDPD</span>
+		</a>
+		{% if user.is_authenticated %}
+		<ul class="nav-links">
+			{% for it in nav_items %}
+				{% if it.children %}
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle{% if it.active %} active{% endif %}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa {{ it.icon }}"></i> {{ it.label }}</a>
+					<div class="dropdown-menu">
+						{% for c in it.children %}<a class="dropdown-item" href="{{ c.url }}"><i class="fa {{ c.icon }}"></i> {{ c.label }}</a>{% endfor %}
+					</div>
+				</li>
+				{% else %}
+				<li><a href="{{ it.url }}"{% if it.active %} class="active"{% endif %}><i class="fa {{ it.icon }}"></i> {{ it.label }}</a></li>
+				{% endif %}
+			{% endfor %}
+			<li class="dropdown">
+				<a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Notifikasaun"><i class="fa fa-bell"></i>{% if notif_total %}<span class="badge-notif">{{ notif_total }}</span>{% endif %}</a>
+				<div class="dropdown-menu dropdown-menu-right">
+					{% for n in notif_recent %}<a class="dropdown-item" href="{% url 'notif-loke' n.pk %}"><i class="fa fa-envelope"></i> {{ n.mesaun|truncatechars:50 }}</a>{% empty %}<span class="dropdown-item text-muted">Laiha notifikasaun foun.</span>{% endfor %}
+					<a class="dropdown-item" href="{% url 'notif-list' %}"><i class="fa fa-list"></i> Hare hotu</a>
+				</div>
+			</li>
+			<li class="dropdown ml-2">
+				<a href="#" class="p-1" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="{{ user.username }}"><span class="av"><i class="fa fa-user"></i></span></a>
+				<div class="dropdown-menu dropdown-menu-right">
+					<span class="dropdown-header">{{ user.first_name|default:user.username }}{% if nav_role %}<br>{{ nav_role }}{% endif %}</span>
+					<a class="dropdown-item" href="{% url 'change-password' %}"><i class="fa fa-key"></i> Troka Password</a>
+					<form method="post" action="{% url 'logout' %}">{% csrf_token %}
+						<button class="dropdown-item text-danger" type="submit"><i class="fa fa-sign-out"></i> Sai</button>
+					</form>
+				</div>
+			</li>
+		</ul>
+		<button class="btn-ham" id="btn-ham" type="button" aria-label="Menu" aria-expanded="false"><i class="fa fa-bars"></i></button>
+		{% endif %}
+	</div>
 </nav>
+
+{% if user.is_authenticated %}
+<!-- SIDEBAR (mobile) -->
+<aside id="sidebar" aria-label="Menu">
+	<div class="sb-body">
+		<ul>
+			{% for it in nav_items %}
+				{% if it.children %}
+					<li class="sb-sec">{{ it.label }}</li>
+					{% for c in it.children %}
+					<li{% if c.active %} class="sb-on"{% endif %}><a href="{{ c.url }}"><i class="fa {{ c.icon }}"></i>{{ c.label }}</a></li>
+					{% endfor %}
+					<li><hr></li>
+				{% else %}
+				<li{% if it.active %} class="sb-on"{% endif %}><a href="{{ it.url }}"><i class="fa {{ it.icon }}"></i>{{ it.label }}</a></li>
+				{% endif %}
+			{% endfor %}
+			<li><hr></li>
+			<li><a href="{% url 'notif-list' %}"><i class="fa fa-bell"></i>Notif.{% if notif_total %} ({{ notif_total }}){% endif %}</a></li>
+			<li><a href="{% url 'change-password' %}"><i class="fa fa-key"></i>Password</a></li>
+			<li>
+				<form method="post" action="{% url 'logout' %}">{% csrf_token %}
+					<button type="submit"><i class="fa fa-sign-out"></i>Sai</button>
+				</form>
+			</li>
+		</ul>
+	</div>
+</aside>
+{% endif %}

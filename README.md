@@ -72,4 +72,4 @@ python manage.py test
 ## Nota
 
 - Lista membru uza paginasaun server-side (25 per pájina) no esporta CSV tuir filtru no área uzuáriu.
-- Tema visuál: `main/static/main/css/style.default.css` (Bootstrapious Dashboard) + `main.css`.
+- Tema visuál: layout topbar + navbar + sidebar mobile (`layout.css`), komponen Bootstrapious (`style.default.css`) + `main.css`. Kór tuir logo PLP: verde, kuning no azul.
