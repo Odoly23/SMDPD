@@ -35,6 +35,17 @@ Menu **Struktura → Painel** hatudu total membru ba **Entidade** (Orgaun/Movime
 
 Halaman **Grafik** hatudu mapa Timor-Leste (Highcharts Maps, lokal iha `main/static/main/js_custom/`) ho total membru tuir munisipiu. Data husi API `report/api/mapa/munisipiu/` ([[xave, total], ...]) tuir área uzuáriu. Munisipiu ida-ida iha *Xave Mapa* (`hckey`, ez. `tl-dl` ba Dili) ne'ebé bele edita iha Data Master → Munisipiu. Atauro seidauk iha iha mapa.
 
+## Dadus wilayah
+
+Munisipiu, Postu Administrativu, Suku no Aldeia foti husi repositóriu **SMKRE** (Diploma Ministerial 31/2026): 14 munisipiu, 71 postu, 472 suku no 2.250 aldeia. File CSV iha `custom/data/`. Importa ho:
+
+```bash
+python manage.py import_wilayah --dry-run   # haree deit
+python manage.py import_wilayah             # seguru atu la'o dala barak (tuir kódigu)
+```
+
+`seed_inisial` mós vota komando ne'e. Munisipiu ne'ebé iha ona sei uza fali tuir naran no atualiza kódigu.
+
 ## Apps
 
 - `Core` — projetu Django (settings, urls)
@@ -53,7 +64,7 @@ python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env          # troka DJANGO_SECRET_KEY
 python manage.py migrate
-python manage.py seed_inisial # peran, munisipiu Timor-Leste, user admin
+python manage.py seed_inisial # peran, wilayah Timor-Leste, orgaun/movimentu, user admin
 python manage.py runserver
 ```
 

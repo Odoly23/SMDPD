@@ -16,6 +16,7 @@ class Municipality(models.Model):
 
 
 class AdministrativePost(models.Model):
+	code = models.CharField(max_length=30, unique=True, null=True, blank=True, verbose_name="Kódigu")
 	municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE, verbose_name="Munisipiu")
 	name = models.CharField(max_length=100, verbose_name="Naran Postu")
 
@@ -28,6 +29,7 @@ class AdministrativePost(models.Model):
 
 
 class Village(models.Model):
+	code = models.CharField(max_length=30, unique=True, null=True, blank=True, verbose_name="Kódigu")
 	administrativepost = models.ForeignKey(AdministrativePost, on_delete=models.CASCADE, verbose_name="Postu")
 	name = models.CharField(max_length=100, verbose_name="Naran Suku")
 
@@ -40,6 +42,7 @@ class Village(models.Model):
 
 
 class Aldeia(models.Model):
+	code = models.CharField(max_length=30, unique=True, null=True, blank=True, verbose_name="Kódigu")
 	village = models.ForeignKey(Village, on_delete=models.CASCADE, verbose_name="Suku")
 	name = models.CharField(max_length=100, verbose_name="Naran Aldeia")
 
