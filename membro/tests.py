@@ -16,7 +16,7 @@ class ScopeTests(BaseData):
 		self.assertEqual(self.ids(roles.SEKRETARIA), {'Joao Silva', 'Maria Costa'})
 
 	def test_area_hare_deit_nia_rasik(self):
-		for role in (roles.KOORD_MUN, roles.KOORD_SUKU, roles.KOORD_ALDEIA, roles.KOORD_ORG):
+		for role in (roles.KOORD_MUN, roles.KOORD_POSTU, roles.KOORD_SUKU, roles.KOORD_ALDEIA, roles.KOORD_ORG):
 			self.assertEqual(self.ids(role), {'Joao Silva'}, role)
 
 	def test_departamentu_hare_membru_alokadu(self):
@@ -34,6 +34,15 @@ class ScopeTests(BaseData):
 		a2 = Alokasaun.objects.create(membro=self.m2, nivel='Suku', pozisaun='Koordenador', village=self.vil2, data_hahu=datetime.date(2026, 1, 1))
 		self.assertEqual(set(alokasaun_scope(self.users[roles.KOORD_MUN])), {a1})
 		self.assertEqual(set(alokasaun_scope(self.users[roles.PRESIDENTE])), {a1, a2})
+
+	def test_alokasaun_scope_postu(self):
+		a1 = Alokasaun.objects.create(membro=self.m1, nivel='Postu', pozisaun='Koordenador', post=self.post1, data_hahu=datetime.date(2026, 1, 1))
+		a2 = Alokasaun.objects.create(membro=self.m2, nivel='Postu', pozisaun='Koordenador', post=self.post2, data_hahu=datetime.date(2026, 1, 1))
+		a3 = Alokasaun.objects.create(membro=self.m1, nivel='Suku', pozisaun='Koordenador', village=self.vil1, data_hahu=datetime.date(2026, 1, 1))
+		self.assertEqual(set(alokasaun_scope(self.users[roles.KOORD_POSTU])), {a1, a3})
+		self.assertEqual(set(alokasaun_scope(self.users[roles.KOORD_MUN])), {a1, a3})
+		self.assertEqual(set(alokasaun_scope(self.users[roles.KOORD_SUKU])), {a3})
+		self.assertEqual(set(alokasaun_scope(self.users[roles.PRESIDENTE])), {a1, a2, a3})
 
 	def test_can_aloka(self):
 		self.assertTrue(can_aloka(self.users[roles.PRESIDENTE], 'Suku'))
@@ -53,9 +62,9 @@ class PermissionTests(BaseData):
 
 	def test_halaman_utama_hotu_loke(self):
 		for role in roles.VIEW_ROLES:
-			for name in ('home', 'membro-list', 'report-dash', 'report-chart', 'notif-list'):
+			for name in ('home', 'membro-list', 'report-dash', 'report-chart', 'notif-list', 'struktura-painel'):
 				self.assertEqual(self.status(role, name), 200, (role, name))
-			for slug in ('nasional', 'departamentu', 'munisipiu', 'suku', 'aldeia', 'organizasaun'):
+			for slug in ('nasional', 'departamentu', 'munisipiu', 'postu', 'suku', 'aldeia', 'organizasaun'):
 				self.assertEqual(self.status(role, 'struktura-list', slug), 200, (role, slug))
 
 	def test_admin_halaman(self):
@@ -228,6 +237,19 @@ class AlokasaunTests(BaseData):
 		self.login(roles.KOORD_MUN)
 		self.assertEqual(self.client.get(reverse('alokasaun-add')).status_code, 403)
 
+	def test_postu_alokasaun(self):
+		self.login(roles.PRESIDENTE)
+		r = self.client.post(reverse('alokasaun-add'), self.dados(self.m2, 'Postu', 'Koordenador',
+			municipality=self.mun1.pk, post=self.post1.pk))
+		self.assertEqual(r.status_code, 200)  # membru la hela iha postu ne'e
+		self.assertIn('membro', r.context['form'].errors)
+		r = self.client.post(reverse('alokasaun-add'), self.dados(self.m1, 'Postu', 'Koordenador',
+			municipality=self.mun1.pk, post=self.post1.pk))
+		self.assertEqual(r.status_code, 302, getattr(r, 'context', None) and r.context['form'].errors)
+		a = Alokasaun.objects.get(nivel='Postu')
+		self.assertEqual(a.post, self.post1)
+		self.assertIsNone(a.municipality_id)
+
 	def test_membru_tenke_hela_iha_suku(self):
 		self.login(roles.PRESIDENTE)
 		r = self.client.post(reverse('alokasaun-add'), self.dados(self.m2, 'Suku', 'Koordenador',
@@ -259,6 +281,29 @@ class AlokasaunTests(BaseData):
 		r = self.client.get(reverse('membro-search'), {'q': 'joao'})
 		self.assertContains(r, 'Joao Silva')
 		self.assertNotContains(r, 'Maria')
+
+
+class PainelTests(BaseData):
+	def test_painel_total(self):
+		Alokasaun.objects.create(membro=self.m1, nivel='Nasional', pozisaun='Presidente', data_hahu=datetime.date(2026, 1, 1))
+		Alokasaun.objects.create(membro=self.m1, nivel='Suku', pozisaun='Koordenador', village=self.vil1, data_hahu=datetime.date(2026, 1, 1))
+		Alokasaun.objects.create(membro=self.m2, nivel='Aldeia', pozisaun='Membru', aldeia=self.ald2, data_hahu=datetime.date(2026, 1, 1))
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('struktura-painel'))
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(r.context['total_org'], 1)   # m1 iha organizasaun
+		self.assertEqual(r.context['total_str'], 2)   # m1 no m2 (membru diferente)
+		self.assertEqual(r.context['total_membru'], 2)
+		por = {s['slug']: s['total'] for s in r.context['struktura']}
+		self.assertEqual((por['nasional'], por['suku'], por['aldeia'], por['postu']), (1, 1, 1, 0))
+		self.assertContains(r, 'Organizasaun Juventude')
+
+	def test_painel_koord_area(self):
+		Alokasaun.objects.create(membro=self.m2, nivel='Suku', pozisaun='Koordenador', village=self.vil2, data_hahu=datetime.date(2026, 1, 1))
+		self.login(roles.KOORD_SUKU)
+		r = self.client.get(reverse('struktura-painel'))
+		self.assertEqual(r.context['total_str'], 0)
+		self.assertEqual(r.context['total_membru'], 1)
 
 
 class AjaxTests(BaseData):

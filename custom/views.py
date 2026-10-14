@@ -40,7 +40,7 @@ MASTER = {
 	'suku': {'model': Village, 'form': VillageForm, 'label': 'Suku'},
 	'aldeia': {'model': Aldeia, 'form': AldeiaForm, 'label': 'Aldeia'},
 	'departamentu': {'model': Departamentu, 'form': DepartamentuForm, 'label': 'Departamentu'},
-	'organizasaun': {'model': Organizasaun, 'form': OrganizasaunForm, 'label': 'Organizasaun'},
+	'organizasaun': {'model': Organizasaun, 'form': OrganizasaunForm, 'label': 'Orgaun/Movimentu'},
 }
 
 

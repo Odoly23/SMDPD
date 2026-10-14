@@ -81,3 +81,5 @@ nav.navbar a.notif-btn .badge { top: -8px; right: -10px; border-radius: 10px; }
 .table-responsive { -webkit-overflow-scrolling: touch; }
 img { max-width: 100%; }
 canvas { max-width: 100%; }
+.text-uppercase small { letter-spacing: normal; text-transform: none; }
+h6.text-uppercase { letter-spacing: .08em; }

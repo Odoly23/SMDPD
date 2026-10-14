@@ -63,7 +63,7 @@ def export_csv(qs, filename='membru.csv'):
 	response.write('﻿')
 	w = csv.writer(response)
 	w.writerow(['Nu. Eleitoral', 'Naran', 'Sexu', 'Data Moris', 'Idade', 'Estado Civil', 'Nu. BI', 'Nu. Telemovel',
-		'Munisipiu', 'Postu', 'Suku', 'Aldeia', 'Hela Fatin', 'Organizasaun', 'Data Hakbit', 'Status', 'Aprovasaun'])
+		'Munisipiu', 'Postu', 'Suku', 'Aldeia', 'Hela Fatin', 'Orgaun/Movimentu', 'Data Hakbit', 'Status', 'Aprovasaun'])
 	for m in qs.select_related('municipality', 'post', 'village', 'aldeia', 'organizasaun').iterator():
 		w.writerow([m.nu_eleitoral, m.nome, m.sex, m.date_of_birth, m.age(), m.marital or '', m.nu_bi or '', m.telefone or '',
 			m.municipality, m.post, m.village, m.aldeia, m.address or '', m.organizasaun or '', m.data_hakbit or '',

@@ -65,14 +65,14 @@ class Departamentu(HashedModel):
 
 
 class Organizasaun(HashedModel):
-	"""Organizasaun anexa partidu (ez. juventude, feto)."""
+	"""Orgaun/Movimentu ne'ebé hela iha partidu laran (ez. Movimentu Diaspora, Sentru Estudu Estratejiku)."""
 	code = models.CharField(max_length=10, verbose_name="Kódigu")
 	name = models.CharField(max_length=100, verbose_name="Naran")
 	is_active = models.BooleanField(default=True, verbose_name="Ativu")
 
 	class Meta:
-		ordering = ['code']
+		ordering = ['name']
 
 	def __str__(self):
-		template = '{0.code}'
+		template = '{0.name}'
 		return template.format(self)

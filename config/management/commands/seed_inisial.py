@@ -3,7 +3,7 @@ import secrets
 from django.contrib.auth.models import Group, User
 from django.core.management.base import BaseCommand
 from config import roles
-from custom.models import Municipality
+from custom.models import Municipality, Organizasaun
 
 MUNISIPIU = [
 	('Aileu', 'AL'), ('Ainaro', 'AN'), ('Baucau', 'BC'), ('Bobonaro', 'BB'), ('Cova Lima', 'CL'),
@@ -11,15 +11,26 @@ MUNISIPIU = [
 	('Manufahi', 'MF'), ('Oecusse', 'OE'), ('Viqueque', 'VQ'), ('Atauro', 'AT'),
 ]
 
+# Orgaun/Movimentu iha PLP (kódigu, naran)
+ORGAUN = [
+	('SEE', 'Sentru Estudu Estratejiku'), ('MATMR', 'Movimento Assegura TMR'),
+	('MLBDF', "Movimento Loriko Buka Di'ik Funan"), ('MLP', 'Movimento Lorico Popular'),
+	('MLS', 'Movimento Lorico Saudavel'), ('LFM', 'Lorico Forma (Forsa Matak)'),
+	('RACA', 'Movimento RACA'), ('ADST', 'Assosiadu Defisiente Salva Timor'),
+	('MDIA', 'Movimento Diaspora'), ('MLM', 'Movimento Loriko Matak'),
+]
+
 
 class Command(BaseCommand):
-	help = 'Isi data inisial: peran (group), munisipiu Timor-Leste no user admin.'
+	help = 'Isi data inisial: peran (group), munisipiu Timor-Leste, orgaun/movimentu no user admin.'
 
 	def handle(self, *args, **options):
 		for key, _ in roles.ROLE_LABELS:
 			Group.objects.get_or_create(name=key)
 		for name, code in MUNISIPIU:
 			Municipality.objects.get_or_create(name=name, defaults={'code': code})
+		for code, name in ORGAUN:
+			Organizasaun.objects.get_or_create(code=code, defaults={'name': name})
 		user = User.objects.filter(username='admin').first()
 		if not user:
 			password = os.environ.get('ADMIN_PASSWORD') or secrets.token_urlsafe(12)

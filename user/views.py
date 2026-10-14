@@ -15,12 +15,12 @@ ROLE_NAME = dict(roles.ROLE_LABELS)
 def UserList(request):
 	group = c_user_group(request.user)
 	users = User.objects.prefetch_related('groups').select_related(
-		'scope__departamentu', 'scope__municipality', 'scope__village', 'scope__aldeia', 'scope__organizasaun').order_by('username')
+		'scope__departamentu', 'scope__municipality', 'scope__post', 'scope__village', 'scope__aldeia', 'scope__organizasaun').order_by('username')
 	objects = []
 	for u in users:
 		role = u.groups.all()[0].name if u.groups.all() else None
 		scope = getattr(u, 'scope', None)
-		area = (scope.departamentu or scope.aldeia or scope.village or scope.municipality or scope.organizasaun) if scope else None
+		area = (scope.departamentu or scope.aldeia or scope.village or scope.post or scope.municipality or scope.organizasaun) if scope else None
 		objects.append({'obj': u, 'role': ROLE_NAME.get(role, role or '-'), 'area': area or '-'})
 	context = {
 		'group': group, 'objects': objects,

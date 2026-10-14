@@ -12,7 +12,7 @@ def c_user_group(user):
 def c_user_scope(user):
 	from user.models import UserScope
 	return UserScope.objects.filter(user=user).select_related(
-		'municipality', 'village', 'aldeia', 'departamentu', 'organizasaun').first()
+		'municipality', 'post', 'village', 'aldeia', 'departamentu', 'organizasaun').first()
 
 
 def membro_scope(user, qs=None):
@@ -29,6 +29,8 @@ def membro_scope(user, qs=None):
 				alokasaun__departamentu_id=scope.departamentu_id).distinct()
 		if group in roles.MUN_ROLES and scope.municipality_id:
 			return qs.filter(municipality_id=scope.municipality_id)
+		if group in roles.POSTU_ROLES and scope.post_id:
+			return qs.filter(post_id=scope.post_id)
 		if group in roles.SUKU_ROLES and scope.village_id:
 			return qs.filter(village_id=scope.village_id)
 		if group in roles.ALDEIA_ROLES and scope.aldeia_id:
@@ -53,8 +55,15 @@ def alokasaun_scope(user, qs=None):
 			mun = scope.municipality_id
 			return qs.filter(
 				Q(nivel='Munisipiu', municipality_id=mun)
+				| Q(nivel='Postu', post__municipality_id=mun)
 				| Q(nivel='Suku', village__administrativepost__municipality_id=mun)
 				| Q(nivel='Aldeia', aldeia__village__administrativepost__municipality_id=mun))
+		if group in roles.POSTU_ROLES and scope.post_id:
+			post = scope.post_id
+			return qs.filter(
+				Q(nivel='Postu', post_id=post)
+				| Q(nivel='Suku', village__administrativepost_id=post)
+				| Q(nivel='Aldeia', aldeia__village__administrativepost_id=post))
 		if group in roles.SUKU_ROLES and scope.village_id:
 			return qs.filter(
 				Q(nivel='Suku', village_id=scope.village_id)

@@ -11,9 +11,9 @@ MARITAL = [('Solteiro/a', 'Solteiro/a'), ('Casado/a', 'Casado/a'), ('Divorciado/
 STATUS = [('Ativu', 'Ativu'), ('Inativu', 'Inativu'), ('Falesidu', 'Falesidu')]
 APROVASAUN = [('Pendente', 'Pendente'), ('Aprovadu', 'Aprovadu'), ('Rejeitadu', 'Rejeitadu')]
 
-# Estrutura Nasionál (+ Departamentu) no Estrutura Munisipiu/Suku/Aldeia/Organizasaun
-NIVEL = [('Nasional', 'Nasionál'), ('Departamentu', 'Departamentu'), ('Munisipiu', 'Munisipiu'),
-	('Suku', 'Suku'), ('Aldeia', 'Aldeia'), ('Organizasaun', 'Organizasaun')]
+# Estrutura Nasionál (+ Departamentu), Munisipal, Postu Administrativu, Suku, Aldeia no Orgaun/Movimentu
+NIVEL = [('Nasional', 'Nasionál'), ('Departamentu', 'Departamentu'), ('Munisipiu', 'Munisipal'), ('Postu', 'Postu Administrativu'),
+	('Suku', 'Suku'), ('Aldeia', 'Aldeia'), ('Organizasaun', 'Orgaun/Movimentu')]
 NIVEL_SLUG = {n.lower(): n for n, _ in NIVEL}
 
 POZISAUN_LIST = ['Presidente', 'Presidente Departamentu', 'Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru']
@@ -22,6 +22,7 @@ POZISAUN_POR_NIVEL = {
 	'Nasional': ['Presidente', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 	'Departamentu': ['Presidente Departamentu', 'Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Membru'],
 	'Munisipiu': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
+	'Postu': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 	'Suku': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 	'Aldeia': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 	'Organizasaun': ['Koordenador', 'Membru'],
@@ -47,7 +48,7 @@ class Membro(HashedModel):
 	village = models.ForeignKey(Village, on_delete=models.PROTECT, verbose_name="Suku")
 	aldeia = models.ForeignKey(Aldeia, on_delete=models.PROTECT, verbose_name="Aldeia")
 	address = models.CharField(max_length=100, null=True, blank=True, verbose_name="Hela Fatin")
-	organizasaun = models.ForeignKey(Organizasaun, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Organizasaun")
+	organizasaun = models.ForeignKey(Organizasaun, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Orgaun/Movimentu")
 	data_hakbit = models.DateField(null=True, blank=True, verbose_name="Data Hakbit (Tama PLP)")
 	status = models.CharField(choices=STATUS, max_length=10, default='Ativu', verbose_name="Status")
 	aprovasaun = models.CharField(choices=APROVASAUN, max_length=10, default='Pendente', verbose_name="Aprovasaun")
@@ -71,15 +72,16 @@ class Membro(HashedModel):
 
 
 class Alokasaun(models.Model):
-	"""Pozisaun/kargu membru iha struktura (Nasionál, Departamentu, Munisipiu, Suku, Aldeia, Organizasaun)."""
+	"""Pozisaun/kargu membru iha struktura (Nasionál, Departamentu, Munisipal, Postu, Suku, Aldeia, Orgaun/Movimentu)."""
 	membro = models.ForeignKey(Membro, on_delete=models.CASCADE, related_name='alokasaun', verbose_name="Membru")
 	nivel = models.CharField(choices=NIVEL, max_length=15, verbose_name="Nivel")
 	pozisaun = models.CharField(choices=POZISAUN, max_length=30, verbose_name="Pozisaun")
 	departamentu = models.ForeignKey(Departamentu, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Departamentu")
 	municipality = models.ForeignKey(Municipality, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Munisipiu")
+	post = models.ForeignKey(AdministrativePost, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Postu Administrativu")
 	village = models.ForeignKey(Village, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Suku")
 	aldeia = models.ForeignKey(Aldeia, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Aldeia")
-	organizasaun = models.ForeignKey(Organizasaun, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Organizasaun")
+	organizasaun = models.ForeignKey(Organizasaun, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Orgaun/Movimentu")
 	data_hahu = models.DateField(verbose_name="Data Hahu")
 	data_termina = models.DateField(null=True, blank=True, verbose_name="Data Termina")
 	ativu = models.CharField(choices=[('Sim', 'Sim'), ('Lae', 'Lae')], max_length=3, default='Sim', verbose_name="Ativu")
@@ -90,7 +92,7 @@ class Alokasaun(models.Model):
 		ordering = ['-ativu', 'nivel', 'pozisaun']
 
 	def unit(self):
-		return self.departamentu or self.municipality or self.village or self.aldeia or self.organizasaun
+		return self.departamentu or self.municipality or self.post or self.village or self.aldeia or self.organizasaun
 
 	def rank(self):
 		return POZISAUN_LIST.index(self.pozisaun) if self.pozisaun in POZISAUN_LIST else len(POZISAUN_LIST)

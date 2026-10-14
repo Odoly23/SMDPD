@@ -21,7 +21,7 @@ class UserTests(BaseData):
 
 	def test_peran_area_tenke_hili(self):
 		self.login(roles.ADMIN)
-		for role, keep in [(roles.KOORD_SUKU, 'village'), (roles.KOORD_MUN, 'municipality'), (roles.KOORD_ALDEIA, 'aldeia'),
+		for role, keep in [(roles.KOORD_SUKU, 'village'), (roles.KOORD_MUN, 'municipality'), (roles.KOORD_POSTU, 'post'), (roles.KOORD_ALDEIA, 'aldeia'),
 				(roles.KOORD_ORG, 'organizasaun'), (roles.PRES_DEP, 'departamentu'), (roles.KOORD_DEP, 'departamentu')]:
 			r = self.client.post(reverse('user-add'), self.dados(group=role, village='', username=f'x{role}'))
 			self.assertEqual(r.status_code, 200, role)

@@ -3,6 +3,7 @@ from django.db.models import Count, Q
 from django.shortcuts import render
 from config import roles
 from config.decorators import allowed_users
+from membro.models import NIVEL
 from config.user_utils import c_user_group, membro_scope, alokasaun_scope
 
 
@@ -33,11 +34,10 @@ def Dash(request):
 		'por_postu': _rows(qs, 'post_id', 'post__name'),
 		'por_suku': _rows(qs, 'village_id', 'village__name'),
 		'por_aldeia': _rows(qs, 'aldeia_id', 'aldeia__name'),
-		'por_org': _rows(qs.filter(organizasaun__isnull=False), 'organizasaun_id', 'organizasaun__code'),
+		'por_org': _rows(qs.filter(organizasaun__isnull=False), 'organizasaun_id', 'organizasaun__name'),
 		'por_status': _rows(qs, 'status', 'status'),
 		'por_tinan': _rows(qs.filter(data_hakbit__isnull=False), 'data_hakbit__year', 'data_hakbit__year'),
-		'por_nivel': [{'name': n, 'total': struktura.filter(nivel=n).count()} for n in
-			['Nasional', 'Departamentu', 'Munisipiu', 'Suku', 'Aldeia', 'Organizasaun']],
+		'por_nivel': [{'slug': n.lower(), 'name': label, 'total': struktura.filter(nivel=n).count()} for n, label in NIVEL],
 		'title': 'Relatoriu Membru', 'legend': 'Relatoriu Membru'
 	}
 	return render(request, 'report/dash.html', context)

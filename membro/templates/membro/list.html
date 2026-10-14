@@ -21,8 +21,8 @@
 					</div>
 					<div class="col-6 col-md-3 col-xl-2 mb-2">
 						<select class="form-control form-control-sm" name="organizasaun">
-							<option value="">Organizasaun hotu</option>
-							{% for o in organizasauns %}<option value="{{ o.pk }}"{% if f.organizasaun == o.pk|stringformat:"s" %} selected{% endif %}>{{ o.code }}</option>{% endfor %}
+							<option value="">Orgaun/Movimentu hotu</option>
+							{% for o in organizasauns %}<option value="{{ o.pk }}"{% if f.organizasaun == o.pk|stringformat:"s" %} selected{% endif %}>{{ o.name }}</option>{% endfor %}
 						</select>
 					</div>
 					<div class="col-6 col-md-3 col-xl-1 mb-2">
@@ -50,7 +50,7 @@
 						<thead>
 							<tr>
 								<th>NU.</th><th class="d-none d-lg-table-cell">NU. ELEITORAL</th><th>NARAN</th><th>SEXU</th><th class="d-none d-lg-table-cell">IDADE</th><th class="d-none d-md-table-cell">MUNISIPIU</th><th class="d-none d-lg-table-cell">SUKU</th>
-								<th class="d-none d-lg-table-cell">ALDEIA</th><th class="d-none d-lg-table-cell">ORGANIZASAUN</th><th class="d-none d-lg-table-cell">STATUS</th><th>APROVASAUN</th><th class="no-print">#</th>
+								<th class="d-none d-lg-table-cell">ALDEIA</th><th class="d-none d-lg-table-cell">ORGAUN/MOVIMENTU</th><th class="d-none d-lg-table-cell">STATUS</th><th>APROVASAUN</th><th class="no-print">#</th>
 							</tr>
 						</thead>
 						<tbody>

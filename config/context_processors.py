@@ -7,10 +7,11 @@ ROLE_NAME = dict(roles.ROLE_LABELS)
 STRUKTURA = [
 	('nasional', 'Nasionál', 'fa-flag'),
 	('departamentu', 'Departamentu', 'fa-briefcase'),
-	('munisipiu', 'Munisipiu', 'fa-building'),
+	('munisipiu', 'Munisipal', 'fa-building'),
+	('postu', 'Postu Administrativu', 'fa-map-signs'),
 	('suku', 'Suku', 'fa-map-marker'),
 	('aldeia', 'Aldeia', 'fa-home'),
-	('organizasaun', 'Organizasaun', 'fa-users'),
+	('organizasaun', 'Orgaun/Movimentu', 'fa-users'),
 ]
 MASTER = [
 	('munisipiu', 'Munisipiu', 'fa-building'),
@@ -18,7 +19,7 @@ MASTER = [
 	('suku', 'Suku', 'fa-map-marker'),
 	('aldeia', 'Aldeia', 'fa-map-o'),
 	('departamentu', 'Departamentu', 'fa-briefcase'),
-	('organizasaun', 'Organizasaun', 'fa-flag'),
+	('organizasaun', 'Orgaun/Movimentu', 'fa-flag'),
 ]
 
 
@@ -51,9 +52,10 @@ def _menu(request, group):
 			items.append(_item(request, 'Aumenta Membru', 'fa-plus', 'membro-add'))
 		if group in roles.APROVA_ROLES:
 			items.append(_item(request, 'Aprovasaun', 'fa-check-square-o', 'aprovasaun-list', names=('aprovasaun-list', 'aprovasaun-rejeita')))
-		items.append(_grupu(request, 'Struktura', 'fa-sitemap', [
-			_item(request, label, icon, 'struktura-list', args=(slug,), names=('struktura-list', 'alokasaun-add', 'alokasaun-update'),
-				match_kwargs={'nivel': slug} if slug else None) for slug, label, icon in STRUKTURA]))
+		struktura = [_item(request, 'Painel', 'fa-th-large', 'struktura-painel')]
+		struktura += [_item(request, label, icon, 'struktura-list', args=(slug,), names=('struktura-list', 'alokasaun-add', 'alokasaun-update'),
+			match_kwargs={'nivel': slug}) for slug, label, icon in STRUKTURA]
+		items.append(_grupu(request, 'Struktura', 'fa-sitemap', struktura))
 		items.append(_item(request, 'Relatoriu', 'fa-table', 'report-dash'))
 		items.append(_item(request, 'Grafik', 'fa-bar-chart', 'report-chart'))
 		if group in roles.HISTORIA_ROLES:

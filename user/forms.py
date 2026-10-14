@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, HTML
 from config import roles
 from config.user_utils import c_user_group, c_user_scope
-from custom.models import Municipality, Village, Aldeia, Departamentu, Organizasaun
+from custom.models import Municipality, AdministrativePost, Village, Aldeia, Departamentu, Organizasaun
 from user.models import UserScope
 
 BTN_CANCEL = """ <a class="btn btn-secondary" href="{{ cancel_url }}" title="Cancela"><i class="fa fa-close"></i> Cancela</a> """
@@ -15,10 +15,11 @@ BTN_SAVE = """ <button class="btn btn-primary" type="submit" title="Rai"> Rai <i
 class UserForm(forms.ModelForm):
 	group = forms.ChoiceField(label="Peran", choices=roles.ROLE_LABELS)
 	departamentu = forms.ModelChoiceField(label="Departamentu", queryset=Departamentu.objects.filter(is_active=True), required=False)
-	municipality = forms.ModelChoiceField(label="Munisipiu", queryset=Municipality.objects.all(), required=False)
+	municipality = forms.ModelChoiceField(label="Munisipal", queryset=Municipality.objects.all(), required=False)
+	post = forms.ModelChoiceField(label="Postu Administrativu", queryset=AdministrativePost.objects.select_related('municipality'), required=False)
 	village = forms.ModelChoiceField(label="Suku", queryset=Village.objects.select_related('administrativepost'), required=False)
 	aldeia = forms.ModelChoiceField(label="Aldeia", queryset=Aldeia.objects.select_related('village'), required=False)
-	organizasaun = forms.ModelChoiceField(label="Organizasaun", queryset=Organizasaun.objects.filter(is_active=True), required=False)
+	organizasaun = forms.ModelChoiceField(label="Orgaun/Movimentu", queryset=Organizasaun.objects.filter(is_active=True), required=False)
 	password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}), required=False)
 
 	class Meta:
@@ -35,7 +36,7 @@ class UserForm(forms.ModelForm):
 			self.fields['group'].initial = c_user_group(self.instance)
 			scope = c_user_scope(self.instance)
 			if scope:
-				for k in ('departamentu', 'municipality', 'village', 'aldeia', 'organizasaun'):
+				for k in ('departamentu', 'municipality', 'post', 'village', 'aldeia', 'organizasaun'):
 					self.fields[k].initial = getattr(scope, f'{k}_id')
 			self.fields['password'].help_text = 'Husik mamuk atu la troka.'
 		else:
@@ -58,8 +59,9 @@ class UserForm(forms.ModelForm):
 				css_class='form-row'
 			),
 			Row(
-				Column('departamentu', css_class='form-group col-md-6 mb-0 scope-departamentu'),
-				Column('municipality', css_class='form-group col-md-6 mb-0 scope-municipality'),
+				Column('departamentu', css_class='form-group col-md-4 mb-0 scope-departamentu'),
+				Column('municipality', css_class='form-group col-md-4 mb-0 scope-municipality'),
+				Column('post', css_class='form-group col-md-4 mb-0 scope-post'),
 				css_class='form-row'
 			),
 			Row(
@@ -75,18 +77,20 @@ class UserForm(forms.ModelForm):
 	def clean(self):
 		cleaned = super().clean()
 		group = cleaned.get('group')
-		scope = {k: cleaned.get(k) for k in ('departamentu', 'municipality', 'village', 'aldeia', 'organizasaun')}
+		scope = {k: cleaned.get(k) for k in ('departamentu', 'municipality', 'post', 'village', 'aldeia', 'organizasaun')}
 		keep, label = None, ''
 		if group in roles.DEP_ROLES:
 			keep, label = 'departamentu', 'Departamentu'
 		elif group in roles.MUN_ROLES:
-			keep, label = 'municipality', 'Munisipiu'
+			keep, label = 'municipality', 'Munisipal'
+		elif group in roles.POSTU_ROLES:
+			keep, label = 'post', 'Postu Administrativu'
 		elif group in roles.SUKU_ROLES:
 			keep, label = 'village', 'Suku'
 		elif group in roles.ALDEIA_ROLES:
 			keep, label = 'aldeia', 'Aldeia'
 		elif group in roles.ORG_ROLES:
-			keep, label = 'organizasaun', 'Organizasaun'
+			keep, label = 'organizasaun', 'Orgaun/Movimentu'
 		if keep and not scope[keep]:
 			self.add_error(keep, f'{label} tenke hili ba peran ida ne\'e.')
 		for k in scope:
@@ -109,6 +113,6 @@ class UserForm(forms.ModelForm):
 		group, _ = Group.objects.get_or_create(name=self.cleaned_data['group'])
 		user.groups.set([group])
 		UserScope.objects.update_or_create(user=user, defaults={
-			k: self.cleaned_data[k] for k in ('departamentu', 'municipality', 'village', 'aldeia', 'organizasaun')
+			k: self.cleaned_data[k] for k in ('departamentu', 'municipality', 'post', 'village', 'aldeia', 'organizasaun')
 		})
 		return user

@@ -3,10 +3,10 @@
 {% block form_scripts %}
 <script src="{% static 'main/js_custom/membro_search.js' %}"></script>
 <script type="text/javascript">
-	// hatudu unidade (departamentu/munisipiu/suku/aldeia/organizasaun) tuir nivel
+	// hatudu unidade (departamentu/munisipiu/postu/suku/aldeia/organizasaun) tuir nivel
 	function toggleUnit() {
 		var n = ($('#id_nivel').val() || '').toLowerCase();
-		$('.unit-departamentu, .unit-munisipiu, .unit-suku, .unit-aldeia, .unit-organizasaun').hide();
+		$('.unit-departamentu, .unit-munisipiu, .unit-postu, .unit-suku, .unit-aldeia, .unit-organizasaun').hide();
 		if (n) { $('.unit-' + n).show(); }
 	}
 	$('#id_nivel').on('change', toggleUnit);
@@ -16,6 +16,7 @@
 		'Nasional': ['Presidente', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 		'Departamentu': ['Presidente Departamentu', 'Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Membru'],
 		'Munisipiu': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
+		'Postu': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 		'Suku': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 		'Aldeia': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 		'Organizasaun': ['Koordenador', 'Membru']

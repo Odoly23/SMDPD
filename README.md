@@ -8,8 +8,8 @@ Sistema Managemen Dadus Membru Partidu PLP (Partidu Libertasaun Popular). Aplika
 |---|---|
 | **Nasionál** | Presidente, Vice 1–4, Sekretaria, Membru |
 | **Departamentu** (iha Estrutura Nasionál) | Presidente Departamentu, Koordenador, Vice 1–4, Membru |
-| **Munisipiu**, **Suku**, **Aldeia** | Koordenador, Vice 1–4, Sekretaria, Membru |
-| **Organizasaun** | Koordenador, Membru |
+| **Munisipal**, **Postu Administrativu**, **Suku**, **Aldeia** | Koordenador, Vice 1–4, Sekretaria, Membru |
+| **Orgaun/Movimentu** | Koordenador, Membru |
 
 Pozisaun hotu (liu Membru) ida de'it ba unidade ida ho estatutu ativu. Konfigurasaun iha `membro/models.py` (`POZISAUN_POR_NIVEL`).
 
@@ -17,21 +17,25 @@ Pozisaun hotu (liu Membru) ida de'it ba unidade ida ho estatutu ativu. Konfigura
 
 | Peran | Área | Direitu |
 |---|---|---|
-| Admin | — | Jere uzuáriu, data master (munisipiu, postu, suku, aldeia, departamentu, organizasaun), historia. La hare data membru. |
+| Admin | — | Jere uzuáriu, data master (munisipiu, postu, suku, aldeia, departamentu, orgaun/movimentu), historia. La hare data membru. |
 | Presidente Nasionál | Nasionál | Hare hotu, **aprova/rejeita/hamoos** membru, aloka pozisaun iha nivel hotu |
 | Sekretaria Nasionál | Nasionál | Hare hotu, input/edita membru, aloka pozisaun iha nivel hotu |
 | Presidente Departamentu | Departamentu ida | Hare membru departamentu, aloka pozisaun iha departamentu rasik |
 | Koordenador Departamentu | Departamentu ida | Hare membru departamentu |
-| Koordenador Munisipiu / Suku / Aldeia | Área rasik | Input, edita no hare membru iha área rasik |
-| Koordenador Organizasaun | Organizasaun ida | Input, edita no hare membru organizasaun rasik |
+| Koordenador Munisipal / Postu Administrativu / Suku / Aldeia | Área rasik | Input, edita no hare membru iha área rasik |
+| Koordenador Orgaun/Movimentu | Orgaun/Movimentu ida | Input, edita no hare membru orgaun/movimentu rasik |
 
 Membru foun ka edita sei hetan estatutu *Pendente* to'o Presidente Nasionál aprova. Presidente simu notifikasaun, no koordenador simu notifikasaun bainhira aprovadu ka rejeitadu.
+
+## Painel Struktura
+
+Menu **Struktura → Painel** hatudu total membru ba **Entidade** (Orgaun/Movimentu no Struktura), lista **Orgaun/Movimentu** ida-ida (ho paginasaun) no total ba nivel **Struktura** (Nasionál, Departamentu, Munisipal, Postu Administrativu, Suku, Aldeia). `seed_inisial` rejista orgaun/movimentu ne'ebé hatudu iha painel; Admin bele aumenta seluk iha Data Master.
 
 ## Apps
 
 - `Core` — projetu Django (settings, urls)
 - `config` — peran, dekorador, utilitáriu, permisaun área, seed
-- `custom` — data master (Munisipiu → Postu → Suku → Aldeia, Departamentu, Organizasaun)
+- `custom` — data master (Munisipiu → Postu → Suku → Aldeia, Departamentu, Orgaun/Movimentu)
 - `membro` — membru, pozisaun iha struktura (`Alokasaun`), historia mudansa, aprovasaun
 - `user` — uzuáriu no área ida-ida (`UserScope`)
 - `notif` — notifikasaun
@@ -51,7 +55,7 @@ python manage.py runserver
 
 `seed_inisial` kria user `admin`. Se `ADMIN_PASSWORD` mamuk iha `.env`, password aleatóriu sei hatudu ida de'it.
 
-Tuir ida ne'e, tama ho `admin` no rejista postu/suku/aldeia, departamentu no organizasaun, depois kria uzuáriu ba peran ida-ida.
+Tuir ida ne'e, tama ho `admin` no rejista postu/suku/aldeia, departamentu no orgaun/movimentu, depois kria uzuáriu ba peran ida-ida.
 
 Database default: SQLite. Ba MySQL, define `DB_ENGINE=mysql` no variavel `DB_*` iha `.env` (instala `mysqlclient`).
 

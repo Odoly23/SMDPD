@@ -23,7 +23,7 @@
 			{% for o in por_org %}
 			<div class="col-6 col-md-2 text-center"><span class="stat-label">Total {{ o.name }}</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?organizasaun={{ o.id }}">{{ o.total }}</a></h4></div>
 			{% endfor %}
-			<div class="col-6 col-md-2 text-center"><span class="stat-label">Laiha Organizasaun</span><h4 class="stat-number">{{ tot.sem_org }}</h4></div>
+			<div class="col-6 col-md-2 text-center"><span class="stat-label">Laiha Orgaun/Movimentu</span><h4 class="stat-number">{{ tot.sem_org }}</h4></div>
 		</div>
 	</div>
 </div>
@@ -82,7 +82,7 @@
 	<div class="col-sm-6 col-lg-4">
 		<div class="card"><div class="card-header bg-primary">Pozisaun Ativu Iha Struktura</div><div class="card-body">
 			<table class="table table-sm"><thead><tr><th>Nivel</th><th>Total</th></tr></thead><tbody>
-				{% for r in por_nivel %}<tr><td><a href="{% url 'struktura-list' r.name|lower %}">{{ r.name }}</a></td><td>{{ r.total }}</td></tr>{% endfor %}
+				{% for r in por_nivel %}<tr><td><a href="{% url 'struktura-list' r.slug %}">{{ r.name }}</a></td><td>{{ r.total }}</td></tr>{% endfor %}
 			</tbody></table>
 		</div></div>
 	</div>

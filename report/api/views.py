@@ -52,7 +52,7 @@ class APIAldeia(BaseAPI):
 
 
 class APIOrganizasaun(BaseAPI):
-	field = 'organizasaun__code'
+	field = 'organizasaun__name'
 
 
 class APIStatus(BaseAPI):

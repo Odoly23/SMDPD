@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -6,10 +8,35 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from config import roles
 from config.decorators import allowed_users
-from config.user_utils import c_user_group, alokasaun_scope, can_aloka
+from config.user_utils import c_user_group, alokasaun_scope, can_aloka, membro_scope
+from custom.models import Organizasaun
 from membro.forms import AlokasaunForm
 from membro.models import Alokasaun, NIVEL, NIVEL_SLUG
 from membro.utils import log_historia
+
+
+@login_required
+@allowed_users(allowed_roles=roles.VIEW_ROLES)
+def StrukturaPainel(request):
+	"""Painel Struktura PLP: total membru ba entidade (Orgaun/Movimentu no Struktura) no ba nivel struktura."""
+	group = c_user_group(request.user)
+	membros = membro_scope(request.user)
+	aloks = alokasaun_scope(request.user).filter(ativu='Sim')
+	total_org = membros.filter(organizasaun__isnull=False).distinct().count()
+	total_str = aloks.exclude(nivel='Organizasaun').values('membro_id').distinct().count()
+	por_org = {r['organizasaun_id']: r['n'] for r in membros.filter(organizasaun__isnull=False).order_by().values('organizasaun_id').annotate(n=Count('id', distinct=True))}
+	orgaun = [{'obj': o, 'total': por_org.get(o.pk, 0)} for o in Organizasaun.objects.filter(is_active=True)]
+	por_nivel = {r['nivel']: r['n'] for r in aloks.order_by().values('nivel').annotate(n=Count('membro_id', distinct=True))}
+	struktura = [{'slug': n.lower(), 'name': label, 'total': por_nivel.get(n, 0)} for n, label in NIVEL if n != 'Organizasaun']
+	page = Paginator(orgaun, 10).get_page(request.GET.get('page'))
+	context = {
+		'group': group, 'page': page, 'struktura': struktura, 'total_org': total_org, 'total_str': total_str,
+		'total_orgaun': sum(r['total'] for r in page.paginator.object_list), 'total_struktura': total_str,
+		'total_entidade': total_org + total_str, 'total_membru': membros.count(),
+		'can_add': group in roles.INPUT_ROLES,
+		'title': 'Painel Struktura', 'legend': 'Painel Struktura'
+	}
+	return render(request, 'membro/struktura_painel.html', context)
 
 
 def _label(alokasaun):

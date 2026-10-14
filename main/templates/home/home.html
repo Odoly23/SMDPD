@@ -5,7 +5,7 @@
 	<div class="alert alert-warning">Konta ida ne'e seidauk iha peran. Kontaktu Admin.</div>
 {% elif group == 'admin' %}
 	<div class="text-center mb-3 mt-1"><h3 class="text-muted">BAINHIRA, {{ user.first_name|default:user.username|upper }}</h3></div>
-	<p class="text-center">Admin jere uzuáriu, data master (munisipiu, postu, suku, aldeia, departamentu, organizasaun) no hare historia mudansa data.</p>
+	<p class="text-center">Admin jere uzuáriu, data master (munisipiu, postu, suku, aldeia, departamentu, orgaun/movimentu) no hare historia mudansa data.</p>
 	<div class="text-center">
 		<a class="btn btn-primary" href="{% url 'user-list' %}"><i class="fa fa-user-circle"></i> Uzuáriu</a>
 		<a class="btn btn-primary" href="{% url 'master-list' 'departamentu' %}"><i class="fa fa-briefcase"></i> Departamentu</a>

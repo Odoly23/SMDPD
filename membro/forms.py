@@ -121,6 +121,8 @@ class MembroForm(ChainMixin, forms.ModelForm):
 		fixed = {}
 		if group in roles.MUN_ROLES and scope.municipality_id:
 			fixed = {'municipality': scope.municipality_id}
+		elif group in roles.POSTU_ROLES and scope.post_id:
+			fixed = {'municipality': scope.post.municipality_id, 'post': scope.post_id}
 		elif group in roles.SUKU_ROLES and scope.village_id:
 			v = scope.village
 			fixed = {'municipality': v.administrativepost.municipality_id, 'post': v.administrativepost_id, 'village': v.pk}
@@ -191,7 +193,6 @@ class MembroChoiceField(forms.ModelChoiceField):
 
 class AlokasaunForm(ChainMixin, forms.ModelForm):
 	membro = MembroChoiceField(label="Membru", queryset=Membro.objects.none())
-	post = forms.ModelChoiceField(label="Postu", queryset=AdministrativePost.objects.none(), required=False)
 	data_hahu = forms.DateField(label="Data Hahu", widget=DateInput())
 	data_termina = forms.DateField(label="Data Termina", widget=DateInput(), required=False)
 
@@ -211,6 +212,7 @@ class AlokasaunForm(ChainMixin, forms.ModelForm):
 		self.fields['departamentu'].queryset = Departamentu.objects.filter(is_active=True)
 		self.fields['organizasaun'].queryset = Organizasaun.objects.filter(is_active=True)
 		self.fields['municipality'].queryset = Municipality.objects.all()
+		self.fields['post'].required = False
 		if self.group == roles.PRES_DEP:
 			scope = c_user_scope(user)
 			self.fields['nivel'].choices = [('Departamentu', 'Departamentu')]
@@ -246,8 +248,8 @@ class AlokasaunForm(ChainMixin, forms.ModelForm):
 				css_class='form-row'
 			),
 			Row(
-				Column('municipality', css_class='form-group col-md-3 mb-0 unit-munisipiu unit-suku unit-aldeia'),
-				Column('post', css_class='form-group col-md-3 mb-0 unit-suku unit-aldeia'),
+				Column('municipality', css_class='form-group col-md-3 mb-0 unit-munisipiu unit-postu unit-suku unit-aldeia'),
+				Column('post', css_class='form-group col-md-3 mb-0 unit-postu unit-suku unit-aldeia'),
 				Column('village', css_class='form-group col-md-3 mb-0 unit-suku unit-aldeia'),
 				Column('aldeia', css_class='form-group col-md-3 mb-0 unit-aldeia'),
 				css_class='form-row'
@@ -274,9 +276,9 @@ class AlokasaunForm(ChainMixin, forms.ModelForm):
 		if pozisaun not in POZISAUN_POR_NIVEL[nivel]:
 			self.add_error('pozisaun', f'Pozisaun {pozisaun} la existe iha nivel {nivel}.')
 			return cleaned
-		dep, mun = cleaned.get('departamentu'), cleaned.get('municipality')
+		dep, mun, post = cleaned.get('departamentu'), cleaned.get('municipality'), cleaned.get('post')
 		village, aldeia, org = cleaned.get('village'), cleaned.get('aldeia'), cleaned.get('organizasaun')
-		unit = {'departamentu': None, 'municipality': None, 'village': None, 'aldeia': None, 'organizasaun': None}
+		unit = {'departamentu': None, 'municipality': None, 'post': None, 'village': None, 'aldeia': None, 'organizasaun': None}
 		if nivel == 'Departamentu':
 			if not dep:
 				self.add_error('departamentu', 'Departamentu tenke hili.')
@@ -287,6 +289,12 @@ class AlokasaunForm(ChainMixin, forms.ModelForm):
 			elif membro.municipality_id != mun.pk:
 				self.add_error('membro', 'Membru ne\'e la hela iha munisipiu ne\'e.')
 			unit['municipality'] = mun
+		elif nivel == 'Postu':
+			if not post:
+				self.add_error('post', 'Postu Administrativu tenke hili.')
+			elif membro.post_id != post.pk:
+				self.add_error('membro', 'Membru ne\'e la hela iha postu ne\'e.')
+			unit['post'] = post
 		elif nivel == 'Suku':
 			if not village:
 				self.add_error('village', 'Suku tenke hili.')
@@ -301,9 +309,9 @@ class AlokasaunForm(ChainMixin, forms.ModelForm):
 			unit['aldeia'] = aldeia
 		elif nivel == 'Organizasaun':
 			if not org:
-				self.add_error('organizasaun', 'Organizasaun tenke hili.')
+				self.add_error('organizasaun', 'Orgaun/Movimentu tenke hili.')
 			elif membro.organizasaun_id != org.pk:
-				self.add_error('membro', 'Membru ne\'e la tama organizasaun ne\'e.')
+				self.add_error('membro', 'Membru ne\'e la tama orgaun/movimentu ne\'e.')
 			unit['organizasaun'] = org
 		if self.group == roles.PRES_DEP and (nivel != 'Departamentu' or not unit['departamentu'] or unit['departamentu'].pk != self.fields['departamentu'].initial):
 			raise ValidationError('Ita bele aloka deit iha departamentu rasik.')
