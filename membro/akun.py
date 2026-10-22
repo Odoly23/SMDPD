@@ -121,7 +121,7 @@ def kria_login(membro, a):
 	user.set_password(password)
 	user.save()
 	user.groups.set([Group.objects.get_or_create(name=peran)[0]])
-	UserScope.objects.update_or_create(user=user, defaults={'membro': membro, 'troka_password': True, **scope_ba(a)})
+	UserScope.objects.update_or_create(user=user, defaults={'membro': membro, 'troka_password': True, **scope_ba(a)})  # nosec B105
 	return user, password
 
 

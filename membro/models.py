@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
 from config.models import HashedModel
-from config.upload_utils import upload_foto, validate_image_size
+from config.upload_utils import upload_foto, validate_image_size, validate_image_dimensions, private_storage
 from custom.models import Municipality, AdministrativePost, Village, Aldeia, Departamentu, Organizasaun
 
 SEXU = [('Mane', 'Mane'), ('Feto', 'Feto')]
@@ -43,8 +43,8 @@ class Membro(HashedModel):
 	nu_bi = models.CharField(max_length=30, null=True, blank=True, verbose_name="Nu. BI")
 	telefone = models.CharField(max_length=20, null=True, blank=True, verbose_name="Nu. Telemovel",
 			validators=[RegexValidator(r'^[0-9+\- ]{7,20}$', 'Nu. telemovel la loos.')])
-	image = models.ImageField(upload_to=upload_foto, null=True, blank=True, verbose_name="Fotu",
-			validators=[validate_image_size])
+	image = models.ImageField(upload_to=upload_foto, storage=private_storage, null=True, blank=True, verbose_name="Fotu",
+			validators=[validate_image_size, validate_image_dimensions])
 	municipality = models.ForeignKey(Municipality, on_delete=models.PROTECT, null=True, verbose_name="Munisipiu Rezidensia")
 	post = models.ForeignKey(AdministrativePost, on_delete=models.PROTECT, null=True, verbose_name="Postu")
 	village = models.ForeignKey(Village, on_delete=models.PROTECT, null=True, verbose_name="Suku")

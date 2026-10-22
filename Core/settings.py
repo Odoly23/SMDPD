@@ -8,15 +8,17 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+# Seguru tuir defeitu: DEBUG la'ós (tenke define DJANGO_DEBUG=True iha .env ba dezenvolvimentu)
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 if not SECRET_KEY:
 	if DEBUG:
-		SECRET_KEY = 'dev-only-key-troka-iha-produksaun'
+		SECRET_KEY = 'dev-only-key-troka-iha-produksaun'  # nosec B105 - deit ba DEBUG/dezenvolvimentu
 	else:
-		raise RuntimeError('DJANGO_SECRET_KEY tenke iha se DEBUG=False')
+		raise RuntimeError('DJANGO_SECRET_KEY tenke iha se DEBUG=False. Ba dezenvolvimentu: kopia .env.example ba .env (DJANGO_DEBUG=True).')
 
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') if h.strip()]
 
 INSTALLED_APPS = [
@@ -108,8 +110,17 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# MEDIA = file públiku (logo orgaun). Fotu membru rai iha PRIVATE_MEDIA_ROOT (la públiku): hatudu liu husi view ho login no área.
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'private_media')
+
+# Limite upload no form (proteje husi file boot liu / field barak liu)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024
+FILE_UPLOAD_PERMISSIONS = 0o640
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o750
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

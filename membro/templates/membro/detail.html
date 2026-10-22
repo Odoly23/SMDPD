@@ -33,7 +33,7 @@
 				{% endif %}
 				<div class="row">
 					<div class="col-md-3 text-center mb-3">
-						{% if obj.image %}<img class="foto-membro" src="{{ obj.image.url }}" alt="{{ obj.nome }}">{% else %}<i class="fa fa-user-circle fa-5x text-gray"></i>{% endif %}
+						{% if obj.image %}<img class="foto-membro" src="{% url 'membro-fotu' hashid %}" alt="{{ obj.nome }}">{% else %}<i class="fa fa-user-circle fa-5x text-gray"></i>{% endif %}
 						<h5 class="mt-2">{{ obj.nome }}</h5>
 						<span class="badge badge-{{ obj.status|lower }}">{{ obj.status }}</span>
 						<span class="badge badge-{{ obj.aprovasaun|lower }}">{{ obj.aprovasaun }}</span>

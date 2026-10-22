@@ -70,6 +70,10 @@ python manage.py import_see /dalan/Database_SEE-PLP_2026.xlsx             # memb
 
 Aplikasaun *authenticator* ho kódigu manuál (la iha QR): tau xave ne'ebé hatudu iha pájina 2FA. Se uza proxy/nginx ho HTTPS, define `DJANGO_TRUST_PROXY=True` atu IP loos no HTTPS hetan rekoñese. Verifika konfigurasaun ho `DJANGO_DEBUG=False python manage.py check --deploy`.
 
+## Seguransa kódigu
+
+Audit seguransa tomak (otorizasaun hotu-hotu URL, XSS, CSV injection, upload, fotu privadu, redirect, CSRF, konfigurasaun) iha `config/tests_audit.py`, `bandit`/`pip-audit` iha CI. Detallu, lista produksaun no limitasaun: **[SECURITY.md](SECURITY.md)**. `DEBUG` defeitu **la aktivu**: ba dezenvolvimentu kopia `.env.example` ba `.env` (`DJANGO_DEBUG=True`). Fotu membru rai iha `private_media/` (la públiku) no hatudu liu view ho login no área.
+
 ## Fitur seluk
 
 - **Kartaun Membru** (ID card imprime), **Importa CSV** (verifika uluk, rai tudu ka laiha), esporta CSV.
@@ -114,7 +118,7 @@ python manage.py import_wilayah             # seguru atu la'o dala barak (tuir k
 ```bash
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env          # troka DJANGO_SECRET_KEY
+cp .env.example .env          # DJANGO_DEBUG=True (dev); iha produksaun: DEBUG=False + DJANGO_SECRET_KEY
 python manage.py migrate
 python manage.py seed_inisial # peran, wilayah Timor-Leste, orgaun/movimentu, user admin
 python manage.py runserver

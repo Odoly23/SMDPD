@@ -21,7 +21,9 @@ def NotifLoke(request, pk):
 	obj = get_object_or_404(Notifikasaun, pk=pk, user=request.user)
 	obj.is_read = True
 	obj.save(update_fields=['is_read'])
-	return redirect(obj.url if obj.url.startswith('/') else 'notif-list')
+	if obj.url.startswith('/') and not obj.url.startswith('//') and '\\' not in obj.url:
+		return redirect(obj.url)
+	return redirect('notif-list')
 
 
 @login_required

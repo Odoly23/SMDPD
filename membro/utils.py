@@ -1,4 +1,5 @@
 import csv
+from config.utils import CsvAman
 from django.db.models import Q
 from django.http import HttpResponse
 from membro.models import Membro, Historia
@@ -61,7 +62,7 @@ def export_csv(qs, filename='membru.csv'):
 	response = HttpResponse(content_type='text/csv; charset=utf-8')
 	response['Content-Disposition'] = f'attachment; filename="{filename}"'
 	response.write('﻿')
-	w = csv.writer(response)
+	w = CsvAman(response)
 	w.writerow(['Nu. Eleitoral', 'Naran', 'Sexu', 'Data Moris', 'Idade', 'Estado Civil', 'Nu. BI', 'Nu. Telemovel',
 		'Munisipiu', 'Postu', 'Suku', 'Aldeia', 'Hela Fatin', 'Orgaun/Movimentu', 'Data Hakbit', 'Status', 'Aprovasaun',
 		'Email', 'Nivel Estudu', 'Area Estudu', 'Servisu Fatin', 'Munisipiu Orijin'])

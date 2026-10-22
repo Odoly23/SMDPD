@@ -1,6 +1,7 @@
 import csv
 import datetime
 from decimal import Decimal
+from config.utils import CsvAman
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -43,7 +44,7 @@ def KuotaList(request):
 		response = HttpResponse(content_type='text/csv; charset=utf-8')
 		response['Content-Disposition'] = f'attachment; filename="kuota_{tinan}.csv"'
 		response.write('﻿')
-		w = csv.writer(response)
+		w = CsvAman(response)
 		w.writerow(['Data Selu', 'Naran', 'Nu. Eleitoral', 'Tinan', 'Montante (USD)', 'Métodu', 'Nota'])
 		for k in qs:
 			w.writerow([k.data_selu, k.membro.nome, k.membro.nu_eleitoral or '', k.tinan, k.montante, k.metodu, k.nota])
@@ -133,7 +134,7 @@ def KuotaRezumu(request):
 		response = HttpResponse(content_type='text/csv; charset=utf-8')
 		response['Content-Disposition'] = f'attachment; filename="kuota_seidauk_selu_{tinan}.csv"'
 		response.write('﻿')
-		w = csv.writer(response)
+		w = CsvAman(response)
 		w.writerow(['Naran', 'Nu. Eleitoral', 'Telemovel', 'Munisipiu', 'Orgaun/Movimentu'])
 		for m in seidauk.select_related('municipality', 'organizasaun'):
 			w.writerow([m.nome, m.nu_eleitoral or '', m.telefone or '', m.municipality or '', m.organizasaun or ''])

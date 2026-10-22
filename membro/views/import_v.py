@@ -1,6 +1,7 @@
 import csv
 import datetime
 import io
+from config.utils import CsvAman
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -51,7 +52,7 @@ def MembroImportTemplate(request):
 	response = HttpResponse(content_type='text/csv; charset=utf-8')
 	response['Content-Disposition'] = 'attachment; filename="modelu_importa_membru.csv"'
 	response.write('﻿')
-	w = csv.writer(response)
+	w = CsvAman(response)
 	w.writerow(KOLUNA)
 	w.writerow(['Joao da Silva', 'Mane', '1990-05-20', 'EL-000123', 'AIL-A0001', 'Aileu', 'Casado/a', '', '77123456', 'Rua A', '', '2020-01-15', 'Ativu'])
 	return response

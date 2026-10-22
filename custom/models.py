@@ -1,6 +1,6 @@
 from django.db import models
 from config.models import HashedModel
-from config.upload_utils import upload_logo, validate_image_size
+from config.upload_utils import upload_logo, validate_image_size, validate_image_dimensions
 
 
 class Municipality(models.Model):
@@ -77,7 +77,7 @@ class Organizasaun(HashedModel):
 	sede = models.CharField(max_length=200, blank=True, default='', verbose_name="Sede / Enderesu")
 	code = models.CharField(max_length=10, verbose_name="Kódigu")
 	name = models.CharField(max_length=100, verbose_name="Naran")
-	logo = models.ImageField(upload_to=upload_logo, null=True, blank=True, verbose_name="Logo", validators=[validate_image_size])
+	logo = models.ImageField(upload_to=upload_logo, null=True, blank=True, verbose_name="Logo", validators=[validate_image_size, validate_image_dimensions])
 	is_active = models.BooleanField(default=True, verbose_name="Ativu")
 
 	class Meta:

@@ -167,3 +167,25 @@ def MembroKartaun(request, hashid):
 		'title': 'Kartaun Membru', 'legend': 'Kartaun Membru'
 	}
 	return render(request, 'membro/kartaun.html', context)
+
+
+@login_required
+@allowed_users(allowed_roles=roles.VIEW_ROLES)
+def MembroFotu(request, hashid):
+	"""Fotu membru (storage privadu): deit ba uzuáriu ne'ebé bele hare membru ne'e (área/peran)."""
+	import mimetypes
+	from django.http import FileResponse, Http404
+	obj = get_object_or_404(membro_scope(request.user), hashed=hashid)
+	if not obj.image:
+		raise Http404
+	try:
+		arkivu = obj.image.open('rb')
+	except (FileNotFoundError, ValueError):
+		raise Http404
+	tipu = mimetypes.guess_type(obj.image.name)[0] or 'application/octet-stream'
+	if tipu not in ('image/jpeg', 'image/png'):
+		tipu = 'application/octet-stream'
+	response = FileResponse(arkivu, content_type=tipu)
+	response['Content-Disposition'] = 'inline'
+	response['Cache-Control'] = 'private, no-store'
+	return response

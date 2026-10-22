@@ -1,3 +1,4 @@
+from config.utils import CsvAman
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.shortcuts import render
@@ -99,7 +100,7 @@ def Rekursu(request):
 		response = HttpResponse(content_type='text/csv; charset=utf-8')
 		response['Content-Disposition'] = 'attachment; filename="rekursu_intelektual.csv"'
 		response.write('﻿')
-		w = csv.writer(response)
+		w = CsvAman(response)
 		w.writerow(REKURSU_KOLUNA)
 		for i, m in enumerate(qs[:REKURSU_LIMITE], start=1):
 			w.writerow([i, m.nome, m.area_estudu or '', m.nivel_edukasaun or '', m.esperensia or '', m.kontribuisaun or '',

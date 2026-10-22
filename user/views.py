@@ -95,7 +95,7 @@ def UserResetPassword(request, pk):
 	obj.set_password(password)
 	obj.is_active = True
 	obj.save()
-	UserScope.objects.update_or_create(user=obj, defaults={'troka_password': True})
+	UserScope.objects.update_or_create(user=obj, defaults={'troka_password': True})  # nosec B105
 	LoginLog.objects.create(user=obj, username=obj.username, hasil='Reset', user_agent=f'husi Admin {request.user.username}')
 	context = {'group': c_user_group(request.user), 'akun': obj, 'password': password, 'title': 'Password Foun', 'legend': 'Password Foun'}
 	return render(request, 'user/reset.html', context)

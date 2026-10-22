@@ -135,7 +135,7 @@ def sai_hotu(request):
 			if s.get_decoded().get('_auth_user_id') == uid:
 				s.delete()
 				n += 1
-		except Exception:
+		except Exception:  # nosec B112 - sesaun korrompidu: haluha, la afeta sesaun seluk
 			continue
 	rai_log(request, request.user.username, 'Sai hotu', user=request.user)
 	logout(request)

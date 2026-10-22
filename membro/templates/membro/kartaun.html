@@ -18,7 +18,7 @@
 			{% if logo_org %}<img src="{{ logo_org }}" alt="{{ obj.organizasaun }}" class="kartaun-org">{% endif %}
 		</div>
 		<div class="kartaun-isi">
-			<div class="kartaun-foto">{% if obj.image %}<img src="{{ obj.image.url }}" alt="{{ obj.nome }}">{% else %}<i class="fa fa-user"></i>{% endif %}</div>
+			<div class="kartaun-foto">{% if obj.image %}<img src="{% url 'membro-fotu' hashid %}" alt="{{ obj.nome }}">{% else %}<i class="fa fa-user"></i>{% endif %}</div>
 			<div class="kartaun-data">
 				<h3>{{ obj.nome }}</h3>
 				<dl>

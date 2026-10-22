@@ -23,7 +23,7 @@
 								<td><span class="badge badge-{{ obj.ativu|lower }}">{{ obj.ativu }}</span></td>
 								<td>
 									{% if obj.pode_login %}
-									<form class="d-inline" method="post" action="{% url 'login-kria' obj.pk %}" data-confirm="{% if obj.ada_login %}Reset password no atualiza konta login ba {{ obj.membro.nome|escapejs }}?{% else %}Kria konta login ba {{ obj.membro.nome|escapejs }}?{% endif %}">{% csrf_token %}
+									<form class="d-inline" method="post" action="{% url 'login-kria' obj.pk %}" data-confirm="{% if obj.ada_login %}Reset password no atualiza konta login ba {{ obj.membro.nome }}?{% else %}Kria konta login ba {{ obj.membro.nome }}?{% endif %}">{% csrf_token %}
 										<button class="btn btn-sm {% if obj.ada_login %}btn-outline-primary{% else %}btn-primary{% endif %}" type="submit" title="{% if obj.ada_login %}Reset password{% else %}Kria login{% endif %}"><i class="fa fa-key"></i> {% if obj.ada_login %}Reset{% else %}Kria{% endif %}</button>
 									</form>
 									{% elif obj.ada_login %}<span class="badge badge-sim">Iha login</span>{% else %}<span class="text-gray">-</span>{% endif %}

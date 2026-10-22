@@ -23,8 +23,8 @@
 								<td>
 									<a class="btn btn-sm btn-success" href="{% url 'user-update' o.obj.pk %}" title="Edita"><i class="fa fa-edit"></i></a>
 									{% if o.obj.pk != user.pk %}
-									<form class="d-inline" method="post" action="{% url 'user-reset' o.obj.pk %}" data-confirm="Reset password {{ o.obj.username|escapejs }}? Password foun sei hatudu dala ida deit.">{% csrf_token %}<button class="btn btn-sm btn-outline-primary" type="submit" title="Reset password"><i class="fa fa-key"></i></button></form>
-									{% if o.dua_faktor %}<form class="d-inline" method="post" action="{% url 'user-reset-2fa' o.obj.pk %}" data-confirm="Hamoos 2FA {{ o.obj.username|escapejs }}?">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit" title="Reset 2FA"><i class="fa fa-shield"></i></button></form>{% endif %}
+									<form class="d-inline" method="post" action="{% url 'user-reset' o.obj.pk %}" data-confirm="Reset password {{ o.obj.username }}? Password foun sei hatudu dala ida deit.">{% csrf_token %}<button class="btn btn-sm btn-outline-primary" type="submit" title="Reset password"><i class="fa fa-key"></i></button></form>
+									{% if o.dua_faktor %}<form class="d-inline" method="post" action="{% url 'user-reset-2fa' o.obj.pk %}" data-confirm="Hamoos 2FA {{ o.obj.username }}?">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit" title="Reset 2FA"><i class="fa fa-shield"></i></button></form>{% endif %}
 									{% endif %}
 								</td>
 							</tr>

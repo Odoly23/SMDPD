@@ -1,4 +1,5 @@
 import csv
+from config.utils import CsvAman
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -173,7 +174,7 @@ def PrezensaCsv(request, pk):
 	response = HttpResponse(content_type='text/csv; charset=utf-8')
 	response['Content-Disposition'] = f'attachment; filename="prezensa_{ev.pk}.csv"'
 	response.write('﻿')
-	w = csv.writer(response)
+	w = CsvAman(response)
 	w.writerow([ev.titulu, ev.data_hahu.strftime('%d/%m/%Y %H:%M'), ev.fatin])
 	w.writerow(['Nu.', 'Naran', 'Nu. Eleitoral', 'Estadu', 'Nota'])
 	for i, p in enumerate(ev.prezensa.select_related('membro').order_by('membro__nome'), start=1):

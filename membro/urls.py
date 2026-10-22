@@ -19,6 +19,7 @@ urlpatterns = [
 	path('alokasaun/<int:pk>/login/', views.LoginKria, name='login-kria'),
 	path('historia/', views.HistoriaList, name='historia-list'),
 	path('<str:hashid>/', views.MembroDetail, name='membro-detail'),
+	path('<str:hashid>/fotu/', views.MembroFotu, name='membro-fotu'),
 	path('<str:hashid>/kartaun/', views.MembroKartaun, name='membro-kartaun'),
 	path('<str:hashid>/edit/', views.MembroUpdate, name='membro-update'),
 	path('<str:hashid>/del/', views.MembroDel, name='membro-del'),

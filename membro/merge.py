@@ -74,7 +74,7 @@ def hamutuk(keep, drop, user):
 			from django.core.files.storage import default_storage
 			try:
 				default_storage.delete(drop_image)
-			except Exception:
+			except Exception:  # nosec B110 - la bele hamoos file fotu: la impede hamutuk
 				pass
 		Historia.objects.create(membro=keep, membro_nome=str(keep), aksaun='Hamutuk', user=user,
 			detalhe=f'Hamutuk ho {nome_drop}. Kampu foti: {", ".join(rez["kampu"]) or "-"}; pozisaun: {rez["pozisaun"]}; prezensa: {rez["prezensa"]}; kuota: {rez["kuota"]}')
