@@ -25,12 +25,15 @@ class BaseData(TestCase):
 		cls.dep = Departamentu.objects.create(code='FIN', name='Finansas')
 		cls.dep2 = Departamentu.objects.create(code='INF', name='Informasaun')
 		cls.org = Organizasaun.objects.create(code='OJP', name='Organizasaun Juventude')
+		cls.org2 = Organizasaun.objects.create(code='OFP', name='Organizasaun Feto')
+		cls.dep_org = Departamentu.objects.create(code='FIN', name='Finansas', organizasaun=cls.org)
 		cls.users = {}
 		scopes = {
 			roles.ADMIN: {}, roles.PRESIDENTE: {}, roles.SEKRETARIA: {},
 			roles.PRES_DEP: {'departamentu': cls.dep}, roles.KOORD_DEP: {'departamentu': cls.dep},
 			roles.KOORD_MUN: {'municipality': cls.mun1}, roles.KOORD_POSTU: {'post': cls.post1}, roles.KOORD_SUKU: {'village': cls.vil1},
-			roles.KOORD_ALDEIA: {'aldeia': cls.ald1}, roles.KOORD_ORG: {'organizasaun': cls.org},
+			roles.KOORD_ALDEIA: {'aldeia': cls.ald1}, roles.KOORD_ORG: {'organizasaun': cls.org}, roles.PRES_ORG: {'organizasaun': cls.org},
+			roles.VICE_ORG: {'organizasaun': cls.org}, roles.SEKR_ORG: {'organizasaun': cls.org},
 		}
 		for role, scope in scopes.items():
 			u = User.objects.create_user(role, password='x-Senha-123', first_name=role)

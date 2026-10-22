@@ -10,8 +10,10 @@ from config import roles
 from config.decorators import allowed_users
 from config.user_utils import c_user_group, alokasaun_scope, can_aloka, membro_scope
 from custom.models import Organizasaun
+from user.models import UserScope
 from membro.forms import AlokasaunForm
 from membro.models import Alokasaun, NIVEL, NIVEL_SLUG
+from membro.akun import pode_kria_login, peran_login, sinkroniza_login
 from membro.utils import log_historia
 
 
@@ -53,8 +55,13 @@ def StrukturaList(request, nivel):
 	group = c_user_group(request.user)
 	objects = sorted(
 		alokasaun_scope(request.user).filter(nivel=nama).select_related(
-			'membro', 'departamentu', 'municipality', 'village', 'aldeia', 'organizasaun'),
+			'membro', 'departamentu__organizasaun', 'municipality', 'post', 'village', 'aldeia', 'organizasaun'),
 		key=lambda a: (a.ativu != 'Sim', str(a.unit() or ''), a.rank()))
+	logins = {s.membro_id for s in UserScope.objects.filter(membro_id__in=[a.membro_id for a in objects])}
+	for a in objects:
+		a.pode = can_aloka(request.user, a.nivel, a.departamentu_id, a.organizasaun_id)
+		a.pode_login = bool(peran_login(a)) and pode_kria_login(request.user, a)
+		a.ada_login = a.membro_id in logins
 	label = dict(NIVEL)[nama]
 	context = {
 		'group': group, 'objects': objects, 'nivel': nivel, 'nivel_label': label, 'can_aloka': group in roles.ALOKA_ROLES,
@@ -86,10 +93,11 @@ def AlokasaunAdd(request):
 			instance.user = request.user
 			instance.save()
 			log_historia(request.user, instance.membro, 'Aloka', _label(instance))
+			sinkroniza_login(instance.membro)
 			messages.success(request, 'Pozisaun aloka ona.')
 			return redirect('struktura-list', instance.nivel.lower())
 	else:
-		form = AlokasaunForm(user=request.user, initial={'nivel': NIVEL_SLUG[nivel]})
+		form = AlokasaunForm(user=request.user, initial={'nivel': NIVEL_SLUG[nivel]} if group != roles.PRES_ORG else {})
 	return render(request, 'membro/alokasaun_form.html', _form_context(form, group, nivel, 'Aloka Pozisaun'))
 
 
@@ -98,7 +106,7 @@ def AlokasaunAdd(request):
 def AlokasaunUpdate(request, pk):
 	group = c_user_group(request.user)
 	obj = get_object_or_404(Alokasaun, pk=pk)
-	if not can_aloka(request.user, obj.nivel, obj.departamentu_id):
+	if not can_aloka(request.user, obj.nivel, obj.departamentu_id, obj.organizasaun_id):
 		return render(request, 'home/403.html', status=403)
 	if request.method == 'POST':
 		form = AlokasaunForm(request.POST, instance=obj, user=request.user)
@@ -108,6 +116,7 @@ def AlokasaunUpdate(request, pk):
 			instance.user = request.user
 			instance.save()
 			log_historia(request.user, instance.membro, 'Edita Pozisaun', f'{_label(instance)}, ativu: {instance.ativu}')
+			sinkroniza_login(instance.membro)
 			messages.success(request, 'Pozisaun atualiza ona.')
 			return redirect('struktura-list', instance.nivel.lower())
 	else:
@@ -120,10 +129,34 @@ def AlokasaunUpdate(request, pk):
 @require_POST
 def AlokasaunDel(request, pk):
 	obj = get_object_or_404(Alokasaun, pk=pk)
-	if not can_aloka(request.user, obj.nivel, obj.departamentu_id):
+	if not can_aloka(request.user, obj.nivel, obj.departamentu_id, obj.organizasaun_id):
 		return render(request, 'home/403.html', status=403)
 	nivel = obj.nivel.lower()
 	log_historia(request.user, obj.membro, 'Hamoos Pozisaun', _label(obj))
+	membro = obj.membro
 	obj.delete()
+	sinkroniza_login(membro)
 	messages.warning(request, 'Hamoos ho Susesu!.')
 	return redirect('struktura-list', nivel)
+
+
+@login_required
+@allowed_users(allowed_roles=roles.ALOKA_ROLES)
+@require_POST
+def LoginKria(request, pk):
+	"""Kria ka reset konta login ba membru ne'ebé iha pozisaun ne'ebé bele login. Password hatudu dala ida deit."""
+	from membro.akun import kria_login
+	a = get_object_or_404(Alokasaun.objects.select_related('membro', 'departamentu__organizasaun'), pk=pk)
+	if not pode_kria_login(request.user, a):
+		return render(request, 'home/403.html', status=403)
+	if a.membro.aprovasaun != 'Aprovadu' or a.membro.status != 'Ativu':
+		messages.error(request, 'Membru tenke aprovadu no ativu atu hetan login.')
+		return redirect('struktura-list', a.nivel.lower())
+	user, password = kria_login(a.membro, a)
+	log_historia(request.user, a.membro, 'Kria Login', f'Konta {user.username} ({peran_login(a)}) iha {_label(a)}')
+	context = {
+		'group': c_user_group(request.user), 'membro': a.membro, 'alokasaun': a, 'akun': user, 'password': password,
+		'peran': dict(roles.ROLE_LABELS).get(peran_login(a)), 'back_url': f'/membro/struktura/{a.nivel.lower()}/',
+		'title': 'Konta Login', 'legend': 'Konta Login'
+	}
+	return render(request, 'membro/login_kria.html', context)

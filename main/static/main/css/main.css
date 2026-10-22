@@ -58,3 +58,45 @@ canvas { max-width: 100%; }
 	body { padding-top: 0; }
 	.main-content { box-shadow: none; padding: 0; }
 }
+
+.kredensial { font-size: 1.05rem; color: #027a0f; background: #e8fbea; padding: .25rem .5rem; user-select: all; }
+
+/* ---- UX: botaun fila ba leten, modal, alerta ---- */
+#btn-sai-leten { position: fixed; right: 16px; bottom: 16px; width: 42px; height: 42px; border-radius: 50%; border: 2px solid #f9d71c;
+	background: #04d419; color: #fff; display: none; align-items: center; justify-content: center; z-index: 1030; box-shadow: 0 2px 8px rgba(0,0,0,.25); cursor: pointer; }
+#btn-sai-leten.hatudu { display: flex; }
+.alert .close { padding: .35rem .75rem; }
+.modal-content { border-radius: 8px; border: 0; }
+.modal-header { border-bottom: 2px solid #f9d71c; }
+
+/* ---- Tabela vira kartu iha ekran ki'ik (class .table-stack + data-label iha <td>) ---- */
+@media (max-width: 767px) {
+	.table-stack thead { display: none; }
+	.table-stack, .table-stack tbody, .table-stack tr { display: block; width: 100%; }
+	.table-stack tr { border: 1px solid #e3e9e5; border-left: 4px solid #04d419; border-radius: 6px; margin-bottom: 10px; padding: 6px 10px; background: #fff; }
+	.table-stack td { display: flex !important; justify-content: space-between; align-items: center; gap: 10px; border: 0 !important; padding: 4px 0 !important; text-align: right; }
+	.table-stack td::before { content: attr(data-label); font-weight: 600; color: #777; font-size: .75rem; text-transform: uppercase; text-align: left; flex: 0 0 38%; }
+	.table-stack td.d-none { display: flex !important; }
+	.table-stack td.no-label::before { content: none; }
+	.table-stack td.aksaun { justify-content: flex-end; }
+}
+
+/* ---- Kartaun membru ---- */
+.kartaun-wrap { display: flex; justify-content: center; }
+.kartaun { width: 100%; max-width: 520px; border: 2px solid #04d419; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+.kartaun-topu { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #04d419; border-bottom: 3px solid #f9d71c; color: #fff; }
+.kartaun-topu img { width: 46px; height: 46px; border-radius: 50%; background: #fff; border: 2px solid #f9d71c; object-fit: contain; }
+.kartaun-titulu { flex: 1; line-height: 1.15; }
+.kartaun-titulu strong { display: block; font-size: .8rem; letter-spacing: .04em; }
+.kartaun-titulu span { font-size: .72rem; opacity: .95; }
+.kartaun-isi { display: flex; gap: 14px; padding: 14px; }
+.kartaun-foto { flex: 0 0 105px; height: 130px; border: 1px solid #ddd; background: #f4f6f5; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #bbb; overflow: hidden; }
+.kartaun-foto img { width: 100%; height: 100%; object-fit: cover; }
+.kartaun-data { flex: 1; min-width: 0; }
+.kartaun-data h3 { font-size: 1.05rem; margin-bottom: 6px; color: #027a0f; text-transform: uppercase; word-break: break-word; }
+.kartaun-data dl { margin: 0; font-size: .78rem; }
+.kartaun-data dt { float: left; clear: left; width: 38%; color: #777; font-weight: 500; }
+.kartaun-data dd { margin-left: 40%; margin-bottom: 2px; font-weight: 600; word-break: break-word; }
+.kartaun-rodape { padding: 6px 14px; background: #f0f6f2; border-top: 2px solid #f9d71c; font-size: .72rem; color: #555; text-align: center; }
+@media (max-width: 420px) { .kartaun-isi { flex-direction: column; align-items: center; } .kartaun-data { width: 100%; } }
+@media print { .kartaun { box-shadow: none; max-width: 100%; page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }

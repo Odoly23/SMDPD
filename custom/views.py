@@ -66,8 +66,9 @@ def _rows(tipu):
 		return ['Munisipiu', 'Postu', 'Suku', 'Naran Aldeia', 'Total Membru'], [
 			(o, [o.village.administrativepost.municipality, o.village.administrativepost, o.village, o.name, o.m]) for o in qs]
 	if tipu == 'departamentu':
-		qs = Departamentu.objects.annotate(m=Count('alokasaun', distinct=True))
-		return ['Kódigu', 'Naran', 'Ativu', 'Total Pozisaun'], [(o, [o.code, o.name, 'Sim' if o.is_active else 'Lae', o.m]) for o in qs]
+		qs = Departamentu.objects.select_related('organizasaun').annotate(m=Count('alokasaun', distinct=True))
+		return ['Orgaun/Movimentu', 'Kódigu', 'Naran', 'Ativu', 'Total Pozisaun'], [
+			(o, [o.organizasaun or 'PLP Nasionál', o.code, o.name, 'Sim' if o.is_active else 'Lae', o.m]) for o in qs]
 	qs = Organizasaun.objects.annotate(m=Count('membro'))
 	return ['Kódigu', 'Naran', 'Logo', 'Ativu', 'Total Membru'], [(o, [o.code, o.name, 'Iha' if o.logo else '-', 'Sim' if o.is_active else 'Lae', o.m]) for o in qs]
 

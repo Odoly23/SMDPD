@@ -1,0 +1,37 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% block crumbs %}
+<li class="breadcrumb-item"><a href="{% url 'membro-list' %}">Lista Membru</a></li>
+<li class="breadcrumb-item"><a href="{% url 'membro-detail' hashid %}">{{ obj.nome }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">Kartaun</li>
+{% endblock %}
+{% block content %}
+<div class="mb-3 no-print text-center">
+	<button class="btn btn-primary" type="button" onclick="window.print()"><i class="fa fa-print"></i> Imprime Kartaun</button>
+	<a class="btn btn-secondary" href="{% url 'membro-detail' hashid %}">Fila</a>
+</div>
+<div class="kartaun-wrap">
+	<div class="kartaun">
+		<div class="kartaun-topu">
+			<img src="{% static 'main/images/logo_plp.png' %}" alt="PLP">
+			<div class="kartaun-titulu"><strong>PARTIDU LIBERTASAUN POPULAR</strong><span>Kartaun Membru</span></div>
+			{% if logo_org %}<img src="{{ logo_org }}" alt="{{ obj.organizasaun }}" class="kartaun-org">{% endif %}
+		</div>
+		<div class="kartaun-isi">
+			<div class="kartaun-foto">{% if obj.image %}<img src="{{ obj.image.url }}" alt="{{ obj.nome }}">{% else %}<i class="fa fa-user"></i>{% endif %}</div>
+			<div class="kartaun-data">
+				<h3>{{ obj.nome }}</h3>
+				<dl>
+					<dt>Nu. Eleitoral</dt><dd>{{ obj.nu_eleitoral }}</dd>
+					<dt>Data Moris</dt><dd>{{ obj.date_of_birth|date:"d/m/Y" }}</dd>
+					<dt>Munisipiu</dt><dd>{{ obj.municipality }} · {{ obj.post }}</dd>
+					<dt>Suku/Aldeia</dt><dd>{{ obj.village }} · {{ obj.aldeia }}</dd>
+					{% if obj.organizasaun %}<dt>Orgaun/Movimentu</dt><dd>{{ obj.organizasaun.name }}</dd>{% endif %}
+					{% for a in alokasauns %}{% if a.pozisaun != 'Membru' %}<dt>Pozisaun</dt><dd>{{ a.pozisaun }} · {{ a.unit|default:"PLP Nasionál" }}</dd>{% endif %}{% endfor %}
+				</dl>
+			</div>
+		</div>
+		<div class="kartaun-rodape">Membru husi {{ obj.data_hakbit|date:"Y"|default:"—" }} · Status: {{ obj.status }}</div>
+	</div>
+</div>
+{% endblock %}

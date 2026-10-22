@@ -113,9 +113,17 @@ class CodeNameForm(MasterForm):
 
 
 class DepartamentuForm(CodeNameForm):
+	columns = ['organizasaun', 'code', 'name', 'is_active']
+
 	class Meta:
 		model = Departamentu
-		fields = ['code', 'name', 'is_active']
+		fields = ['organizasaun', 'code', 'name', 'is_active']
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.fields['organizasaun'].queryset = Organizasaun.objects.filter(is_active=True)
+		self.fields['organizasaun'].empty_label = '--- PLP Nasionál ---'
+		self.fields['organizasaun'].help_text = 'Husik mamuk ba departamentu iha Struktura Nasionál.'
 
 
 class OrganizasaunForm(CodeNameForm):

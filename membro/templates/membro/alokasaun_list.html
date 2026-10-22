@@ -9,7 +9,7 @@
 				<div class="table-responsive">
 					<table class="table table-sm datatable" width="100%">
 						<thead>
-							<tr><th>Nu.</th>{% if nivel != 'nasional' %}<th>Unidade</th>{% endif %}<th>Pozisaun</th><th>Naran</th><th>Data Hahu</th><th>Data Termina</th><th>Ativu</th>{% if can_aloka %}<th>#</th>{% endif %}</tr>
+							<tr><th>Nu.</th>{% if nivel != 'nasional' %}<th>Unidade</th>{% endif %}<th>Pozisaun</th><th>Naran</th><th>Data Hahu</th><th>Data Termina</th><th>Ativu</th><th>Login</th>{% if can_aloka %}<th class="no-print">#</th>{% endif %}</tr>
 						</thead>
 						<tbody>
 							{% for obj in objects %}
@@ -21,12 +21,21 @@
 								<td>{{ obj.data_hahu|date:"d/m/Y" }}</td>
 								<td>{{ obj.data_termina|date:"d/m/Y"|default:"-" }}</td>
 								<td><span class="badge badge-{{ obj.ativu|lower }}">{{ obj.ativu }}</span></td>
-								{% if can_aloka %}
 								<td>
+									{% if obj.pode_login %}
+									<form class="d-inline" method="post" action="{% url 'login-kria' obj.pk %}" data-confirm="{% if obj.ada_login %}Reset password no atualiza konta login ba {{ obj.membro.nome|escapejs }}?{% else %}Kria konta login ba {{ obj.membro.nome|escapejs }}?{% endif %}">{% csrf_token %}
+										<button class="btn btn-sm {% if obj.ada_login %}btn-outline-primary{% else %}btn-primary{% endif %}" type="submit" title="{% if obj.ada_login %}Reset password{% else %}Kria login{% endif %}"><i class="fa fa-key"></i> {% if obj.ada_login %}Reset{% else %}Kria{% endif %}</button>
+									</form>
+									{% elif obj.ada_login %}<span class="badge badge-sim">Iha login</span>{% else %}<span class="text-gray">-</span>{% endif %}
+								</td>
+								{% if can_aloka %}
+								<td class="no-print">
+									{% if obj.pode %}
 									<a class="btn btn-sm btn-success" href="{% url 'alokasaun-update' obj.pk %}" title="Edita"><i class="fa fa-edit"></i></a>
-									<form class="d-inline" method="post" action="{% url 'alokasaun-del' obj.pk %}" onsubmit="return confirm('Ita boot Hakarak Hamoos?');">{% csrf_token %}
+									<form class="d-inline" method="post" action="{% url 'alokasaun-del' obj.pk %}" data-confirm="Hamoos pozisaun ne'e?">{% csrf_token %}
 										<button class="btn btn-sm btn-danger" type="submit" title="Hamoos"><i class="fa fa-times"></i></button>
 									</form>
+									{% endif %}
 								</td>
 								{% endif %}
 							</tr>

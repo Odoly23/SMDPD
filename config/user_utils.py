@@ -71,17 +71,27 @@ def alokasaun_scope(user, qs=None):
 		if group in roles.ALDEIA_ROLES and scope.aldeia_id:
 			return qs.filter(nivel='Aldeia', aldeia_id=scope.aldeia_id)
 		if group in roles.ORG_ROLES and scope.organizasaun_id:
-			return qs.filter(nivel='Organizasaun', organizasaun_id=scope.organizasaun_id)
+			return qs.filter(
+				Q(nivel='Organizasaun', organizasaun_id=scope.organizasaun_id)
+				| Q(nivel='Departamentu', departamentu__organizasaun_id=scope.organizasaun_id))
 	return qs.none()
 
 
-def can_aloka(user, nivel=None, departamentu_id=None):
-	"""Presidente/Sekretaria Nasionál aloka iha nivel hotu; Presidente Departamentu deit iha nia departamentu rasik."""
+def can_aloka(user, nivel=None, departamentu_id=None, organizasaun_id=None):
+	"""Presidente/Sekretaria Nasionál aloka iha nivel hotu. Presidente Departamentu deit iha nia departamentu rasik.
+	Presidente Orgaun/Movimentu deit iha nia orgaun/movimentu rasik no departamentu sira husi orgaun ne'e."""
+	from custom.models import Departamentu
 	group = c_user_group(user)
 	if group in (roles.PRESIDENTE, roles.SEKRETARIA):
 		return True
+	scope = c_user_scope(user)
+	if not scope:
+		return False
 	if group == roles.PRES_DEP:
-		scope = c_user_scope(user)
-		return bool(scope and scope.departamentu_id and nivel == 'Departamentu' and departamentu_id == scope.departamentu_id)
+		return bool(scope.departamentu_id and nivel == 'Departamentu' and departamentu_id == scope.departamentu_id)
+	if group == roles.PRES_ORG and scope.organizasaun_id:
+		if nivel == 'Organizasaun':
+			return organizasaun_id == scope.organizasaun_id
+		if nivel == 'Departamentu' and departamentu_id:
+			return Departamentu.objects.filter(pk=departamentu_id, organizasaun_id=scope.organizasaun_id).exists()
 	return False
-

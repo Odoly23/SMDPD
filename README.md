@@ -9,7 +9,7 @@ Sistema Managemen Dadus Membru Partidu PLP (Partidu Libertasaun Popular). Aplika
 | **Nasionál** | Presidente, Vice 1–4, Sekretaria, Membru |
 | **Departamentu** (iha Estrutura Nasionál) | Presidente Departamentu, Koordenador, Vice 1–4, Membru |
 | **Munisipal**, **Postu Administrativu**, **Suku**, **Aldeia** | Koordenador, Vice 1–4, Sekretaria, Membru |
-| **Orgaun/Movimentu** | Koordenador, Membru |
+| **Orgaun/Movimentu** (ez. SEE) | Presidente, Vice 1–4, Sekretaria, Koordenador, Membru. Orgaun/movimentu mós bele iha **departamentu** rasik |
 
 Pozisaun hotu (liu Membru) ida de'it ba unidade ida ho estatutu ativu. Konfigurasaun iha `membro/models.py` (`POZISAUN_POR_NIVEL`).
 
@@ -23,13 +23,24 @@ Pozisaun hotu (liu Membru) ida de'it ba unidade ida ho estatutu ativu. Konfigura
 | Presidente Departamentu | Departamentu ida | Hare membru departamentu, aloka pozisaun iha departamentu rasik |
 | Koordenador Departamentu | Departamentu ida | Hare membru departamentu |
 | Koordenador Munisipal / Postu Administrativu / Suku / Aldeia | Área rasik | Input, edita no hare membru iha área rasik |
-| Koordenador Orgaun/Movimentu | Orgaun/Movimentu ida | Input, edita no hare membru orgaun/movimentu rasik |
+| Presidente Orgaun/Movimentu | Orgaun/Movimentu ida | Hare membru orgaun, aloka pozisaun iha orgaun no nia departamentu, kria login ba Vice/Sekretaria/Koordenador |
+| Sekretaria / Koordenador Orgaun/Movimentu | Orgaun/Movimentu ida | Input, edita no hare membru orgaun rasik |
+| Vice Orgaun/Movimentu | Orgaun/Movimentu ida | Hare membru orgaun rasik |
 
 Membru foun ka edita sei hetan estatutu *Pendente* to'o Presidente Nasionál aprova. Presidente simu notifikasaun, no koordenador simu notifikasaun bainhira aprovadu ka rejeitadu.
 
+## Login ba pozisaun (membru ordináriu la login)
+
+Membru ordináriu **la iha login**. Deit pozisaun ne'ebé iha ona peran bele hetan konta: Presidente/Sekretaria Nasionál, Presidente/Koordenador Departamentu, Koordenador Munisipal/Postu/Suku/Aldeia no Presidente/Vice/Sekretaria/Koordenador Orgaun/Movimentu. Iha **Struktura** → botaun **Kria** (login) bainhira membru aprovadu no ativu; username = nu. eleitoral, password aleatóriu hatudu dala ida deit. Konta sai ativu/la ativu automátiku tuir pozisaun (hamoos pozisaun ka membru falesidu → konta desativa). Presidente Orgaun la bele kria login ba Presidente Orgaun (Presidente Nasionál mak halo); deit Presidente Nasionál bele kria login nasionál.
+
+## Fitur seluk
+
+- **Kartaun Membru** (ID card imprime), **Importa CSV** (verifika uluk, rai tudu ka laiha), esporta CSV.
+- Menu Struktura hatudu deit nivel relevante ba peran; tabela membru sai kartu iha telemovel; modal konfirmasaun; alerta otomátiku; botaun fila ba leten.
+
 ## Logo entidade iha navbar
 
-Orgaun/Movimentu ida-ida bele iha **logo** rasik (Admin upload iha Data Master → Orgaun/Movimentu, JPG/PNG to'o 2 MB). Bainhira Koordenador Orgaun/Movimentu login, navbar hatudu nia logo no topbar hatudu naran orgaun/movimentu. Struktura Nasionál (no peran seluk) hatudu logo PLP. Orgaun/movimentu sein logo hatudu logo PLP.
+Orgaun/Movimentu ida-ida bele iha **logo** rasik (Admin upload iha Data Master → Orgaun/Movimentu, JPG/PNG to'o 2 MB). Bainhira peran orgaun/movimentu (ka departamentu husi orgaun) login, navbar hatudu nia logo no topbar hatudu naran orgaun/movimentu. Struktura Nasionál (no peran seluk) hatudu logo PLP. Orgaun/movimentu sein logo hatudu logo PLP.
 
 ## Painel Struktura
 

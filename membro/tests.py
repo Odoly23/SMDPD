@@ -16,7 +16,7 @@ class ScopeTests(BaseData):
 		self.assertEqual(self.ids(roles.SEKRETARIA), {'Joao Silva', 'Maria Costa'})
 
 	def test_area_hare_deit_nia_rasik(self):
-		for role in (roles.KOORD_MUN, roles.KOORD_POSTU, roles.KOORD_SUKU, roles.KOORD_ALDEIA, roles.KOORD_ORG):
+		for role in (roles.KOORD_MUN, roles.KOORD_POSTU, roles.KOORD_SUKU, roles.KOORD_ALDEIA, roles.KOORD_ORG, roles.PRES_ORG, roles.VICE_ORG, roles.SEKR_ORG):
 			self.assertEqual(self.ids(role), {'Joao Silva'}, role)
 
 	def test_departamentu_hare_membru_alokadu(self):
@@ -206,7 +206,7 @@ class AlokasaunTests(BaseData):
 
 	def test_pozisaun_la_existe_iha_nivel(self):
 		self.login(roles.PRESIDENTE)
-		r = self.client.post(reverse('alokasaun-add'), self.dados(self.m1, 'Organizasaun', 'Vice 1', organizasaun=self.org.pk))
+		r = self.client.post(reverse('alokasaun-add'), self.dados(self.m1, 'Departamentu', 'Sekretaria', departamentu=self.dep.pk))
 		self.assertEqual(r.status_code, 200)
 		self.assertIn('pozisaun', r.context['form'].errors)
 

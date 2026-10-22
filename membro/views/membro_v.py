@@ -6,10 +6,11 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from config import roles
 from config.decorators import allowed_users
-from config.user_utils import c_user_group, membro_scope
+from config.user_utils import c_user_group, c_user_scope, membro_scope
 from custom.models import Municipality, Organizasaun
 from membro.forms import MembroForm
 from membro.models import Membro, Alokasaun
+from membro.akun import sinkroniza_login, desativa_login
 from membro.utils import snapshot, diff_snapshot, log_historia, apply_filters, export_csv
 from notif.utils import notif_aprovador
 
@@ -104,6 +105,7 @@ def MembroUpdate(request, hashid):
 			instance.user = request.user
 			instance.save()
 			log_historia(request.user, instance, 'Edita', diff_snapshot(old, snapshot(instance)) or 'Fotu troka')
+			sinkroniza_login(instance)
 			notif_aprovador(f'Data membru atualiza, hein aprovasaun foun: {instance.nome}', f'/membro/{instance.hashed}/')
 			messages.success(request, 'Data membru atualiza ona. Hein aprovasaun foun.')
 			return redirect('membro-detail', hashid)
@@ -123,6 +125,7 @@ def MembroUpdate(request, hashid):
 def MembroDel(request, hashid):
 	obj = get_object_or_404(membro_scope(request.user), hashed=hashid)
 	nome = str(obj)
+	desativa_login(obj)
 	log_historia(request.user, None, 'Hamoos', f'Data membru hamoos: {nome}', nome=nome)
 	if obj.image:
 		obj.image.delete(save=False)
@@ -139,6 +142,27 @@ def MembroSearch(request):
 	q = (request.GET.get('q') or '').strip()
 	objects = []
 	if len(q) >= 2:
-		objects = Membro.objects.filter(aprovasaun='Aprovadu', status='Ativu').filter(
+		base = Membro.objects.filter(aprovasaun='Aprovadu', status='Ativu')
+		if c_user_group(request.user) == roles.PRES_ORG:
+			scope = c_user_scope(request.user)
+			base = base.filter(organizasaun_id=scope.organizasaun_id if scope else None)
+		objects = base.filter(
 			Q(nome__icontains=q) | Q(nu_eleitoral__icontains=q)).select_related('village', 'aldeia')[:30]
 	return render(request, 'membro/search_options.html', {'objects': objects})
+
+
+@login_required
+@allowed_users(allowed_roles=roles.VIEW_ROLES)
+def MembroKartaun(request, hashid):
+	"""Kartaun membru (ID card) ne'ebé bele imprime. Deit ba membru aprovadu."""
+	from custom.models import Organizasaun  # noqa: F401
+	obj = get_object_or_404(membro_scope(request.user).select_related('organizasaun'), hashed=hashid, aprovasaun='Aprovadu')
+	alokasauns = Alokasaun.objects.filter(membro=obj, ativu='Sim').select_related(
+		'departamentu__organizasaun', 'municipality', 'post', 'village', 'aldeia', 'organizasaun')
+	org = obj.organizasaun
+	context = {
+		'group': c_user_group(request.user), 'obj': obj, 'alokasauns': alokasauns, 'hashid': hashid,
+		'logo_org': org.logo.url if org and org.logo else None,
+		'title': 'Kartaun Membru', 'legend': 'Kartaun Membru'
+	}
+	return render(request, 'membro/kartaun.html', context)

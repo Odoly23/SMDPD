@@ -226,6 +226,16 @@ class AlokasaunForm(ChainMixin, forms.ModelForm):
 				self.initial.setdefault('village', v.pk)
 				self.initial['post'] = v.administrativepost_id
 				self.initial['municipality'] = v.administrativepost.municipality_id
+		if self.group == roles.PRES_ORG:
+			scope = c_user_scope(user)
+			org_id = scope.organizasaun_id if scope else None
+			self.fields['nivel'].choices = [('Organizasaun', 'Orgaun/Movimentu'), ('Departamentu', 'Departamentu')]
+			self.fields['nivel'].initial = 'Organizasaun'
+			self.fields['organizasaun'].queryset = Organizasaun.objects.filter(pk=org_id)
+			self.fields['organizasaun'].initial = org_id
+			self.fields['organizasaun'].empty_label = None
+			self.fields['departamentu'].queryset = Departamentu.objects.filter(organizasaun_id=org_id, is_active=True)
+			self._org_id = org_id
 		self.limit_chain()
 		self.helper = FormHelper()
 		self.helper.form_method = 'post'
@@ -315,6 +325,14 @@ class AlokasaunForm(ChainMixin, forms.ModelForm):
 			unit['organizasaun'] = org
 		if self.group == roles.PRES_DEP and (nivel != 'Departamentu' or not unit['departamentu'] or unit['departamentu'].pk != self.fields['departamentu'].initial):
 			raise ValidationError('Ita bele aloka deit iha departamentu rasik.')
+		if self.group == roles.PRES_ORG:
+			ok = (nivel == 'Organizasaun' and unit['organizasaun'] and unit['organizasaun'].pk == self._org_id) or \
+				(nivel == 'Departamentu' and unit['departamentu'] and unit['departamentu'].organizasaun_id == self._org_id)
+			if not ok:
+				raise ValidationError('Ita bele aloka deit iha orgaun/movimentu rasik no nia departamentu.')
+		if nivel == 'Departamentu' and unit['departamentu'] and unit['departamentu'].organizasaun_id \
+				and membro.organizasaun_id != unit['departamentu'].organizasaun_id:
+			self.add_error('membro', 'Departamentu ne\'e husi orgaun/movimentu, membru tenke tama orgaun/movimentu ne\'e.')
 		cleaned.update(unit)
 		if cleaned.get('data_termina') and cleaned.get('data_hahu') and cleaned['data_termina'] < cleaned['data_hahu']:
 			self.add_error('data_termina', 'Data termina tenke depois data hahu.')

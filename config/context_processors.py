@@ -38,6 +38,23 @@ def _grupu(request, label, icon, children):
 	return {'label': label, 'icon': icon, 'url': '#', 'active': any(c['active'] for c in children), 'children': children}
 
 
+def _nivel_ba(group):
+	"""Nivel struktura ne'ebé relevante ba peran ida (menu la hatudu nivel ne'ebé la relevante)."""
+	if group in roles.NASIONAL_ROLES:
+		return [s for s, _, _ in STRUKTURA]
+	if group in roles.DEP_ROLES:
+		return ['departamentu']
+	if group in roles.ORG_ROLES:
+		return ['organizasaun', 'departamentu']
+	if group in roles.MUN_ROLES:
+		return ['munisipiu', 'postu', 'suku', 'aldeia']
+	if group in roles.POSTU_ROLES:
+		return ['postu', 'suku', 'aldeia']
+	if group in roles.SUKU_ROLES:
+		return ['suku', 'aldeia']
+	return ['aldeia']
+
+
 def _menu(request, group):
 	items = [_item(request, 'Varanda', 'fa-home', 'home')]
 	if group == roles.ADMIN:
@@ -55,7 +72,7 @@ def _menu(request, group):
 			items.append(_item(request, 'Aprovasaun', 'fa-check-square-o', 'aprovasaun-list', names=('aprovasaun-list', 'aprovasaun-rejeita')))
 		struktura = [_item(request, 'Painel', 'fa-th-large', 'struktura-painel')]
 		struktura += [_item(request, label, icon, 'struktura-list', args=(slug,), names=('struktura-list', 'alokasaun-add', 'alokasaun-update'),
-			match_kwargs={'nivel': slug}) for slug, label, icon in STRUKTURA]
+			match_kwargs={'nivel': slug}) for slug, label, icon in STRUKTURA if slug in _nivel_ba(group)]
 		items.append(_grupu(request, 'Struktura', 'fa-sitemap', struktura))
 		items.append(_item(request, 'Relatoriu', 'fa-table', 'report-dash'))
 		items.append(_item(request, 'Grafik', 'fa-bar-chart', 'report-chart'))
@@ -64,14 +81,24 @@ def _menu(request, group):
 	return items
 
 
+def _org_husi(user, group):
+	"""Orgaun/Movimentu ne'ebé user ne'e reprezenta (peran orgaun, ka departamentu husi orgaun)."""
+	scope = c_user_scope(user)
+	if not scope:
+		return None
+	if group in roles.ORG_ROLES:
+		return scope.organizasaun
+	if group in roles.DEP_ROLES and scope.departamentu_id:
+		return scope.departamentu.organizasaun
+	return None
+
+
 def _entidade(user, group):
 	"""Logo no naran entidade ne'ebé hatudu iha navbar: orgaun/movimentu uza nia logo rasik, seluk hatudu logo PLP."""
 	plp = {'logo': static('main/images/logo_plp.png'), 'naran': 'Partidu Libertasaun Popular · Timor-Leste', 'orgaun': None}
-	if group in roles.ORG_ROLES:
-		scope = c_user_scope(user)
-		org = scope.organizasaun if scope else None
-		if org:
-			return {'logo': org.logo.url if org.logo else plp['logo'], 'naran': org.name, 'orgaun': org}
+	org = _org_husi(user, group)
+	if org:
+		return {'logo': org.logo.url if org.logo else plp['logo'], 'naran': org.name, 'orgaun': org}
 	return plp
 
 

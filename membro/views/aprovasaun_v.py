@@ -8,6 +8,7 @@ from config.decorators import allowed_users
 from config.user_utils import c_user_group, membro_scope
 from membro.forms import RejeitaForm
 from membro.models import Membro
+from membro.akun import sinkroniza_login
 from membro.utils import log_historia
 from notif.utils import kria_notif
 
@@ -19,6 +20,7 @@ def _aprova(user, obj):
 	obj.razaun_rejeita = None
 	obj.save()
 	log_historia(user, obj, 'Aprova', f'Aprovadu husi {user.get_username()}')
+	sinkroniza_login(obj)
 	if obj.user_id and obj.user_id != user.pk:
 		kria_notif(obj.user, f'Membru {obj.nome} aprovadu ona.', f'/membro/{obj.hashed}/')
 
@@ -82,6 +84,7 @@ def AprovasaunRejeita(request, hashid):
 			obj.razaun_rejeita = form.cleaned_data['razaun']
 			obj.save()
 			log_historia(request.user, obj, 'Rejeita', f'Razaun: {obj.razaun_rejeita}')
+			sinkroniza_login(obj)
 			if obj.user_id and obj.user_id != request.user.pk:
 				kria_notif(obj.user, f'Membru {obj.nome} rejeitadu: {obj.razaun_rejeita}', f'/membro/{obj.hashed}/')
 			messages.warning(request, f'{obj.nome} rejeitadu.')

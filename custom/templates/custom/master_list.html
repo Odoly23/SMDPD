@@ -21,7 +21,7 @@
 								{% for c in cells %}<td>{{ c }}</td>{% endfor %}
 								<td>
 									<a class="btn btn-sm btn-success" href="{% url 'master-update' tipu obj.pk %}" title="Edita"><i class="fa fa-edit"></i></a>
-									<form class="d-inline" method="post" action="{% url 'master-del' tipu obj.pk %}" onsubmit="return confirm('Ita boot Hakarak Hamoos?');">{% csrf_token %}
+									<form class="d-inline" method="post" action="{% url 'master-del' tipu obj.pk %}" data-confirm="Ita boot hakarak hamoos dadus ne'e?">{% csrf_token %}
 										<button class="btn btn-sm btn-danger" type="submit" title="Hamoos"><i class="fa fa-times"></i></button>
 									</form>
 								</td>

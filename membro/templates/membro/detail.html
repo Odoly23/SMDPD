@@ -18,8 +18,9 @@
 					</form>
 					<a class="btn btn-sm btn-danger" href="{% url 'aprovasaun-rejeita' hashid %}"><i class="fa fa-times"></i> Rejeita</a>
 					{% endif %}
+					{% if obj.aprovasaun == 'Aprovadu' %}<a class="btn btn-sm btn-outline-primary" href="{% url 'membro-kartaun' hashid %}"><i class="fa fa-id-card-o"></i> Kartaun</a>{% endif %}
 					{% if can_del %}
-					<form class="d-inline" method="post" action="{% url 'membro-del' hashid %}" onsubmit="return confirm('Ita boot Hakarak Hamoos Membru ne\'e?');">{% csrf_token %}
+					<form class="d-inline" method="post" action="{% url 'membro-del' hashid %}" data-confirm="Ita boot hakarak hamoos membru ne'e? Aksaun ne'e la bele fila fali.">{% csrf_token %}
 						<button class="btn btn-sm btn-outline-danger" type="submit"><i class="fa fa-trash"></i> Hamoos</button>
 					</form>
 					{% endif %}

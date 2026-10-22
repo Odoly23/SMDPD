@@ -25,7 +25,7 @@ POZISAUN_POR_NIVEL = {
 	'Postu': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 	'Suku': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
 	'Aldeia': ['Koordenador', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Membru'],
-	'Organizasaun': ['Koordenador', 'Membru'],
+	'Organizasaun': ['Presidente', 'Vice 1', 'Vice 2', 'Vice 3', 'Vice 4', 'Sekretaria', 'Koordenador', 'Membru'],
 }
 POZISAUN_BAIXA = 'Membru'  # pozisaun ne'ebé bele iha barak iha unidade ida
 

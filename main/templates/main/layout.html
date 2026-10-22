@@ -29,7 +29,7 @@
 				</ol>
 				{% if messages %}
 					{% for message in messages %}
-						<div class="alert alert-{{ message.tags }} p-2">{{ message }}</div>
+						<div class="alert alert-{{ message.tags }} alert-dismissible fade show p-2 pr-5 alerta-auto" role="alert">{{ message }}<button type="button" class="close" data-dismiss="alert" aria-label="Taka"><span aria-hidden="true">&times;</span></button></div>
 					{% endfor %}
 				{% endif %}
 				<div class="main-content">
@@ -44,12 +44,24 @@
 			</div>
 		</footer>
 
+		<button type="button" id="btn-sai-leten" class="no-print" title="Fila ba leten" aria-label="Fila ba leten"><i class="fa fa-chevron-up"></i></button>
+		<div class="modal fade" id="modal-konfirma" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header"><h5 class="modal-title"><i class="fa fa-question-circle text-warning"></i> Konfirma</h5><button type="button" class="close" data-dismiss="modal" aria-label="Taka"><span aria-hidden="true">&times;</span></button></div>
+					<div class="modal-body" id="modal-konfirma-teks"></div>
+					<div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Lae</button><button type="button" class="btn btn-primary" id="modal-konfirma-ok">Sim</button></div>
+				</div>
+			</div>
+		</div>
+
 		<script src="{% static 'main/js/jquery.min.js' %}"></script>
 		<script src="{% static 'main/js/bootstrap.min.js' %}"></script>
 		<script src="{% static 'main/js/jquery.dataTables.min.js' %}"></script>
 		<script src="{% static 'main/js/dataTables.bootstrap4.min.js' %}"></script>
 		<script src="{% static 'main/js_custom/layout.js' %}"></script>
 		<script src="{% static 'main/js_custom/datatable_init.js' %}"></script>
+		<script src="{% static 'main/js_custom/ui.js' %}"></script>
 		{% block scripts %}{% endblock %}
 	</body>
 </html>

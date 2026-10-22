@@ -56,7 +56,8 @@ class Aldeia(models.Model):
 
 
 class Departamentu(HashedModel):
-	"""Departamentu iha Estrutura Nasionál (ez. Finansas, Organizasaun, Informasaun)."""
+	"""Departamentu iha Estrutura Nasionál ka iha Orgaun/Movimentu ida (ez. Finansas, Informasaun)."""
+	organizasaun = models.ForeignKey("Organizasaun", on_delete=models.PROTECT, null=True, blank=True, related_name="departamentu_set", verbose_name="Orgaun/Movimentu")
 	code = models.CharField(max_length=10, verbose_name="Kódigu")
 	name = models.CharField(max_length=100, verbose_name="Naran")
 	is_active = models.BooleanField(default=True, verbose_name="Ativu")
@@ -65,8 +66,9 @@ class Departamentu(HashedModel):
 		ordering = ['name']
 
 	def __str__(self):
-		template = '{0.name}'
-		return template.format(self)
+		if self.organizasaun_id:
+			return '{0.name} ({0.organizasaun.code})'.format(self)
+		return self.name
 
 
 class Organizasaun(HashedModel):
