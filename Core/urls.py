@@ -8,7 +8,7 @@ handler404 = 'main.views.error_404'
 handler500 = 'main.views.error_500'
 
 urlpatterns = [
-	path('admin/', admin.site.urls),
+	path(settings.ADMIN_URL, admin.site.urls),
 	path('', include('main.urls')),
 	path('custom/', include('custom.urls')),
 	path('user/', include('user.urls')),

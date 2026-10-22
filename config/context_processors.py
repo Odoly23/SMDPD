@@ -63,6 +63,7 @@ def _menu(request, group):
 			_item(request, label, icon, 'master-list', args=(tipu,), names=('master-list', 'master-add', 'master-update'),
 				match_kwargs={'tipu': tipu}) for tipu, label, icon in MASTER]))
 		items.append(_item(request, 'Anunsiu', 'fa-bullhorn', 'anunsiu-list'))
+		items.append(_item(request, 'Log Login', 'fa-shield', 'user-log'))
 		items.append(_item(request, 'Historia', 'fa-history', 'historia-list'))
 		return items
 	if group in roles.VIEW_ROLES:
@@ -123,6 +124,8 @@ def nav_context(request):
 		ent = _entidade(request.user, group)
 		context['nav_logo'], context['nav_entidade'] = ent['logo'], ent['naran']
 		context['nav_items'] = _menu(request, group)
+		from config.models import LoginLog
+		context['nav_login_ikus'] = LoginLog.objects.filter(user=request.user, hasil='Susesu').order_by('-id')[1:2].first()
 		unread = Notifikasaun.objects.filter(user=request.user, is_read=False)
 		context['notif_total'] = unread.count()
 		context['notif_recent'] = list(unread[:5])

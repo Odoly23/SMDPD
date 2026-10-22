@@ -43,7 +43,9 @@
 				<a href="#" class="p-1" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="{{ user.username }}"><span class="av"><i class="fa fa-user"></i></span></a>
 				<div class="dropdown-menu dropdown-menu-right">
 					<span class="dropdown-header">{{ user.first_name|default:user.username }}{% if nav_role %}<br>{{ nav_role }}{% endif %}</span>
+					{% if nav_login_ikus %}<span class="dropdown-header text-muted" style="font-size:.7rem"><i class="fa fa-clock-o"></i> Login molok ne'e: {{ nav_login_ikus.datetime|date:"d/m/Y H:i" }}{% if nav_login_ikus.ip %} · {{ nav_login_ikus.ip }}{% endif %}</span>{% endif %}
 					<a class="dropdown-item" href="{% url 'change-password' %}"><i class="fa fa-key"></i> Troka Password</a>
+					<a class="dropdown-item" href="{% url 'seguransa-2fa' %}"><i class="fa fa-shield"></i> Seguransa (2FA)</a>
 					<form method="post" action="{% url 'logout' %}">{% csrf_token %}
 						<button class="dropdown-item text-danger" type="submit"><i class="fa fa-sign-out"></i> Sai</button>
 					</form>
@@ -74,6 +76,7 @@
 			<li><hr></li>
 			<li><a href="{% url 'notif-list' %}"><i class="fa fa-bell"></i>Notif.{% if notif_total %} ({{ notif_total }}){% endif %}</a></li>
 			<li><a href="{% url 'change-password' %}"><i class="fa fa-key"></i>Password</a></li>
+			<li><a href="{% url 'seguransa-2fa' %}"><i class="fa fa-shield"></i>2FA</a></li>
 			<li>
 				<form method="post" action="{% url 'logout' %}">{% csrf_token %}
 					<button type="submit"><i class="fa fa-sign-out"></i>Sai</button>

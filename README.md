@@ -56,6 +56,20 @@ python manage.py import_see /dalan/Database_SEE-PLP_2026.xlsx             # memb
 - **Aniversariu** (`/report/aniversariu/`) no widget iha Varanda; grafik **rejistu foun 12 fulan ikus**.
 - **Seguransa**: password foun (husi Admin ka husi "Kria login") tenke troka bainhira login; tentativa login sala limitadu (5 dala / 10 minutu ba username + IP).
 
+## Login seguru
+
+| Proteksaun | Detallu |
+|---|---|
+| Password | minimu 10 karakter, la bele komún/numéricu deit; password foun (husi Admin ka "Kria login") **tenke troka** iha login uluk |
+| Lokdaun | 5 tentativa sala iha 10 minutu ba kombinasaun *username + IP* → bloku 10 minutu. Rai iha **database** (seguru ba worker barak) |
+| **2FA (TOTP)** | Aplikasaun authenticator (Google/Microsoft Authenticator, Authy, FreeOTP) liu husi menu *Seguransa (2FA)*. Kódigu ida uza dala ida deit (anti-replay), ho 8 **kódigu rekuperasaun**. Obrigatóriu ba Admin/Presidente/Sekretaria Nasionál se `DJANGO_2FA_WAJIBA=True` |
+| Log login | Admin hare **Log Login** (susesu, sala, bloku, 2FA sala, sai, reset ho IP no browser). Uzuáriu hare "Login molok ne'e" iha menu konta |
+| Sesaun | sai automátiku (`SESSION_IDLE_MINUTES`) no bainhira taka browser; cookie HttpOnly + SameSite; **Sai husi aparelhu hotu**; troka password hamoos sesaun seluk |
+| Admin | **Reset password** (password temporáriu dala ida deit) no **Reset 2FA** ba uzuáriu ne'ebé perde telemovel; la bele reset ba an rasik |
+| Header/HTTPS | `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, `Cache-Control: no-store` ba pájina privadu; iha produksaun: HTTPS redirect, HSTS, cookie `Secure`; URL admin Django bele muda |
+
+Aplikasaun *authenticator* ho kódigu manuál (la iha QR): tau xave ne'ebé hatudu iha pájina 2FA. Se uza proxy/nginx ho HTTPS, define `DJANGO_TRUST_PROXY=True` atu IP loos no HTTPS hetan rekoñese. Verifika konfigurasaun ho `DJANGO_DEBUG=False python manage.py check --deploy`.
+
 ## Fitur seluk
 
 - **Kartaun Membru** (ID card imprime), **Importa CSV** (verifika uluk, rai tudu ka laiha), esporta CSV.

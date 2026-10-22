@@ -1,4 +1,6 @@
+import time
 from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.shortcuts import render
@@ -36,17 +38,28 @@ def home(request):
 
 
 class LoginTap(auth_views.LoginView):
-	"""Login ho limitasaun tentativa sala (5 dala / 10 minutu)."""
+	"""Login ho limitasaun tentativa sala (5 dala / 10 minutu) no 2FA (se uzuáriu aktiva ona)."""
 	template_name = 'home/login.html'
 	redirect_authenticated_user = True
 
 	def post(self, request, *args, **kwargs):
-		from config.security import bloku
+		from config.security import bloku, rai_log
 		if bloku(request.POST.get('username'), request):
+			rai_log(request, request.POST.get('username'), 'Bloku')
 			form = self.get_form()
 			form.add_error(None, 'Tentativa sala barak liu. Hein minutu 10 no koko fali.')
 			return self.render_to_response(self.get_context_data(form=form, bloku=True), status=429)
 		return super().post(request, *args, **kwargs)
+
+	def form_valid(self, form):
+		from config.models import Totp
+		user = form.get_user()
+		if Totp.objects.filter(user=user, aktivu=True).exists():
+			self.request.session['pre2fa'] = {
+				'uid': user.pk, 'backend': getattr(user, 'backend', 'django.contrib.auth.backends.ModelBackend'),
+				'next': self.get_success_url(), 'ts': time.time()}
+			return redirect('login-2fa')
+		return super().form_valid(form)
 
 
 class PasswordTroka(auth_views.PasswordChangeView):

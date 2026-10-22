@@ -49,7 +49,7 @@ MIDDLEWARE = [
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
-	'config.middleware.TrokaPasswordMiddleware',
+	'config.middleware.SeguransaMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -95,7 +95,7 @@ else:
 
 AUTH_PASSWORD_VALIDATORS = [
 	{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-	{'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+	{'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', 'OPTIONS': {'min_length': 10}},
 	{'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
 	{'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
@@ -138,10 +138,40 @@ REST_FRAMEWORK = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Cookie no header seguransa báziku
+# ───────── Seguransa login no sesaun ─────────
+def _env_bool(nome, defeitu):
+	return os.environ.get(nome, str(defeitu)) == 'True'
+
+
+# Sesaun: sai automátiku bainhira la uza (minutu), no bainhira taka browser
+SESSION_IDLE_MINUTES = int(os.environ.get('SESSION_IDLE_MINUTES', '120'))
+SESSION_COOKIE_AGE = SESSION_IDLE_MINUTES * 60
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
 X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
+
+# Proxy (nginx/PythonAnywhere): fiar header X-Forwarded-* ba IP no HTTPS
+TRUST_PROXY = _env_bool('DJANGO_TRUST_PROXY', False)
+if TRUST_PROXY:
+	SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# 2FA obrigatóriu ba Admin, Presidente no Sekretaria Nasionál (aktiva iha produksaun ho DJANGO_2FA_WAJIBA=True)
+SMDPD_2FA_WAJIBA = _env_bool('DJANGO_2FA_WAJIBA', False)
+
+# URL admin Django bele muda (ez. DJANGO_ADMIN_URL=gestaun-rahasia/)
+ADMIN_URL = os.environ.get('DJANGO_ADMIN_URL', 'admin/').strip('/') + '/'
+
 if not DEBUG:
 	SESSION_COOKIE_SECURE = True
 	CSRF_COOKIE_SECURE = True
+	SECURE_SSL_REDIRECT = _env_bool('DJANGO_SSL_REDIRECT', True)
+	SECURE_HSTS_SECONDS = int(os.environ.get('DJANGO_HSTS_SECONDS', '31536000'))
+	SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+	SECURE_HSTS_PRELOAD = False
