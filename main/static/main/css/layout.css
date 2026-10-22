@@ -65,7 +65,7 @@ body {
 .brand:hover { color: var(--white); text-decoration: none; }
 .brand img {
   height: 42px; width: 42px;
-  object-fit: cover; border-radius: 50%;
+  object-fit: contain; border-radius: 50%; background: var(--white);
   border: 2px solid var(--kuning);
 }
 .brand span { font-size: .95rem; }

@@ -27,6 +27,10 @@ Pozisaun hotu (liu Membru) ida de'it ba unidade ida ho estatutu ativu. Konfigura
 
 Membru foun ka edita sei hetan estatutu *Pendente* to'o Presidente Nasionál aprova. Presidente simu notifikasaun, no koordenador simu notifikasaun bainhira aprovadu ka rejeitadu.
 
+## Logo entidade iha navbar
+
+Orgaun/Movimentu ida-ida bele iha **logo** rasik (Admin upload iha Data Master → Orgaun/Movimentu, JPG/PNG to'o 2 MB). Bainhira Koordenador Orgaun/Movimentu login, navbar hatudu nia logo no topbar hatudu naran orgaun/movimentu. Struktura Nasionál (no peran seluk) hatudu logo PLP. Orgaun/movimentu sein logo hatudu logo PLP.
+
 ## Painel Struktura
 
 Menu **Struktura → Painel** hatudu total membru ba **Entidade** (Orgaun/Movimentu no Struktura), lista **Orgaun/Movimentu** ida-ida (ho paginasaun) no total ba nivel **Struktura** (Nasionál, Departamentu, Munisipal, Postu Administrativu, Suku, Aldeia). `seed_inisial` rejista orgaun/movimentu ne'ebé hatudu iha painel; Admin bele aumenta seluk iha Data Master.

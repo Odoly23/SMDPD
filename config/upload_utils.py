@@ -13,6 +13,13 @@ def upload_foto(instance, filename):
 	return os.path.join('membro_foto', '{}.{}'.format(uuid4().hex, ext))
 
 
+def upload_logo(instance, filename):
+	ext = filename.rsplit('.', 1)[-1].lower()
+	if ext not in IMAGE_EXTS:
+		ext = 'png'
+	return os.path.join('logo_orgaun', '{}.{}'.format(uuid4().hex, ext))
+
+
 def validate_image_size(image):
 	if image.size > MAX_IMAGE_MB * 1024 * 1024:
 		raise ValidationError(f'Fotu boot liu {MAX_IMAGE_MB} MB.')

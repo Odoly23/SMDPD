@@ -3,7 +3,7 @@
 <div class="topbar">
 	<div class="container">
 		<div class="tb-left">
-			<span><i class="fa fa-flag"></i> <span class="d-none d-sm-inline">Partidu Libertasaun Popular &middot; Timor-Leste</span><span class="d-sm-none">PLP</span></span>
+			<span><i class="fa fa-flag"></i> <span class="d-none d-sm-inline">{{ nav_entidade }}</span><span class="d-sm-none">{{ nav_entidade|truncatechars:22 }}</span></span>
 			<span><i class="fa fa-calendar"></i> {% now "d/m/Y" %}</span>
 		</div>
 		<div class="tb-right">
@@ -16,7 +16,7 @@
 <nav class="main-navbar">
 	<div class="container">
 		<a class="brand" href="{% if user.is_authenticated %}{% url 'home' %}{% else %}{% url 'login' %}{% endif %}">
-			<img src="{% static 'main/images/logo_plp.png' %}" alt="PLP"><span>SMDPD</span>
+			<img src="{{ nav_logo }}" alt="Logo"><span>SMDPD</span>
 		</a>
 		{% if user.is_authenticated %}
 		<ul class="nav-links">

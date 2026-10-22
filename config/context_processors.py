@@ -1,6 +1,7 @@
 from django.urls import reverse
 from config import roles
-from config.user_utils import c_user_group
+from django.templatetags.static import static
+from config.user_utils import c_user_group, c_user_scope
 
 ROLE_NAME = dict(roles.ROLE_LABELS)
 
@@ -63,12 +64,26 @@ def _menu(request, group):
 	return items
 
 
+def _entidade(user, group):
+	"""Logo no naran entidade ne'ebé hatudu iha navbar: orgaun/movimentu uza nia logo rasik, seluk hatudu logo PLP."""
+	plp = {'logo': static('main/images/logo_plp.png'), 'naran': 'Partidu Libertasaun Popular · Timor-Leste', 'orgaun': None}
+	if group in roles.ORG_ROLES:
+		scope = c_user_scope(user)
+		org = scope.organizasaun if scope else None
+		if org:
+			return {'logo': org.logo.url if org.logo else plp['logo'], 'naran': org.name, 'orgaun': org}
+	return plp
+
+
 def nav_context(request):
-	context = {'nav_items': [], 'nav_role': '', 'notif_total': 0, 'notif_recent': []}
+	context = {'nav_items': [], 'nav_role': '', 'notif_total': 0, 'notif_recent': [],
+		'nav_logo': static('main/images/logo_plp.png'), 'nav_entidade': 'Partidu Libertasaun Popular · Timor-Leste'}
 	if request.user.is_authenticated:
 		from notif.models import Notifikasaun
 		group = c_user_group(request.user)
 		context['nav_role'] = ROLE_NAME.get(group, '')
+		ent = _entidade(request.user, group)
+		context['nav_logo'], context['nav_entidade'] = ent['logo'], ent['naran']
 		context['nav_items'] = _menu(request, group)
 		unread = Notifikasaun.objects.filter(user=request.user, is_read=False)
 		context['notif_total'] = unread.count()

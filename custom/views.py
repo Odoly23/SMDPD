@@ -69,7 +69,7 @@ def _rows(tipu):
 		qs = Departamentu.objects.annotate(m=Count('alokasaun', distinct=True))
 		return ['Kódigu', 'Naran', 'Ativu', 'Total Pozisaun'], [(o, [o.code, o.name, 'Sim' if o.is_active else 'Lae', o.m]) for o in qs]
 	qs = Organizasaun.objects.annotate(m=Count('membro'))
-	return ['Kódigu', 'Naran', 'Ativu', 'Total Membru'], [(o, [o.code, o.name, 'Sim' if o.is_active else 'Lae', o.m]) for o in qs]
+	return ['Kódigu', 'Naran', 'Logo', 'Ativu', 'Total Membru'], [(o, [o.code, o.name, 'Iha' if o.logo else '-', 'Sim' if o.is_active else 'Lae', o.m]) for o in qs]
 
 
 @login_required
@@ -87,7 +87,7 @@ def MasterList(request, tipu):
 def _master_form(request, tipu, instance=None):
 	cfg = _master(tipu)
 	if request.method == 'POST':
-		form = cfg['form'](request.POST, instance=instance)
+		form = cfg['form'](request.POST, request.FILES, instance=instance)
 		if form.is_valid():
 			form.save()
 			messages.success(request, 'Rai ho Susesu!.')
