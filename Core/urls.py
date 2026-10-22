@@ -14,6 +14,9 @@ urlpatterns = [
 	path('user/', include('user.urls')),
 	path('membro/', include('membro.urls')),
 	path('notif/', include('notif.urls')),
+	path('anunsiu/', include('anunsiu.urls')),
+	path('eventu/', include('eventu.urls')),
+	path('kuota/', include('kuota.urls')),
 	path('report/', include('report.urls')),
 ]
 

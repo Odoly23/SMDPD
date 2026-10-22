@@ -14,6 +14,7 @@ class UserScope(models.Model):
 	departamentu = models.ForeignKey(Departamentu, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Departamentu")
 	organizasaun = models.ForeignKey(Organizasaun, on_delete=models.PROTECT, null=True, blank=True, verbose_name="Orgaun/Movimentu")
 
+	troka_password = models.BooleanField(default=False, verbose_name="Tenke troka password")
 	membro = models.OneToOneField(Membro, on_delete=models.SET_NULL, null=True, blank=True, related_name='login', verbose_name="Membru")
 
 	def __str__(self):

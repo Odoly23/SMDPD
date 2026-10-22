@@ -41,4 +41,5 @@ VIEW_ROLES = NASIONAL_ROLES + DEP_ROLES + MUN_ROLES + POSTU_ROLES + SUKU_ROLES +
 INPUT_ROLES = [SEKRETARIA, SEKR_ORG, KOORD_ORG] + MUN_ROLES + POSTU_ROLES + SUKU_ROLES + ALDEIA_ROLES  # input no edita data membru
 APROVA_ROLES = [PRESIDENTE]                                                    # aprova, rejeita no hamoos membru
 ALOKA_ROLES = [PRESIDENTE, SEKRETARIA, PRES_DEP, PRES_ORG]                               # aloka pozisaun iha struktura
+ANUNSIU_ROLES = [PRESIDENTE, SEKRETARIA, PRES_ORG, PRES_DEP, KOORD_MUN]                # kria anunsiu
 HISTORIA_ROLES = [ADMIN, PRESIDENTE, SEKRETARIA]                               # lee historia mudansa data

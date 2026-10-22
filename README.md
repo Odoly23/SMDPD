@@ -47,6 +47,15 @@ python manage.py import_see /dalan/Database_SEE-PLP_2026.xlsx             # memb
 
 **Relatoriu → Rekursu** (`/report/rekursu/`) = formulariu *Baze de Dadus ba Rekursus Intelektuais* (Orgaun Konsultivu/SEE): lista alfabétika ho Area Estudu, Nivel, Esperensia, Kontribuisaun, Munisipiu Orijin/Rezidensia, Nu. Kontaktu no Email, bele **imprime** (A4 landscape, títulu no assinatura bele edita molok imprime) no **esporta CSV**. Títulu no sede orgaun hanesan iha Data Master → Orgaun/Movimentu.
 
+## Fitur ba partidu boot
+
+- **Anunsiu** (`/anunsiu/`): komunikadu husi lideransa ba PLP tomak, munisipiu, orgaun/movimentu ka departamentu. Kria: Presidente/Sekretaria Nasionál (hotu), Presidente Orgaun, Presidente Departamentu no Koordenador Munisipal (unidade rasik). Uzuáriu iha audiens simu notifikasaun; anunsiu hatudu iha Varanda; bele marka *importante* no iha data validu.
+- **Eventu no Prezensa** (`/eventu/`): reuniaun, formasaun, kongresu, kampaña. Área eventu = área ema ne'ebé kria; eventu nasionál hare hotu. **Foti prezensa** ho lista (buka + paginasaun, Prezente/Lisensa/Falta, tanda hotu), **prezensa rápidu** ho nu. eleitoral, esporta CSV; istória prezensa hatudu iha detalha membru.
+- **Kuota membru** (`/kuota/`): rejistu kuota (USD) ba tinan ida, rezumu (total, % selu, tuir munisipiu no orgaun) no lista membru ne'ebé seidauk selu (esporta CSV).
+- **Kualidade Dadus** (`/report/kualidade/`): persentajen dadus kompletu tuir kampu/munisipiu/orgaun, lista membru ne'ebé falta dadus no **deteta duplikadu** (naran hanesan/parese, nu. telemovel/BI hanesan). Presidente/Sekretaria Nasionál bele **hamutuk** membru duplikadu (pozisaun, prezensa, kuota, historia no login tama ba membru ne'ebé mantein).
+- **Aniversariu** (`/report/aniversariu/`) no widget iha Varanda; grafik **rejistu foun 12 fulan ikus**.
+- **Seguransa**: password foun (husi Admin ka husi "Kria login") tenke troka bainhira login; tentativa login sala limitadu (5 dala / 10 minutu ba username + IP).
+
 ## Fitur seluk
 
 - **Kartaun Membru** (ID card imprime), **Importa CSV** (verifika uluk, rai tudu ka laiha), esporta CSV.

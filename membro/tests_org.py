@@ -115,6 +115,10 @@ class LoginAkunTests(BaseData):
 		# akun bele login no hatudu navbar orgaun
 		self.client.logout()
 		self.assertTrue(self.client.login(username='e0001', password=r.context['password']))
+		# password foun: tenke troka uluk
+		self.assertRedirects(self.client.get(reverse('membro-add')), reverse('change-password'))
+		r2 = self.client.post(reverse('change-password'), {'old_password': r.context['password'], 'new_password1': 'Senha-Foun-9876', 'new_password2': 'Senha-Foun-9876'})
+		self.assertEqual(r2.status_code, 302)
 		self.assertEqual(self.client.get(reverse('membro-add')).status_code, 200)
 
 	def test_presidente_orgaun_la_bele_kria_login_presidente_orgaun(self):

@@ -1,0 +1,21 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+	<ul class="nav nav-pills">
+		<li class="nav-item"><a class="nav-link {% if dias == 7 %}active{% endif %}" href="?dias=7">Semana ne'e</a></li>
+		<li class="nav-item"><a class="nav-link {% if dias == 30 %}active{% endif %}" href="?dias=30">30 loron</a></li>
+	</ul>
+</div>
+<div class="card"><div class="card-header"><i class="fa fa-birthday-cake"></i> Aniversariu iha {{ dias }} loron oin mai ({{ objects|length }})</div>
+<div class="card-body"><div class="table-responsive"><table class="table table-sm table-stack">
+	<thead><tr><th>Data</th><th>Naran</th><th>Idade</th><th>Munisipiu</th><th>Telemovel</th></tr></thead>
+	<tbody>
+		{% for o in objects %}<tr>
+			<td data-label="Data"><strong>{{ o.data|date:"d/m" }}</strong>{% if o.loron == 0 %} <span class="badge badge-ativu">Ohin!</span>{% elif o.loron == 1 %} <span class="badge badge-pendente">Aban</span>{% endif %}</td>
+			<td data-label="Naran"><a href="{% url 'membro-detail' o.membru.hashed %}">{{ o.membru.nome }}</a></td>
+			<td data-label="Idade">{{ o.idade }} tinan</td>
+			<td data-label="Munisipiu">{{ o.membru.municipality|default:"-" }}</td>
+			<td data-label="Telemovel">{{ o.membru.telefone|default:"-" }}</td>
+		</tr>{% empty %}<tr><td colspan="5" class="text-center text-gray">Laiha aniversariu.</td></tr>{% endfor %}
+	</tbody></table></div></div></div>
+{% endblock %}

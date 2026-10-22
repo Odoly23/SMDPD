@@ -112,7 +112,8 @@ class UserForm(forms.ModelForm):
 		user.save()
 		group, _ = Group.objects.get_or_create(name=self.cleaned_data['group'])
 		user.groups.set([group])
-		UserScope.objects.update_or_create(user=user, defaults={
-			k: self.cleaned_data[k] for k in ('departamentu', 'municipality', 'post', 'village', 'aldeia', 'organizasaun')
-		})
+		defaults = {k: self.cleaned_data[k] for k in ('departamentu', 'municipality', 'post', 'village', 'aldeia', 'organizasaun')}
+		if self.cleaned_data.get('password'):
+			defaults['troka_password'] = True      # password husi Admin: uzuáriu tenke troka bainhira login
+		UserScope.objects.update_or_create(user=user, defaults=defaults)
 		return user

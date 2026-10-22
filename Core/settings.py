@@ -36,6 +36,9 @@ INSTALLED_APPS = [
 	'user.apps.UserConfig',
 	'membro.apps.MembroConfig',
 	'notif.apps.NotifConfig',
+	'anunsiu.apps.AnunsiuConfig',
+	'eventu.apps.EventuConfig',
+	'kuota.apps.KuotaConfig',
 	'report.apps.ReportConfig',
 ]
 
@@ -46,6 +49,7 @@ MIDDLEWARE = [
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
+	'config.middleware.TrokaPasswordMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 

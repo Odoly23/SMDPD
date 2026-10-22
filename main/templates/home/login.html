@@ -21,7 +21,7 @@
 						<h1>SMDPD</h1>
 						<p>Sistema Managemen Dadus Membru Partidu PLP</p>
 						{% if form.errors %}
-							<div class="alert alert-danger p-2 mt-3">Username ka password la loos.</div>
+							<div class="alert alert-danger p-2 mt-3">{% if bloku %}Tentativa sala barak liu. Hein minutu 10 no koko fali.{% else %}Username ka password la loos.{% endif %}</div>
 						{% endif %}
 						<form method="post" novalidate>
 							{% csrf_token %}

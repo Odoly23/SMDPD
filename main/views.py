@@ -1,7 +1,12 @@
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.shortcuts import render
 from config import roles
+from django.utils import timezone
+from anunsiu.utils import anunsiu_ba
+from eventu.utils import eventu_ba
+from report.views.view_2 import aniversariu_ba
 from config.user_utils import c_user_group, membro_scope
 
 
@@ -22,9 +27,42 @@ def home(request):
 	context = {
 		'group': group,
 		'counts': _counts(request.user) if group in roles.VIEW_ROLES else None,
+		'anunsius': list(anunsiu_ba(request.user)[:3]) if group else [],
+		'aniversarius': aniversariu_ba(request.user, 7)[:5] if group in roles.VIEW_ROLES else [],
+		'eventus': list(eventu_ba(request.user).filter(data_hahu__gte=timezone.now()).order_by('data_hahu')[:3]) if group in roles.VIEW_ROLES else [],
 		'title': 'Varanda', 'legend': 'Varanda'
 	}
 	return render(request, 'home/home.html', context)
+
+
+class LoginTap(auth_views.LoginView):
+	"""Login ho limitasaun tentativa sala (5 dala / 10 minutu)."""
+	template_name = 'home/login.html'
+	redirect_authenticated_user = True
+
+	def post(self, request, *args, **kwargs):
+		from config.security import bloku
+		if bloku(request.POST.get('username'), request):
+			form = self.get_form()
+			form.add_error(None, 'Tentativa sala barak liu. Hein minutu 10 no koko fali.')
+			return self.render_to_response(self.get_context_data(form=form, bloku=True), status=429)
+		return super().post(request, *args, **kwargs)
+
+
+class PasswordTroka(auth_views.PasswordChangeView):
+	template_name = 'auth/change_password.html'
+	success_url = '/password/done/'
+
+	def form_valid(self, form):
+		from user.models import UserScope
+		UserScope.objects.filter(user=self.request.user).update(troka_password=False)
+		return super().form_valid(form)
+
+	def get_context_data(self, **kwargs):
+		from user.models import UserScope
+		ctx = super().get_context_data(**kwargs)
+		ctx['tenke'] = UserScope.objects.filter(user=self.request.user, troka_password=True).exists()
+		return ctx
 
 
 def error_403(request, exception=None):

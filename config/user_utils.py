@@ -95,3 +95,26 @@ def can_aloka(user, nivel=None, departamentu_id=None, organizasaun_id=None):
 		if nivel == 'Departamentu' and departamentu_id:
 			return Departamentu.objects.filter(pk=departamentu_id, organizasaun_id=scope.organizasaun_id).exists()
 	return False
+
+
+def c_user_unit(user):
+	"""Unidade ne'ebé user ne'e reprezenta: munisipiu (husi área geográfika), orgaun/movimentu no departamentu."""
+	scope = c_user_scope(user)
+	out = {'municipality': None, 'organizasaun': None, 'departamentu': None}
+	if not scope:
+		return out
+	if scope.municipality_id:
+		out['municipality'] = scope.municipality
+	elif scope.post_id:
+		out['municipality'] = scope.post.municipality
+	elif scope.village_id:
+		out['municipality'] = scope.village.administrativepost.municipality
+	elif scope.aldeia_id:
+		out['municipality'] = scope.aldeia.village.administrativepost.municipality
+	if scope.organizasaun_id:
+		out['organizasaun'] = scope.organizasaun
+	if scope.departamentu_id:
+		out['departamentu'] = scope.departamentu
+		if not out['organizasaun'] and scope.departamentu.organizasaun_id:
+			out['organizasaun'] = scope.departamentu.organizasaun
+	return out

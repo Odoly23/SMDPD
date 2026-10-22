@@ -1,0 +1,46 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="card">
+	<div class="card-header">{{ legend }} — {{ tinan }}</div>
+	<div class="card-body">
+		<div class="row text-center mb-3">
+			<div class="col-6"><span class="stat-label">Total rekolla</span><h4 class="stat-number">USD {{ total|floatformat:2 }}</h4></div>
+			<div class="col-6"><span class="stat-label">Membru ne'ebé selu</span><h4 class="stat-number">{{ n_membru }}</h4></div>
+		</div>
+		<div class="mb-3 no-print">
+			{% if can_add %}<a class="btn btn-sm btn-primary" href="{% url 'kuota-add' %}"><i class="fa fa-plus"></i> Rejistu Kuota</a>{% endif %}
+			<a class="btn btn-sm btn-info" href="{% url 'kuota-rezumu' %}?tinan={{ tinan }}"><i class="fa fa-pie-chart"></i> Rezumu</a>
+			<a class="btn btn-sm btn-outline-primary" href="?{{ qs }}{% if qs %}&{% endif %}export=csv"><i class="fa fa-file-excel-o"></i> Esporta CSV</a>
+		</div>
+		<form method="get" class="form-row mb-3 no-print">
+			<div class="col-6 col-md-2 mb-2"><select class="form-control form-control-sm" name="tinan" onchange="this.form.submit()">{% for t in tinans %}<option value="{{ t }}"{% if t == tinan %} selected{% endif %}>{{ t }}</option>{% endfor %}</select></div>
+			<div class="col-6 col-md-4 mb-2"><input type="text" class="form-control form-control-sm" name="q" value="{{ q }}" placeholder="Buka naran / nu. eleitoral"></div>
+			<div class="col-12 col-md-2 mb-2"><button class="btn btn-sm btn-outline-primary" type="submit"><i class="fa fa-search"></i> Buka</button></div>
+		</form>
+		<div class="table-responsive">
+			<table class="table table-sm table-stack">
+				<thead><tr><th>Data</th><th>Naran</th><th>Montante</th><th>Métodu</th><th>Nota</th><th class="no-print">#</th></tr></thead>
+				<tbody>
+					{% for k in page %}
+					<tr>
+						<td data-label="Data">{{ k.data_selu|date:"d/m/Y" }}</td>
+						<td data-label="Naran"><a href="{% url 'membro-detail' k.membro.hashed %}">{{ k.membro.nome }}</a></td>
+						<td data-label="Montante"><strong>USD {{ k.montante|floatformat:2 }}</strong></td>
+						<td data-label="Métodu">{{ k.get_metodu_display }}</td>
+						<td data-label="Nota">{{ k.nota|default:"-" }}</td>
+						<td class="no-print no-label aksaun">{% if can_del %}<form class="d-inline" method="post" action="{% url 'kuota-del' k.pk %}" data-confirm="Hamoos kuota ne'e?">{% csrf_token %}<button class="btn btn-sm btn-danger" type="submit"><i class="fa fa-times"></i></button></form>{% endif %}</td>
+					</tr>
+					{% empty %}<tr><td colspan="6" class="text-center text-gray">Seidauk iha kuota rejistu iha tinan ne'e.</td></tr>{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% if page.paginator.num_pages > 1 %}
+		<nav class="no-print"><ul class="pagination pagination-sm justify-content-center mb-0">
+			{% if page.has_previous %}<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.previous_page_number }}">Antes</a></li>{% endif %}
+			<li class="page-item active"><span class="page-link">{{ page.number }} / {{ page.paginator.num_pages }}</span></li>
+			{% if page.has_next %}<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.next_page_number }}">Tuir</a></li>{% endif %}
+		</ul></nav>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}

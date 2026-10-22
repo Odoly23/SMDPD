@@ -117,3 +117,16 @@ canvas { max-width: 100%; }
 [contenteditable="true"]:hover { outline: 1px dashed #04d419; }
 @media print { [contenteditable="true"]:hover { outline: 0; } .dok-tabela { font-size: 9pt; } .dok-tabela a { color: #000; } }
 @media (max-width: 767px) { .dok-kabesalhu { flex-direction: column; } .dok-data { margin-left: 0; } }
+
+/* ---- Anunsiu ---- */
+.anunsiu { border-left: 4px solid #04d419 !important; }
+.anunsiu-importante { border-left-color: #f9d71c !important; background: #fffdf0; }
+.anunsiu-teks { color: #333 !important; font-size: .95rem; }
+
+/* ---- Eventu ---- */
+.eventu-kartu { border-left: 4px solid #f9d71c !important; }
+.eventu-data { float: right; text-align: center; background: #04d419; color: #fff; padding: 4px 10px; border-radius: 6px; line-height: 1.1; }
+.eventu-data strong { display: block; font-size: 1.3rem; }
+.eventu-data span { font-size: .65rem; text-transform: uppercase; }
+
+.card.h-100 { height: calc(100% - 30px) !important; }

@@ -1,0 +1,50 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="row text-center">
+	<div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><span class="stat-label">Total membru</span><h4 class="stat-number">{{ total }}</h4></div></div></div>
+	<div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><span class="stat-label">Dadus báziku kompletu</span><h4 class="stat-number">{{ kompletu }}</h4></div></div></div>
+	<div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><span class="stat-label">Seidauk kompletu</span><h4 class="stat-number" style="color:#c9a800">{{ n_falta }}</h4></div></div></div>
+	<div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><span class="stat-label">Kualidade</span><h4 class="stat-number">{{ pct }}%</h4>
+		<div class="progress" style="height:8px"><div class="progress-bar bg-primary" style="width:{{ pct }}%"></div></div></div></div></div>
+</div>
+<div class="row">
+	<div class="col-lg-4"><div class="card"><div class="card-header">Kompletu tuir kampu</div><div class="card-body">
+		{% for m in metrika %}<div class="mb-2"><div class="d-flex justify-content-between"><small>{{ m.label }}</small><small><strong>{{ m.pct }}%</strong> ({{ m.n }})</small></div>
+		<div class="progress" style="height:6px"><div class="progress-bar bg-primary" style="width:{{ m.pct }}%"></div></div></div>{% endfor %}
+	</div></div></div>
+	<div class="col-lg-4"><div class="card"><div class="card-header bg-primary">Tuir munisipiu</div><div class="card-body"><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Munisipiu</th><th>Total</th><th>Kompletu</th></tr></thead><tbody>
+		{% for r in por_mun %}<tr><td>{{ r.naran }}</td><td>{{ r.total }}</td><td>{{ r.pct }}%</td></tr>{% empty %}<tr><td colspan="3" class="text-gray">Laiha data.</td></tr>{% endfor %}</tbody></table></div></div></div></div>
+	<div class="col-lg-4"><div class="card"><div class="card-header bg-warning">Tuir orgaun/movimentu</div><div class="card-body"><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Orgaun</th><th>Total</th><th>Kompletu</th></tr></thead><tbody>
+		{% for r in por_org %}<tr><td>{{ r.naran }}</td><td>{{ r.total }}</td><td>{{ r.pct }}%</td></tr>{% empty %}<tr><td colspan="3" class="text-gray">Laiha data.</td></tr>{% endfor %}</tbody></table></div></div></div></div>
+</div>
+{% if can_merge %}
+<div class="card">
+	<div class="card-header">Posibilidade duplikadu ({{ duplikadu|length }})</div>
+	<div class="card-body">
+		{% for g in duplikadu %}
+		<div class="border rounded p-2 mb-2">
+			<span class="badge badge-pendente">{{ g.sebab }}</span>
+			{% for m in g.membru %}<div class="mt-1"><a href="{% url 'membro-detail' m.hashed %}">{{ m.nome }}</a> <small class="text-gray">{{ m.telefone|default:"" }} {{ m.date_of_birth|date:"d/m/Y"|default:"" }}</small>
+				{% if not forloop.first %}<a class="btn btn-sm btn-outline-primary ml-2 no-print" href="{% url 'membro-hamutuk' %}?a={{ g.membru.0.hashed }}&b={{ m.hashed }}"><i class="fa fa-compress"></i> Hamutuk ho {{ g.membru.0.nome|truncatechars:18 }}</a>{% endif %}</div>{% endfor %}
+		</div>
+		{% empty %}<p class="text-gray mb-0"><i class="fa fa-check text-success"></i> Laiha posibilidade duplikadu ne'ebé hetan.</p>{% endfor %}
+	</div>
+</div>
+{% endif %}
+<div class="card">
+	<div class="card-header">Membru ho dadus seidauk kompletu ({{ n_falta }})</div>
+	<div class="card-body">
+		<div class="table-responsive"><table class="table table-sm table-stack"><thead><tr><th>Naran</th><th>Falta</th><th class="no-print">#</th></tr></thead><tbody>
+			{% for m in page %}<tr><td data-label="Naran"><a href="{% url 'membro-detail' m.hashed %}">{{ m.nome }}</a></td>
+				<td data-label="Falta">{% for f in m.falta %}<span class="badge badge-pendente">{{ f }}</span> {% endfor %}</td>
+				<td class="no-print no-label aksaun">{% if can_edit %}<a class="btn btn-sm btn-success" href="{% url 'membro-update' m.hashed %}"><i class="fa fa-edit"></i> Kompleta</a>{% endif %}</td></tr>
+			{% empty %}<tr><td colspan="3" class="text-center text-gray">Hotu kompletu.</td></tr>{% endfor %}
+		</tbody></table></div>
+		{% if page.paginator.num_pages > 1 %}<nav class="no-print"><ul class="pagination pagination-sm justify-content-center mb-0">
+			{% if page.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}">Antes</a></li>{% endif %}
+			<li class="page-item active"><span class="page-link">{{ page.number }} / {{ page.paginator.num_pages }}</span></li>
+			{% if page.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">Tuir</a></li>{% endif %}
+		</ul></nav>{% endif %}
+	</div>
+</div>
+{% endblock %}

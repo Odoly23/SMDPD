@@ -62,6 +62,7 @@ def _menu(request, group):
 		items.append(_grupu(request, 'Data Master', 'fa-database', [
 			_item(request, label, icon, 'master-list', args=(tipu,), names=('master-list', 'master-add', 'master-update'),
 				match_kwargs={'tipu': tipu}) for tipu, label, icon in MASTER]))
+		items.append(_item(request, 'Anunsiu', 'fa-bullhorn', 'anunsiu-list'))
 		items.append(_item(request, 'Historia', 'fa-history', 'historia-list'))
 		return items
 	if group in roles.VIEW_ROLES:
@@ -74,9 +75,18 @@ def _menu(request, group):
 		struktura += [_item(request, label, icon, 'struktura-list', args=(slug,), names=('struktura-list', 'alokasaun-add', 'alokasaun-update'),
 			match_kwargs={'nivel': slug}) for slug, label, icon in STRUKTURA if slug in _nivel_ba(group)]
 		items.append(_grupu(request, 'Struktura', 'fa-sitemap', struktura))
-		items.append(_item(request, 'Relatoriu', 'fa-table', 'report-dash'))
-		items.append(_item(request, 'Grafik', 'fa-bar-chart', 'report-chart'))
-		items.append(_item(request, 'Rekursu', 'fa-graduation-cap', 'report-rekursu'))
+		items.append(_grupu(request, 'Atividade', 'fa-flag-checkered', [
+			_item(request, 'Anunsiu', 'fa-bullhorn', 'anunsiu-list', names=('anunsiu-list', 'anunsiu-add', 'anunsiu-update')),
+			_item(request, 'Eventu', 'fa-calendar', 'eventu-list', names=('eventu-list', 'eventu-add', 'eventu-detail', 'eventu-update', 'prezensa-foti')),
+			_item(request, 'Kuota', 'fa-money', 'kuota-list', names=('kuota-list', 'kuota-add', 'kuota-rezumu')),
+		]))
+		items.append(_grupu(request, 'Relatoriu', 'fa-table', [
+			_item(request, 'Relatoriu Membru', 'fa-table', 'report-dash'),
+			_item(request, 'Grafik no Mapa', 'fa-bar-chart', 'report-chart'),
+			_item(request, 'Rekursu Intelektual', 'fa-graduation-cap', 'report-rekursu'),
+			_item(request, 'Kualidade Dadus', 'fa-check-circle', 'report-kualidade', names=('report-kualidade', 'membro-hamutuk')),
+			_item(request, 'Aniversariu', 'fa-birthday-cake', 'report-aniversariu'),
+		]))
 		if group in roles.HISTORIA_ROLES:
 			items.append(_item(request, 'Historia', 'fa-history', 'historia-list'))
 	return items

@@ -1,0 +1,27 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-3 no-print">
+	<ul class="nav nav-pills">
+		<li class="nav-item"><a class="nav-link {% if not liu %}active{% endif %}" href="{% url 'eventu-list' %}">Tuir mai</a></li>
+		<li class="nav-item"><a class="nav-link {% if liu %}active{% endif %}" href="?tab=liu">Liu ona</a></li>
+	</ul>
+	{% if can_add %}<a class="btn btn-sm btn-primary" href="{% url 'eventu-add' %}"><i class="fa fa-plus"></i> Eventu Foun</a>{% endif %}
+</div>
+<div class="row">
+	{% for e in objects %}
+	<div class="col-md-6 col-xl-4">
+		<div class="card eventu-kartu">
+			<div class="card-body">
+				<div class="eventu-data"><strong>{{ e.data_hahu|date:"d" }}</strong><span>{{ e.data_hahu|date:"M Y" }}</span></div>
+				<h6 class="mb-1"><a href="{% url 'eventu-detail' e.pk %}">{{ e.titulu }}</a></h6>
+				<span class="badge badge-primary">{{ e.get_tipu_display }}</span> <span class="badge badge-light">{{ e.unidade }}</span>
+				<p class="mb-0 mt-2 text-gray"><small><i class="fa fa-clock-o"></i> {{ e.data_hahu|date:"H:i" }}{% if e.fatin %} · <i class="fa fa-map-marker"></i> {{ e.fatin }}{% endif %}</small></p>
+				{% if liu %}<p class="mb-0 text-gray"><small><i class="fa fa-users"></i> {{ e.n_prezente }} prezente</small></p>{% endif %}
+			</div>
+		</div>
+	</div>
+	{% empty %}
+	<div class="col-12 text-center text-gray py-5"><i class="fa fa-calendar fa-3x mb-2"></i><p>Laiha eventu.</p></div>
+	{% endfor %}
+</div>
+{% endblock %}

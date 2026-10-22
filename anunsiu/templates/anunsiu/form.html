@@ -1,0 +1,11 @@
+{% extends "main/form.html" %}
+{% block form_scripts %}
+<script>
+	function alvu() {
+		var a = ($('#id_audiens').val() || '').toLowerCase();
+		$('.alvu-munisipiu, .alvu-organizasaun, .alvu-departamentu').hide();
+		if (a !== 'hotu') { $('.alvu-' + a).show(); }
+	}
+	$('#id_audiens').on('change', alvu); alvu();
+</script>
+{% endblock %}

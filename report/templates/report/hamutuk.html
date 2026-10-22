@@ -1,0 +1,26 @@
+{% extends "main/layout.html" %}
+{% block crumbs %}
+<li class="breadcrumb-item"><a href="{% url 'report-kualidade' %}">Kualidade Dadus</a></li>
+<li class="breadcrumb-item active" aria-current="page">Hamutuk</li>
+{% endblock %}
+{% block content %}
+<div class="card">
+	<div class="card-header">Hamutuk membru duplikadu</div>
+	<div class="card-body">
+		<div class="alert alert-warning p-2"><i class="fa fa-exclamation-triangle"></i> Hili membru ida atu <strong>mantein</strong>. Membru seluk sei <strong>hamoos</strong>; kampu mamuk, pozisaun, prezensa, kuota no historia husi ne'e sei tama ba membru ne'ebé mantein. Aksaun ne'e la bele fila fali.</div>
+		<div class="table-responsive"><table class="table table-sm table-bordered">
+			<thead><tr><th></th><th>{{ a.nome }}</th><th>{{ b.nome }}</th></tr></thead>
+			<tbody>
+				{% for label, va, vb in campos %}<tr><td>{{ label }}</td><td>{{ va|default:"-" }}</td><td>{{ vb|default:"-" }}</td></tr>{% endfor %}
+				<tr><td>Pozisaun iha struktura</td><td>{{ n_poz.0 }}</td><td>{{ n_poz.1 }}</td></tr>
+			</tbody>
+		</table></div>
+		<form method="post" data-confirm="Hamutuk membru rua ne'e? Aksaun ne'e la bele fila fali.">{% csrf_token %}
+			<input type="hidden" name="a" value="{{ a.hashed }}"><input type="hidden" name="b" value="{{ b.hashed }}">
+			<button class="btn btn-primary" type="submit" name="keep" value="{{ a.hashed }}"><i class="fa fa-compress"></i> Mantein {{ a.nome|truncatechars:25 }}</button>
+			<button class="btn btn-primary" type="submit" name="keep" value="{{ b.hashed }}"><i class="fa fa-compress"></i> Mantein {{ b.nome|truncatechars:25 }}</button>
+			<a class="btn btn-secondary" href="{% url 'report-kualidade' %}">Cancela</a>
+		</form>
+	</div>
+</div>
+{% endblock %}

@@ -47,6 +47,7 @@ def MembroDetail(request, hashid):
 	historias = obj.historia.select_related('user')[:50] if group in roles.HISTORIA_ROLES else None
 	context = {
 		'group': group, 'obj': obj, 'hashid': hashid, 'alokasauns': alokasauns, 'historias': historias,
+		'prezensas': obj.prezensa.select_related('eventu').order_by('-eventu__data_hahu')[:10],
 		'can_edit': group in roles.INPUT_ROLES,
 		'can_aprova': group in roles.APROVA_ROLES and obj.aprovasaun == 'Pendente',
 		'can_del': group in roles.APROVA_ROLES,

@@ -82,6 +82,27 @@ class APIHakbit(BaseAPI):
 		return Response({'label': [str(r[0]) for r in rows], 'obj': [r[1] for r in rows]})
 
 
+class APIRejistuFulan(BaseAPI):
+	"""Membru foun tuir fulan (12 fulan ikus), baseia ba data rejistu."""
+
+	def get(self, request, format=None):
+		from django.db.models.functions import TruncMonth
+		hoje = datetime.date.today()
+		ano, fulan = hoje.year, hoje.month
+		fulans = []
+		for i in range(11, -1, -1):
+			m = fulan - i
+			a = ano
+			while m <= 0:
+				m += 12
+				a -= 1
+			fulans.append((a, m))
+		qs = membro_scope(request.user).filter(datetime__isnull=False, datetime__gte=datetime.datetime(fulans[0][0], fulans[0][1], 1, tzinfo=datetime.timezone.utc)) \
+			.annotate(f=TruncMonth('datetime')).order_by().values('f').annotate(n=Count('id', distinct=True))
+		d = {(r['f'].year, r['f'].month): r['n'] for r in qs}
+		return Response({'label': [f'{a}-{m:02d}' for a, m in fulans], 'obj': [d.get(x, 0) for x in fulans]})
+
+
 AGE_BINS = [(0, 17, '< 18'), (18, 25, '18-25'), (26, 35, '26-35'), (36, 45, '36-45'),
 	(46, 55, '46-55'), (56, 65, '56-65'), (66, 200, '> 65')]
 

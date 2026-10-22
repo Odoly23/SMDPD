@@ -13,6 +13,9 @@
 		<a class="btn btn-primary" href="{% url 'historia-list' %}"><i class="fa fa-history"></i> Historia</a>
 	</div>
 {% else %}
+	{% for a in anunsius %}
+	<div class="alert alert-{% if a.importante %}warning{% else %}success{% endif %} p-2 mb-2"><i class="fa fa-bullhorn"></i> <strong>{{ a.titulu }}</strong> — {{ a.mensagem|truncatechars:140 }} <a href="{% url 'anunsiu-list' %}">Lee tan</a></div>
+	{% endfor %}
 	<section class="dashboard-counts no-padding-bottom">
 		<div class="card"><div class="card-body"><div class="row">
 			<div class="col-6 col-md-3 mb-2">
@@ -49,6 +52,16 @@
 			<div class="card"><div class="card-header">Idade</div><div class="card-body"><div style="height: 240px;"><canvas id="chart_idade"></canvas></div></div></div>
 		</div>
 	</div>
+	{% if aniversarius %}
+	<div class="card"><div class="card-header"><i class="fa fa-birthday-cake"></i> Aniversariu semana ne'e</div><ul class="list-group list-group-flush">
+		{% for o in aniversarius %}<li class="list-group-item"><a href="{% url 'membro-detail' o.membru.hashed %}">{{ o.membru.nome }}</a> <small class="text-gray">· {{ o.idade }} tinan</small> <span class="float-right badge badge-{% if o.loron == 0 %}ativu{% else %}light{% endif %}">{% if o.loron == 0 %}Ohin{% else %}{{ o.data|date:"d/m" }}{% endif %}</span></li>{% endfor %}
+	</ul><div class="card-footer text-center"><a href="{% url 'report-aniversariu' %}">Hare hotu</a></div></div>
+	{% endif %}
+	{% if eventus %}
+	<div class="card"><div class="card-header"><i class="fa fa-calendar"></i> Eventu tuir mai</div><ul class="list-group list-group-flush">
+		{% for e in eventus %}<li class="list-group-item"><a href="{% url 'eventu-detail' e.pk %}"><strong>{{ e.titulu }}</strong></a> <span class="badge badge-primary">{{ e.get_tipu_display }}</span><br><small class="text-gray">{{ e.data_hahu|date:"d/m/Y H:i" }}{% if e.fatin %} · {{ e.fatin }}{% endif %}</small></li>{% endfor %}
+	</ul></div>
+	{% endif %}
 	<div class="text-center mt-3">
 		<a class="btn btn-outline-primary" href="{% url 'report-dash' %}"><i class="fa fa-table"></i> Relatoriu</a>
 		<a class="btn btn-outline-primary" href="{% url 'report-chart' %}"><i class="fa fa-bar-chart"></i> Grafik Kompletu</a>

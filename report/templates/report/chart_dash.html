@@ -22,6 +22,7 @@
 </div>
 <div class="row">
 	<div class="col-md-6"><div class="card"><div class="card-header">Membru Bazeia Estado Civil</div><div class="card-body"><div style="height:280px"><canvas id="c_marital"></canvas></div></div></div></div>
+	<div class="col-md-6"><div class="card"><div class="card-header">Rejistu Foun (12 Fulan Ikus)</div><div class="card-body"><div style="height:280px"><canvas id="c_fulan"></canvas></div></div></div></div>
 	<div class="col-md-6"><div class="card"><div class="card-header">Membru Tuir Tinan Tama PLP</div><div class="card-body"><div style="height:280px"><canvas id="c_hakbit"></canvas></div></div></div></div>
 </div>
 {% endblock %}
@@ -39,6 +40,7 @@
 	grafik('c_munisipiu', "{% url 'api-munisipiu' %}", 'horizontalBar', 'Membru');
 	grafik('c_org', "{% url 'api-organizasaun' %}", 'bar', 'Membru');
 	grafik('c_marital', "{% url 'api-marital' %}", 'pie', 'Estado Civil');
+	grafik('c_fulan', "{% url 'api-rejistu-fulan' %}", 'bar', 'Rejistu foun');
 	grafik('c_hakbit', "{% url 'api-hakbit' %}", 'bar', 'Membru');
 </script>
 {% endblock %}
