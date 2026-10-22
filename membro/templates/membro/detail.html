@@ -25,6 +25,9 @@
 					</form>
 					{% endif %}
 				</div>
+				{% if not obj.kompletu %}
+				<div class="alert alert-warning p-2"><i class="fa fa-exclamation-triangle"></i> Dadus seidauk kompletu (nu. eleitoral, data moris ka aldeia). {% if can_edit %}Hasai iha <a href="{% url 'membro-update' hashid %}">Edita</a>.{% endif %}</div>
+				{% endif %}
 				{% if obj.aprovasaun == 'Rejeitadu' %}
 				<div class="alert alert-danger p-2"><b>Rejeitadu.</b> Razaun: <span class="pre-wrap">{{ obj.razaun_rejeita }}</span></div>
 				{% endif %}
@@ -37,17 +40,25 @@
 					</div>
 					<div class="col-md-9">
 						<table class="table table-sm">
-							<tr><td width="30%">Nu. Eleitoral</td><td>{{ obj.nu_eleitoral }}</td></tr>
+							<tr><td width="30%">Nu. Eleitoral</td><td>{{ obj.nu_eleitoral|default:"-" }}</td></tr>
 							<tr><td>Sexu</td><td>{{ obj.sex }}</td></tr>
-							<tr><td>Fatin/Data Moris</td><td>{{ obj.place_of_birth|default:"-" }} / {{ obj.date_of_birth|date:"d/m/Y" }} ({{ obj.age }} tinan)</td></tr>
+							<tr><td>Fatin/Data Moris</td><td>{{ obj.place_of_birth|default:"-" }} / {{ obj.date_of_birth|date:"d/m/Y"|default:"-" }}{% if obj.age is not None %} ({{ obj.age }} tinan){% endif %}</td></tr>
 							<tr><td>Estado Civil</td><td>{{ obj.marital|default:"-" }}</td></tr>
 							<tr><td>Nu. BI</td><td>{{ obj.nu_bi|default:"-" }}</td></tr>
 							<tr><td>Nu. Telemovel</td><td>{{ obj.telefone|default:"-" }}</td></tr>
-							<tr><td>Munisipiu / Postu</td><td>{{ obj.municipality }} / {{ obj.post }}</td></tr>
-							<tr><td>Suku / Aldeia</td><td>{{ obj.village }} / {{ obj.aldeia }}</td></tr>
+							<tr><td>Munisipiu / Postu</td><td>{{ obj.municipality|default:"-" }} / {{ obj.post|default:"-" }}</td></tr>
+							<tr><td>Suku / Aldeia</td><td>{{ obj.village|default:"-" }} / {{ obj.aldeia|default:"-" }}</td></tr>
 							<tr><td>Hela Fatin</td><td>{{ obj.address|default:"-" }}</td></tr>
 							<tr><td>Orgaun/Movimentu</td><td>{{ obj.organizasaun|default:"-" }}</td></tr>
 							<tr><td>Data Hakbit (Tama PLP)</td><td>{{ obj.data_hakbit|date:"d/m/Y"|default:"-" }}</td></tr>
+							<tr><td>Email</td><td>{{ obj.email|default:"-" }}</td></tr>
+							<tr><th colspan="2" class="bg-light">REKURSU INTELEKTUAL</th></tr>
+							<tr><td>Nivel Estudu / Gelar</td><td>{{ obj.nivel_edukasaun|default:"-" }}</td></tr>
+							<tr><td>Area Estudu</td><td>{{ obj.area_estudu|default:"-" }}</td></tr>
+							<tr><td>Servisu Fatin Agora</td><td>{{ obj.servisu_fatin|default:"-" }}</td></tr>
+							<tr><td>Munisipiu Orijin</td><td>{{ obj.municipality_orijin|default:"-" }}</td></tr>
+							<tr><td>Esperensia Servisu</td><td class="pre-wrap">{{ obj.esperensia|default:"-" }}</td></tr>
+							<tr><td>Kontribuisaun ba Programa PLP</td><td class="pre-wrap">{{ obj.kontribuisaun|default:"-" }}</td></tr>
 							<tr><th colspan="2" class="bg-light">APROVASAUN</th></tr>
 							<tr><td>Estatutu</td><td><span class="badge badge-{{ obj.aprovasaun|lower }}">{{ obj.aprovasaun }}</span>
 								{% if obj.aprovadu_husi %} husi {{ obj.aprovadu_husi.get_username }} ({{ obj.data_aprovasaun|date:"d/m/Y H:i" }}){% endif %}</td></tr>

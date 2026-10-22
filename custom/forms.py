@@ -127,8 +127,8 @@ class DepartamentuForm(CodeNameForm):
 
 
 class OrganizasaunForm(CodeNameForm):
-	columns = ['code', 'name', 'logo', 'is_active']
+	columns = ['code', 'name', 'titulu', 'sede', 'logo', 'is_active']
 
 	class Meta:
 		model = Organizasaun
-		fields = ['code', 'name', 'logo', 'is_active']
+		fields = ['code', 'name', 'titulu', 'sede', 'logo', 'is_active']

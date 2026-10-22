@@ -90,7 +90,7 @@ class APIAge(BaseAPI):
 	def get(self, request, format=None):
 		today = datetime.date.today()
 		counts = [0] * len(AGE_BINS)
-		for dob in membro_scope(request.user).values_list('date_of_birth', flat=True).distinct():
+		for dob in membro_scope(request.user).filter(date_of_birth__isnull=False).values_list('date_of_birth', flat=True).distinct():
 			age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
 			for i, (lo, hi, _) in enumerate(AGE_BINS):
 				if lo <= age <= hi:

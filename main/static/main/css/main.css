@@ -100,3 +100,20 @@ canvas { max-width: 100%; }
 .kartaun-rodape { padding: 6px 14px; background: #f0f6f2; border-top: 2px solid #f9d71c; font-size: .72rem; color: #555; text-align: center; }
 @media (max-width: 420px) { .kartaun-isi { flex-direction: column; align-items: center; } .kartaun-data { width: 100%; } }
 @media print { .kartaun { box-shadow: none; max-width: 100%; page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+
+/* ---- Dokumentu Rekursu Intelektual (formulariu) ---- */
+.dokumentu { background: #fff; }
+.dok-kabesalhu { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px; text-align: center; }
+.dok-kabesalhu img { width: 72px; height: 72px; object-fit: contain; }
+.dok-titulu { font-size: 1.35rem; font-weight: 700; }
+.dok-subtitulu { font-size: 1.05rem; font-weight: 700; }
+.dok-sede { font-size: .75rem; font-weight: 700; }
+.dok-judul { text-align: center; color: #d00; font-size: 1rem; font-weight: 700; margin: 10px 0 12px; }
+.dok-tabela { color: #222; font-size: .8rem; }
+.dok-tabela thead th { background: #e5e5e5; text-transform: none; color: #111; font-size: .78rem; vertical-align: bottom; border: 1px solid #333; }
+.dok-tabela td { border: 1px solid #555; vertical-align: top; }
+.dok-data { font-size: .8rem; margin: 6px 0 6px 38%; }
+.dok-assina { font-size: .85rem; margin-top: 8px; }
+[contenteditable="true"]:hover { outline: 1px dashed #04d419; }
+@media print { [contenteditable="true"]:hover { outline: 0; } .dok-tabela { font-size: 9pt; } .dok-tabela a { color: #000; } }
+@media (max-width: 767px) { .dok-kabesalhu { flex-direction: column; } .dok-data { margin-left: 0; } }

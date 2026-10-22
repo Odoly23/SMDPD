@@ -9,7 +9,7 @@ Sistema Managemen Dadus Membru Partidu PLP (Partidu Libertasaun Popular). Aplika
 | **Nasionál** | Presidente, Vice 1–4, Sekretaria, Membru |
 | **Departamentu** (iha Estrutura Nasionál) | Presidente Departamentu, Koordenador, Vice 1–4, Membru |
 | **Munisipal**, **Postu Administrativu**, **Suku**, **Aldeia** | Koordenador, Vice 1–4, Sekretaria, Membru |
-| **Orgaun/Movimentu** (ez. SEE) | Presidente, Vice 1–4, Sekretaria, Koordenador, Membru. Orgaun/movimentu mós bele iha **departamentu** rasik |
+| **Orgaun/Movimentu** (ez. SEE) | Presidente, Vice 1–8, Sekretaria, Koordenador, Membru. Orgaun/movimentu mós bele iha **departamentu** rasik no **filiál iha munisipiu** (pozisaun orgaun + munisipiu) |
 
 Pozisaun hotu (liu Membru) ida de'it ba unidade ida ho estatutu ativu. Konfigurasaun iha `membro/models.py` (`POZISAUN_POR_NIVEL`).
 
@@ -32,6 +32,20 @@ Membru foun ka edita sei hetan estatutu *Pendente* to'o Presidente Nasionál apr
 ## Login ba pozisaun (membru ordináriu la login)
 
 Membru ordináriu **la iha login**. Deit pozisaun ne'ebé iha ona peran bele hetan konta: Presidente/Sekretaria Nasionál, Presidente/Koordenador Departamentu, Koordenador Munisipal/Postu/Suku/Aldeia no Presidente/Vice/Sekretaria/Koordenador Orgaun/Movimentu. Iha **Struktura** → botaun **Kria** (login) bainhira membru aprovadu no ativu; username = nu. eleitoral, password aleatóriu hatudu dala ida deit. Konta sai ativu/la ativu automátiku tuir pozisaun (hamoos pozisaun ka membru falesidu → konta desativa). Presidente Orgaun la bele kria login ba Presidente Orgaun (Presidente Nasionál mak halo); deit Presidente Nasionál bele kria login nasionál.
+
+## Importa Database SEE-PLP (Excel) no Rekursu Intelektual
+
+```bash
+python manage.py import_see /dalan/Database_SEE-PLP_2026.xlsx --dry-run   # haree rezultadu no avizu deit
+python manage.py import_see /dalan/Database_SEE-PLP_2026.xlsx             # membru foun = Pendente (uza --aprova atu Aprovadu)
+```
+
+- Aba **Form Responses 1** = fonte prinsipál: membru, departamentu, pozisaun (Presidente, Vice 1–8, Koordenador, Membru) no estrutura (nasionál ka munisipiu). Naran pozisaun no departamentu ne'ebé la hanesan (ex. *Vise 3*, *Vice Koordenador II*, *Asunto/Asuntu Finansas*) hetan normaliza; pozisaun ida ne'ebé okupadu ona sai *Membru* no avizu hatudu iha relatóriu.
+- Aba **Sheet1** (formulariu rekursu intelektual): naran iha aba ne'e la hanesan ho liña dadus nian, nune'e liña *hatán* ba membru liu husi nu. telemovel (ka email, ka área+nivel úniku); ne'ebé la hatán la importa no hatudu iha avizu.
+- Membru bele la iha nu. eleitoral/data moris/área: marka **!** (dadus seidauk kompletu) no formuláriu edita obriga kompleta.
+- Seguru atu la'o dala barak; la sobu-hakerek dadus ne'ebé edita ona. **File Excel ho dadus pesoál la tama iha repositóriu.**
+
+**Relatoriu → Rekursu** (`/report/rekursu/`) = formulariu *Baze de Dadus ba Rekursus Intelektuais* (Orgaun Konsultivu/SEE): lista alfabétika ho Area Estudu, Nivel, Esperensia, Kontribuisaun, Munisipiu Orijin/Rezidensia, Nu. Kontaktu no Email, bele **imprime** (A4 landscape, títulu no assinatura bele edita molok imprime) no **esporta CSV**. Títulu no sede orgaun hanesan iha Data Master → Orgaun/Movimentu.
 
 ## Fitur seluk
 

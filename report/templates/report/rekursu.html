@@ -1,0 +1,65 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% block content %}
+<style media="print">@page { size: A4 landscape; margin: 10mm; } .main-content { border: 0; }</style>
+<form method="get" class="form-row mb-3 no-print">
+	<div class="col-md-4 mb-2">
+		<select class="form-control form-control-sm" name="orgaun" {% if fixa %}disabled{% endif %}>
+			<option value="">Orgaun/Movimentu hotu</option>
+			{% for o in orgs %}<option value="{{ o.pk }}"{% if org and org.pk == o.pk %} selected{% endif %}>{{ o.name }}</option>{% endfor %}
+		</select>
+	</div>
+	<div class="col-md-3 mb-2"><input type="text" class="form-control form-control-sm" name="q" value="{{ q }}" placeholder="Buka naran / área estudu / esperensia"></div>
+	<div class="col-md-3 mb-2 d-flex align-items-center">
+		<div class="form-check"><input class="form-check-input" type="checkbox" name="hotu" value="1" id="hotu"{% if hotu %} checked{% endif %}><label class="form-check-label" for="hotu">Inklui membru sein dadus estudu</label></div>
+	</div>
+	<div class="col-md-2 mb-2"><button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-search"></i> Buka</button></div>
+</form>
+<div class="mb-3 no-print">
+	<button class="btn btn-sm btn-primary" type="button" onclick="window.print()"><i class="fa fa-print"></i> Imprime</button>
+	<a class="btn btn-sm btn-outline-primary" href="?orgaun={{ org.pk|default:'' }}&q={{ q|urlencode }}{% if hotu %}&hotu=1{% endif %}&export=csv"><i class="fa fa-file-excel-o"></i> Esporta CSV</a>
+	<span class="text-gray ml-2"><small>{{ objects|length }} rejistu · klik iha testu assinatura atu edita molok imprime.</small></span>
+</div>
+
+<div class="dokumentu">
+	<div class="dok-kabesalhu">
+		<img src="{% if logo %}{{ logo }}{% else %}{% static 'main/images/logo_plp.png' %}{% endif %}" alt="Logo">
+		<div>
+			<div class="dok-titulu" contenteditable="true">{{ org.titulu|default:"Partidu Libertasaun Popular (PLP)" }}</div>
+			<div class="dok-subtitulu" contenteditable="true">{% if org %}{{ org.name }}{% else %}Orgaun/Movimentu hotu{% endif %}</div>
+			<div class="dok-sede" contenteditable="true">{{ org.sede|default:"" }}</div>
+		</div>
+	</div>
+	<h2 class="dok-judul">Baze de Dadus ba Rekursus Intelektuais ba Elaborasaun Programa Governasaun PLP</h2>
+	<div class="table-responsive">
+		<table class="table table-bordered table-sm dok-tabela">
+			<thead><tr>{% for k in koluna %}<th>{{ k }}</th>{% endfor %}</tr></thead>
+			<tbody>
+				{% for m in objects %}
+				<tr>
+					<td class="text-center">{{ forloop.counter }}</td>
+					<td><a href="{% url 'membro-detail' m.hashed %}">{{ m.nome }}</a></td>
+					<td>{{ m.area_estudu|default:"" }}</td>
+					<td>{{ m.nivel_edukasaun|default:"" }}</td>
+					<td class="pre-wrap">{{ m.esperensia|default:"" }}</td>
+					<td class="pre-wrap">{{ m.kontribuisaun|default:"" }}</td>
+					<td>{{ m.municipality_orijin|default:"" }}</td>
+					<td>{{ m.municipality|default:"" }}</td>
+					<td>{{ m.telefone|default:"" }}</td>
+					<td>{{ m.email|default:"" }}</td>
+				</tr>
+				{% empty %}
+				<tr><td colspan="10" class="text-center text-gray">Laiha dadus rekursu intelektual.</td></tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	{% if lebih %}<p class="text-danger no-print">Hatudu to'o {{ limite }} rejistu deit. Uza filtru atu hamenus.</p>{% endif %}
+	<div class="dok-data" contenteditable="true">Dili, ........../............../...............</div>
+	<div class="row dok-assina">
+		<div class="col-4"><div contenteditable="true">Prepara husi:<br><br><br><br>Sekretariadu Konjuntu<br>Orgaun Konsultivu no SEE</div></div>
+		<div class="col-4"><div contenteditable="true">Aprova husi:<br><br><br><br>Prezidente Orgaun Konsultivu PLP</div></div>
+		<div class="col-4"><div contenteditable="true">Kunhesimentu husi:<br><br><br><br>Jeneral Taur Matan Ruak<br>Prezidente PLP</div></div>
+	</div>
+</div>
+{% endblock %}

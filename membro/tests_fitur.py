@@ -117,3 +117,83 @@ class UIFiturTests(BaseData):
 		r = self.client.get(reverse('membro-list'))
 		self.assertContains(r, 'table-stack')
 		self.assertContains(r, 'data-label="Naran"')
+
+
+class RekursuTests(BaseData):
+	def setUp(self):
+		self.m1.area_estudu, self.m1.nivel_edukasaun, self.m1.esperensia = 'Ekonomia', 'S2', 'Dosen'
+		self.m1.municipality_orijin = self.mun2
+		self.m1.save()
+
+	def test_relatoriu_rekursu(self):
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('report-rekursu'), {'orgaun': self.org.pk})
+		self.assertEqual(r.status_code, 200)
+		self.assertContains(r, 'Baze de Dadus ba Rekursus Intelektuais')
+		self.assertContains(r, 'Joao Silva')
+		self.assertContains(r, 'Ekonomia')
+		self.assertNotContains(r, 'Maria Costa')    # laiha dadus estudu / orgaun seluk
+
+	def test_inklui_sein_dadus_no_csv(self):
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('report-rekursu'), {'hotu': '1', 'export': 'csv'})
+		body = r.content.decode('utf-8')
+		self.assertIn('Nivel Estudu / Gelar', body)
+		self.assertIn('Joao Silva', body)
+		self.assertIn('Maria Costa', body)
+		self.assertLess(body.index('Joao Silva'), body.index('Maria Costa'))     # ordem alfabétiku
+
+	def test_orgaun_fixa_ba_peran_orgaun(self):
+		self.m2.organizasaun = self.org2
+		self.m2.area_estudu = 'Direitu'
+		self.m2.save()
+		self.login(roles.PRES_ORG)
+		r = self.client.get(reverse('report-rekursu'), {'orgaun': self.org2.pk})
+		self.assertContains(r, 'Joao Silva')
+		self.assertNotContains(r, 'Maria Costa')
+
+	def test_peran_area_deit_hare_nia_rasik(self):
+		self.m2.area_estudu = 'Direitu'
+		self.m2.save()
+		self.login(roles.KOORD_MUN)
+		r = self.client.get(reverse('report-rekursu'))
+		self.assertNotContains(r, 'Maria Costa')
+		self.login(roles.ADMIN)
+		self.assertEqual(self.client.get(reverse('report-rekursu')).status_code, 403)
+
+
+class DadusLaKompletuTests(BaseData):
+	def test_membru_sein_nu_eleitoral_no_geografia(self):
+		from membro.models import Membro
+		m = Membro.objects.create(nome='Sein Dadus', sex='Mane', aprovasaun='Aprovadu')
+		self.assertFalse(m.kompletu())
+		self.assertEqual(str(m), 'Sein Dadus')
+		self.assertIsNone(m.age())
+		self.login(roles.PRESIDENTE)
+		self.assertContains(self.client.get(reverse('membro-list')), 'Sein Dadus')
+		r = self.client.get(reverse('membro-detail', args=[m.hashed]))
+		self.assertContains(r, 'seidauk kompletu')
+		self.assertEqual(self.client.get(reverse('membro-kartaun', args=[m.hashed])).status_code, 200)
+		self.assertEqual(self.client.get(reverse('membro-list') + '?export=csv').status_code, 200)
+		self.assertEqual(self.client.get(reverse('report-dash')).status_code, 200)
+		self.assertEqual(self.client.get(reverse('api-age')).status_code, 200)
+
+	def test_formulariu_obriga_kompleta(self):
+		from membro.models import Membro
+		m = Membro.objects.create(nome='Sein Dadus', sex='Mane', aprovasaun='Aprovadu', organizasaun=self.org)
+		self.login(roles.SEKR_ORG)
+		r = self.client.post(reverse('membro-update', args=[m.hashed]), {'nome': 'Sein Dadus', 'sex': 'Mane', 'status': 'Ativu'})
+		self.assertEqual(r.status_code, 200)
+		for campo in ('nu_eleitoral', 'date_of_birth', 'municipality'):
+			self.assertIn(campo, r.context['form'].errors)
+
+	def test_rekursu_iha_iha_formulariu(self):
+		self.login(roles.SEKRETARIA)
+		r = self.client.post(reverse('membro-add'), {
+			'nome': 'Foun Ho Rekursu', 'sex': 'Feto', 'date_of_birth': '1990-01-01', 'nu_eleitoral': 'e-7777',
+			'municipality': self.mun1.pk, 'post': self.post1.pk, 'village': self.vil1.pk, 'aldeia': self.ald1.pk, 'status': 'Ativu',
+			'nivel_edukasaun': 'S2', 'area_estudu': 'Direitu', 'email': 'a@b.tl', 'municipality_orijin': self.mun2.pk,
+			'esperensia': 'Advogada', 'kontribuisaun': 'Lei'})
+		self.assertEqual(r.status_code, 302, getattr(r, 'context', None) and r.context['form'].errors)
+		m = __import__('membro.models', fromlist=['Membro']).Membro.objects.get(nu_eleitoral='E-7777')
+		self.assertEqual((m.nivel_edukasaun, m.area_estudu, m.municipality_orijin, m.esperensia), ('S2', 'Direitu', self.mun2, 'Advogada'))

@@ -76,6 +76,7 @@ def _menu(request, group):
 		items.append(_grupu(request, 'Struktura', 'fa-sitemap', struktura))
 		items.append(_item(request, 'Relatoriu', 'fa-table', 'report-dash'))
 		items.append(_item(request, 'Grafik', 'fa-bar-chart', 'report-chart'))
+		items.append(_item(request, 'Rekursu', 'fa-graduation-cap', 'report-rekursu'))
 		if group in roles.HISTORIA_ROLES:
 			items.append(_item(request, 'Historia', 'fa-history', 'historia-list'))
 	return items

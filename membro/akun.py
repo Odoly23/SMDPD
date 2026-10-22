@@ -22,6 +22,10 @@ LOGIN_PERAN = {
 	('Organizasaun', 'Vice 2'): roles.VICE_ORG,
 	('Organizasaun', 'Vice 3'): roles.VICE_ORG,
 	('Organizasaun', 'Vice 4'): roles.VICE_ORG,
+	('Organizasaun', 'Vice 5'): roles.VICE_ORG,
+	('Organizasaun', 'Vice 6'): roles.VICE_ORG,
+	('Organizasaun', 'Vice 7'): roles.VICE_ORG,
+	('Organizasaun', 'Vice 8'): roles.VICE_ORG,
 	('Organizasaun', 'Sekretaria'): roles.SEKR_ORG,
 	('Organizasaun', 'Koordenador'): roles.KOORD_ORG,
 }
@@ -35,6 +39,8 @@ def peran_login(a):
 	"""Peran login ba alokasaun ida (ka None se pozisaun ne'e la bele login)."""
 	if a.ativu != 'Sim':
 		return None
+	if a.nivel == 'Organizasaun' and a.municipality_id:
+		return None                 # filiál orgaun iha munisipiu la iha login
 	return LOGIN_PERAN.get((a.nivel, a.pozisaun))
 
 

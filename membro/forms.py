@@ -59,7 +59,9 @@ class MembroForm(ChainMixin, forms.ModelForm):
 	class Meta:
 		model = Membro
 		fields = ['nome', 'sex', 'place_of_birth', 'date_of_birth', 'marital', 'nu_eleitoral', 'nu_bi',
-			'telefone', 'image', 'municipality', 'post', 'village', 'aldeia', 'address', 'organizasaun', 'data_hakbit', 'status']
+			'telefone', 'email', 'image', 'municipality', 'post', 'village', 'aldeia', 'address', 'organizasaun', 'data_hakbit', 'status',
+			'nivel_edukasaun', 'area_estudu', 'servisu_fatin', 'municipality_orijin', 'esperensia', 'kontribuisaun']
+		widgets = {'esperensia': forms.Textarea(attrs={'rows': 3}), 'kontribuisaun': forms.Textarea(attrs={'rows': 3})}
 
 	def __init__(self, *args, user=None, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -68,6 +70,8 @@ class MembroForm(ChainMixin, forms.ModelForm):
 		self.fields['organizasaun'].queryset = Organizasaun.objects.filter(is_active=True)
 		self.fields['organizasaun'].empty_label = '--- Laiha ---'
 		self.fields['municipality'].queryset = Municipality.objects.all()
+		self.fields['municipality_orijin'].queryset = Municipality.objects.all()
+		self.fields['municipality_orijin'].empty_label = '---------'
 		self._terkunci(group, scope)
 		self.limit_chain()
 		self.helper = FormHelper()
@@ -108,6 +112,23 @@ class MembroForm(ChainMixin, forms.ModelForm):
 			),
 			Row(
 				Column('status', css_class='form-group col-md-4 mb-0'),
+				Column('email', css_class='form-group col-md-8 mb-0'),
+				css_class='form-row'
+			),
+			HTML('<h6 class="mt-3 text-primary text-uppercase"><i class="fa fa-graduation-cap"></i> Rekursu Intelektual</h6><hr class="mt-1">'),
+			Row(
+				Column('nivel_edukasaun', css_class='form-group col-md-3 mb-0'),
+				Column('area_estudu', css_class='form-group col-md-5 mb-0'),
+				Column('municipality_orijin', css_class='form-group col-md-4 mb-0'),
+				css_class='form-row'
+			),
+			Row(
+				Column('servisu_fatin', css_class='form-group col-md-12 mb-0'),
+				css_class='form-row'
+			),
+			Row(
+				Column('esperensia', css_class='form-group col-md-6 mb-0'),
+				Column('kontribuisaun', css_class='form-group col-md-6 mb-0'),
 				css_class='form-row'
 			),
 			HTML(BTN_CANCEL),
@@ -188,7 +209,7 @@ class RejeitaForm(forms.Form):
 
 class MembroChoiceField(forms.ModelChoiceField):
 	def label_from_instance(self, obj):
-		return f'{obj.nome} ({obj.nu_eleitoral}) - {obj.village}/{obj.aldeia}'
+		return f'{obj.nome} ({obj.nu_eleitoral or "-"}) - {obj.village or "-"}/{obj.aldeia or "-"}'
 
 
 class AlokasaunForm(ChainMixin, forms.ModelForm):
@@ -258,7 +279,7 @@ class AlokasaunForm(ChainMixin, forms.ModelForm):
 				css_class='form-row'
 			),
 			Row(
-				Column('municipality', css_class='form-group col-md-3 mb-0 unit-munisipiu unit-postu unit-suku unit-aldeia'),
+				Column('municipality', css_class='form-group col-md-3 mb-0 unit-munisipiu unit-postu unit-suku unit-aldeia unit-organizasaun'),
 				Column('post', css_class='form-group col-md-3 mb-0 unit-postu unit-suku unit-aldeia'),
 				Column('village', css_class='form-group col-md-3 mb-0 unit-suku unit-aldeia'),
 				Column('aldeia', css_class='form-group col-md-3 mb-0 unit-aldeia'),
@@ -318,6 +339,7 @@ class AlokasaunForm(ChainMixin, forms.ModelForm):
 				self.add_error('membro', 'Membru ne\'e la hela iha aldeia ne\'e.')
 			unit['aldeia'] = aldeia
 		elif nivel == 'Organizasaun':
+			unit['municipality'] = mun       # opsionál: filiál orgaun iha munisipiu (mamuk = nasionál)
 			if not org:
 				self.add_error('organizasaun', 'Orgaun/Movimentu tenke hili.')
 			elif membro.organizasaun_id != org.pk:

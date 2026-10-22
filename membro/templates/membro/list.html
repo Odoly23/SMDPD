@@ -58,13 +58,13 @@
 						{% for obj in page %}
 							<tr>
 								<td data-label="Nu." class="no-label">{{ page.start_index|add:forloop.counter0 }}</td>
-								<td data-label="Nu. Eleitoral" class="d-none d-lg-table-cell">{{ obj.nu_eleitoral }}</td>
-								<td data-label="Naran"><a href="{% url 'membro-detail' obj.hashed %}"><strong>{{ obj.nome }}</strong></a></td>
+								<td data-label="Nu. Eleitoral" class="d-none d-lg-table-cell">{{ obj.nu_eleitoral|default:"-" }}</td>
+								<td data-label="Naran"><a href="{% url 'membro-detail' obj.hashed %}"><strong>{{ obj.nome }}</strong></a>{% if not obj.kompletu %} <span class="badge badge-pendente" title="Dadus seidauk kompletu">!</span>{% endif %}</td>
 								<td data-label="Sexu">{{ obj.sex }}</td>
 								<td data-label="Idade" class="d-none d-lg-table-cell">{{ obj.age }}</td>
-								<td data-label="Munisipiu" class="d-none d-md-table-cell">{{ obj.municipality }}</td>
-								<td data-label="Suku" class="d-none d-lg-table-cell">{{ obj.village }}</td>
-								<td data-label="Aldeia" class="d-none d-lg-table-cell">{{ obj.aldeia }}</td>
+								<td data-label="Munisipiu" class="d-none d-md-table-cell">{{ obj.municipality|default:"-" }}</td>
+								<td data-label="Suku" class="d-none d-lg-table-cell">{{ obj.village|default:"-" }}</td>
+								<td data-label="Aldeia" class="d-none d-lg-table-cell">{{ obj.aldeia|default:"-" }}</td>
 								<td data-label="Orgaun/Movimentu" class="d-none d-lg-table-cell">{{ obj.organizasaun|default_if_none:"-" }}</td>
 								<td data-label="Status" class="d-none d-lg-table-cell"><span class="badge badge-{{ obj.status|lower }}">{{ obj.status }}</span></td>
 								<td data-label="Aprovasaun"><span class="badge badge-{{ obj.aprovasaun|lower }}">{{ obj.aprovasaun }}</span></td>

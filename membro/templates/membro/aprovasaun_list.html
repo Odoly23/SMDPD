@@ -17,12 +17,12 @@
 								<tr>
 									<td><input type="checkbox" name="hashid" value="{{ obj.hashed }}"></td>
 									<td>{{ forloop.counter }}</td>
-									<td>{{ obj.nu_eleitoral }}</td>
+									<td>{{ obj.nu_eleitoral|default:"-" }}</td>
 									<td><a href="{% url 'membro-detail' obj.hashed %}">{{ obj.nome }}</a></td>
 									<td>{{ obj.sex }}</td>
-									<td>{{ obj.municipality }}</td>
-									<td>{{ obj.village }}</td>
-									<td>{{ obj.aldeia }}</td>
+									<td>{{ obj.municipality|default:"-" }}</td>
+									<td>{{ obj.village|default:"-" }}</td>
+									<td>{{ obj.aldeia|default:"-" }}</td>
 									<td>{{ obj.datetime|date:"d/m/Y H:i" }}</td>
 									<td><a class="btn btn-sm btn-danger" href="{% url 'aprovasaun-rejeita' obj.hashed %}" title="Rejeita"><i class="fa fa-times"></i></a></td>
 								</tr>

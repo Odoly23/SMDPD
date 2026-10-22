@@ -22,10 +22,10 @@
 			<div class="kartaun-data">
 				<h3>{{ obj.nome }}</h3>
 				<dl>
-					<dt>Nu. Eleitoral</dt><dd>{{ obj.nu_eleitoral }}</dd>
-					<dt>Data Moris</dt><dd>{{ obj.date_of_birth|date:"d/m/Y" }}</dd>
-					<dt>Munisipiu</dt><dd>{{ obj.municipality }} · {{ obj.post }}</dd>
-					<dt>Suku/Aldeia</dt><dd>{{ obj.village }} · {{ obj.aldeia }}</dd>
+					<dt>Nu. Eleitoral</dt><dd>{{ obj.nu_eleitoral|default:"-" }}</dd>
+					<dt>Data Moris</dt><dd>{{ obj.date_of_birth|date:"d/m/Y"|default:"-" }}</dd>
+					<dt>Munisipiu</dt><dd>{{ obj.municipality|default:"-" }} · {{ obj.post|default:"-" }}</dd>
+					<dt>Suku/Aldeia</dt><dd>{{ obj.village|default:"-" }} · {{ obj.aldeia|default:"-" }}</dd>
 					{% if obj.organizasaun %}<dt>Orgaun/Movimentu</dt><dd>{{ obj.organizasaun.name }}</dd>{% endif %}
 					{% for a in alokasauns %}{% if a.pozisaun != 'Membru' %}<dt>Pozisaun</dt><dd>{{ a.pozisaun }} · {{ a.unit|default:"PLP Nasionál" }}</dd>{% endif %}{% endfor %}
 				</dl>

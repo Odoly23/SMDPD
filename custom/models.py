@@ -73,6 +73,8 @@ class Departamentu(HashedModel):
 
 class Organizasaun(HashedModel):
 	"""Orgaun/Movimentu ne'ebé hela iha partidu laran (ez. Movimentu Diaspora, Sentru Estudu Estratejiku)."""
+	titulu = models.CharField(max_length=150, blank=True, default='', verbose_name="Títulu leten ba relatóriu")
+	sede = models.CharField(max_length=200, blank=True, default='', verbose_name="Sede / Enderesu")
 	code = models.CharField(max_length=10, verbose_name="Kódigu")
 	name = models.CharField(max_length=100, verbose_name="Naran")
 	logo = models.ImageField(upload_to=upload_logo, null=True, blank=True, verbose_name="Logo", validators=[validate_image_size])
