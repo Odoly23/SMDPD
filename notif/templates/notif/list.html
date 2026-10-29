@@ -1,0 +1,21 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="card">
+	<div class="card-header">{{ legend|upper }}</div>
+	<div class="card-body">
+		<form class="mb-2 no-print" method="post" action="{% url 'notif-le' %}">{% csrf_token %}
+			<button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> Marka hotu hanesan lee ona</button>
+		</form>
+		<ul class="list-group">
+			{% for obj in objects %}
+			<li class="list-group-item{% if not obj.is_read %} font-weight-bold{% endif %}">
+				<a href="{% url 'notif-loke' obj.pk %}">{{ obj.mesaun }}</a>
+				<small class="text-gray float-right">{{ obj.datetime|date:"d/m/Y H:i" }}</small>
+			</li>
+			{% empty %}
+			<li class="list-group-item">Laiha notifikasaun.</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}

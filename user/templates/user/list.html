@@ -1,0 +1,39 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card">
+			<div class="card-header">{{ legend }}</div>
+			<div class="card-body">
+				<a class="btn btn-sm btn-primary mb-3" href="{% url 'user-add' %}">Aumenta <i class="fa fa-plus"></i></a>
+				<div class="table-responsive">
+					<table class="table table-sm datatable" width="100%">
+						<thead><tr><th>Nu.</th><th>Username</th><th>Naran</th><th>Email</th><th>Peran</th><th>Área</th><th>Ativu</th><th>2FA</th><th>#</th></tr></thead>
+						<tbody>
+							{% for o in objects %}
+							<tr>
+								<td>{{ forloop.counter }}</td>
+								<td>{{ o.obj.username }}</td>
+								<td>{{ o.obj.first_name }}</td>
+								<td>{{ o.obj.email|default:"-" }}</td>
+								<td>{{ o.role }}</td>
+								<td>{{ o.area }}</td>
+								<td><span class="badge badge-{% if o.obj.is_active %}sim{% else %}lae{% endif %}">{% if o.obj.is_active %}Sim{% else %}Lae{% endif %}</span></td>
+								<td>{% if o.dua_faktor %}<span class="badge badge-sim">Ativu</span>{% else %}<span class="text-gray">-</span>{% endif %}</td>
+								<td>
+									<a class="btn btn-sm btn-success" href="{% url 'user-update' o.obj.pk %}" title="Edita"><i class="fa fa-edit"></i></a>
+									{% if o.obj.pk != user.pk %}
+									<form class="d-inline" method="post" action="{% url 'user-reset' o.obj.pk %}" data-confirm="Reset password {{ o.obj.username }}? Password foun sei hatudu dala ida deit.">{% csrf_token %}<button class="btn btn-sm btn-outline-primary" type="submit" title="Reset password"><i class="fa fa-key"></i></button></form>
+									{% if o.dua_faktor %}<form class="d-inline" method="post" action="{% url 'user-reset-2fa' o.obj.pk %}" data-confirm="Hamoos 2FA {{ o.obj.username }}?">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit" title="Reset 2FA"><i class="fa fa-shield"></i></button></form>{% endif %}
+									{% endif %}
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

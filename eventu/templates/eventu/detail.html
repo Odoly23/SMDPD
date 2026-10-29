@@ -1,0 +1,45 @@
+{% extends "main/layout.html" %}
+{% block crumbs %}
+<li class="breadcrumb-item"><a href="{% url 'eventu-list' %}">Eventu</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ ev.titulu }}</li>
+{% endblock %}
+{% block content %}
+<div class="card">
+	<div class="card-header d-flex justify-content-between"><span>{{ ev.titulu }}</span><span class="badge badge-primary align-self-center">{{ ev.get_tipu_display }}</span></div>
+	<div class="card-body">
+		<div class="mb-3 no-print">
+			{% if can_manage %}<a class="btn btn-sm btn-primary" href="{% url 'prezensa-foti' ev.pk %}"><i class="fa fa-check-square-o"></i> Foti Prezensa</a>{% endif %}
+			<a class="btn btn-sm btn-outline-primary" href="{% url 'prezensa-csv' ev.pk %}"><i class="fa fa-file-excel-o"></i> Esporta CSV</a>
+			{% if can_edit %}
+			<a class="btn btn-sm btn-success" href="{% url 'eventu-update' ev.pk %}"><i class="fa fa-edit"></i> Edita</a>
+			<form class="d-inline" method="post" action="{% url 'eventu-del' ev.pk %}" data-confirm="Hamoos eventu ne'e no nia lista prezensa?">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit"><i class="fa fa-trash"></i> Hamoos</button></form>
+			{% endif %}
+		</div>
+		<table class="table table-sm">
+			<tr><td width="25%">Data/Oras</td><td>{{ ev.data_hahu|date:"d/m/Y H:i" }}{% if ev.data_remata %} — {{ ev.data_remata|date:"d/m/Y H:i" }}{% endif %}</td></tr>
+			<tr><td>Fatin</td><td>{{ ev.fatin|default:"-" }}</td></tr>
+			<tr><td>Unidade</td><td>{{ ev.unidade }}</td></tr>
+			<tr><td>Deskrisaun</td><td class="pre-wrap">{{ ev.deskrisaun|default:"-" }}</td></tr>
+			<tr><td>Kria husi</td><td>{{ ev.kria_husi.first_name|default:ev.kria_husi.username }}</td></tr>
+		</table>
+		<div class="row text-center mb-3">
+			<div class="col-3"><span class="stat-label">Total</span><h4 class="stat-number">{{ sub_total }}</h4></div>
+			<div class="col-3"><span class="stat-label">Prezente</span><h4 class="stat-number">{{ total.Prezente }}</h4></div>
+			<div class="col-3"><span class="stat-label">Lisensa</span><h4 class="stat-number" style="color:#c9a800">{{ total.Lisensa }}</h4></div>
+			<div class="col-3"><span class="stat-label">Falta</span><h4 class="stat-number" style="color:#dc3545">{{ total.Falta }}</h4></div>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-sm table-stack">
+				<thead><tr><th>Nu.</th><th>Naran</th><th>Nu. Eleitoral</th><th>Estadu</th></tr></thead>
+				<tbody>
+					{% for p in prezensas %}
+					<tr><td data-label="Nu." class="no-label">{{ forloop.counter }}</td><td data-label="Naran"><a href="{% url 'membro-detail' p.membro.hashed %}">{{ p.membro.nome }}</a></td>
+						<td data-label="Nu. Eleitoral">{{ p.membro.nu_eleitoral|default:"-" }}</td>
+						<td data-label="Estadu"><span class="badge badge-{% if p.estadu == 'Prezente' %}ativu{% elif p.estadu == 'Lisensa' %}pendente{% else %}rejeitadu{% endif %}">{{ p.estadu }}</span></td></tr>
+					{% empty %}<tr><td colspan="4" class="text-center text-gray">Seidauk iha prezensa rejistu.</td></tr>{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

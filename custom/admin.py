@@ -1,3 +1,5 @@
 from django.contrib import admin
+from custom.models import Municipality, AdministrativePost, Village, Aldeia, Departamentu, Organizasaun
 
-# Register your models here.
+for model in (Municipality, AdministrativePost, Village, Aldeia, Departamentu, Organizasaun):
+	admin.site.register(model)

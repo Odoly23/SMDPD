@@ -1,0 +1,42 @@
+{% extends "main/layout.html" %}
+{% block crumbs %}
+<li class="breadcrumb-item"><a href="{% url 'kuota-list' %}">Kuota</a></li>
+<li class="breadcrumb-item active" aria-current="page">Rezumu</li>
+{% endblock %}
+{% block content %}
+<form method="get" class="form-inline mb-3 no-print">
+	<label class="mr-2">Tinan:</label>
+	<select class="form-control form-control-sm" name="tinan" onchange="this.form.submit()">{% for t in tinans %}<option value="{{ t }}"{% if t == tinan %} selected{% endif %}>{{ t }}</option>{% endfor %}</select>
+</form>
+<div class="row text-center">
+	<div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><span class="stat-label">Total rekolla</span><h4 class="stat-number">USD {{ total|floatformat:2 }}</h4></div></div></div>
+	<div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><span class="stat-label">Membru ativu</span><h4 class="stat-number">{{ n_ativu }}</h4></div></div></div>
+	<div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><span class="stat-label">Selu ona</span><h4 class="stat-number">{{ n_selu }}</h4></div></div></div>
+	<div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><span class="stat-label">Persentajen</span><h4 class="stat-number">{{ pct }}%</h4>
+		<div class="progress" style="height:8px"><div class="progress-bar bg-primary" style="width:{{ pct }}%"></div></div></div></div></div>
+</div>
+<div class="row">
+	<div class="col-lg-6"><div class="card"><div class="card-header bg-primary">Tuir Munisipiu</div><div class="card-body"><div class="table-responsive">
+		<table class="table table-sm"><thead><tr><th>Munisipiu</th><th>Ativu</th><th>Selu</th><th>%</th><th>USD</th></tr></thead><tbody>
+			{% for r in por_mun %}<tr><td>{{ r.naran }}</td><td>{{ r.ativu }}</td><td>{{ r.selu }}</td><td>{{ r.pct }}%</td><td>{{ r.total|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="5" class="text-gray">Laiha data.</td></tr>{% endfor %}
+		</tbody></table></div></div></div></div>
+	<div class="col-lg-6"><div class="card"><div class="card-header bg-warning">Tuir Orgaun/Movimentu</div><div class="card-body"><div class="table-responsive">
+		<table class="table table-sm"><thead><tr><th>Orgaun/Movimentu</th><th>Ativu</th><th>Selu</th><th>%</th><th>USD</th></tr></thead><tbody>
+			{% for r in por_org %}<tr><td>{{ r.naran }}</td><td>{{ r.ativu }}</td><td>{{ r.selu }}</td><td>{{ r.pct }}%</td><td>{{ r.total|floatformat:2 }}</td></tr>{% empty %}<tr><td colspan="5" class="text-gray">Laiha data.</td></tr>{% endfor %}
+		</tbody></table></div></div></div></div>
+</div>
+<div class="card">
+	<div class="card-header">Seidauk selu kuota {{ tinan }} ({{ page.paginator.count }})</div>
+	<div class="card-body">
+		<a class="btn btn-sm btn-outline-primary mb-3 no-print" href="?tinan={{ tinan }}&export=csv"><i class="fa fa-file-excel-o"></i> Esporta CSV</a>
+		<div class="table-responsive"><table class="table table-sm table-stack"><thead><tr><th>Naran</th><th>Nu. Eleitoral</th><th>Telemovel</th></tr></thead><tbody>
+			{% for m in page %}<tr><td data-label="Naran"><a href="{% url 'membro-detail' m.hashed %}">{{ m.nome }}</a></td><td data-label="Nu. Eleitoral">{{ m.nu_eleitoral|default:"-" }}</td><td data-label="Telemovel">{{ m.telefone|default:"-" }}</td></tr>{% empty %}<tr><td colspan="3" class="text-center text-gray">Hotu selu ona.</td></tr>{% endfor %}
+		</tbody></table></div>
+		{% if page.paginator.num_pages > 1 %}<nav class="no-print"><ul class="pagination pagination-sm justify-content-center mb-0">
+			{% if page.has_previous %}<li class="page-item"><a class="page-link" href="?tinan={{ tinan }}&page={{ page.previous_page_number }}">Antes</a></li>{% endif %}
+			<li class="page-item active"><span class="page-link">{{ page.number }} / {{ page.paginator.num_pages }}</span></li>
+			{% if page.has_next %}<li class="page-item"><a class="page-link" href="?tinan={{ tinan }}&page={{ page.next_page_number }}">Tuir</a></li>{% endif %}
+		</ul></nav>{% endif %}
+	</div>
+</div>
+{% endblock %}

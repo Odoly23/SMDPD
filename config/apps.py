@@ -2,4 +2,8 @@ from django.apps import AppConfig
 
 
 class ConfigConfig(AppConfig):
-    name = 'config'
+	default_auto_field = 'django.db.models.BigAutoField'
+	name = 'config'
+
+	def ready(self):
+		from config import security  # noqa: F401

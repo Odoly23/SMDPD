@@ -1,0 +1,18 @@
+{% extends "main/form.html" %}
+{% block form_scripts %}
+<script type="text/javascript">
+	// hatudu field área tuir peran ne'ebé hili
+	var AREA = {
+		pres_dep: 'departamentu', koord_dep: 'departamentu', koord_mun: 'municipality', koord_postu: 'post',
+		koord_suku: 'village', koord_aldeia: 'aldeia', koord_org: 'organizasaun',
+		pres_org: 'organizasaun', vice_org: 'organizasaun', sekr_org: 'organizasaun'
+	};
+	function toggleScope() {
+		var k = AREA[$('#id_group').val()];
+		$('.scope-departamentu, .scope-municipality, .scope-post, .scope-village, .scope-aldeia, .scope-organizasaun').hide();
+		if (k) { $('.scope-' + k).show(); }
+	}
+	$('#id_group').on('change', toggleScope);
+	toggleScope();
+</script>
+{% endblock %}

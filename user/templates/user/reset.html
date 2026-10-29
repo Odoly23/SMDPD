@@ -1,0 +1,13 @@
+{% extends "main/layout.html" %}
+{% block crumbs %}<li class="breadcrumb-item"><a href="{% url 'user-list' %}">Lista Uzuáriu</a></li><li class="breadcrumb-item active">{{ legend }}</li>{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-8 col-lg-6"><div class="card">
+	<div class="card-header">Password foun ba {{ akun.username }}</div>
+	<div class="card-body">
+		<div class="alert alert-warning p-2"><i class="fa fa-exclamation-triangle"></i> Password ne'e hatudu <strong>dala ida deit</strong>. Uzuáriu tenke troka bainhira login. Sesaun antigu hotu sai ona.</div>
+		<table class="table table-sm"><tr><td width="35%">Username</td><td><code class="kredensial">{{ akun.username }}</code></td></tr><tr><td>Password</td><td><code class="kredensial">{{ password }}</code></td></tr></table>
+		<button class="btn btn-outline-secondary no-print" type="button" onclick="window.print()"><i class="fa fa-print"></i> Imprime</button>
+		<a class="btn btn-primary no-print" href="{% url 'user-list' %}">Remata <i class="fa fa-check"></i></a>
+	</div>
+</div></div></div>
+{% endblock %}

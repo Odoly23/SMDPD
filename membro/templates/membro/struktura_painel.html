@@ -1,0 +1,63 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="card">
+	<div class="card-body text-center">
+		{% if can_add %}<a class="btn btn-sm btn-primary" href="{% url 'membro-add' %}"><i class="fa fa-users"></i> Rejistu</a>{% endif %}
+		<a class="btn btn-sm btn-info" href="{% url 'membro-list' %}"><i class="fa fa-users"></i> Lista Membru</a>
+		<a class="btn btn-sm btn-warning" href="{% url 'report-dash' %}"><i class="fa fa-bar-chart"></i> Relatoriu</a>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-header"><i class="fa fa-table"></i> Painel Struktura PLP</div>
+	<div class="card-body">
+		<div class="row">
+			<div class="col-lg-4 mb-3">
+				<h6 class="text-primary text-uppercase">Entidade</h6>
+				<table class="table table-sm table-bordered">
+					<thead class="thead-light"><tr><th>Naran</th><th class="text-right">Total</th></tr></thead>
+					<tbody>
+						<tr><td><a href="{% url 'struktura-list' 'organizasaun' %}">Orgaun/Movimentu</a></td><td class="text-right"><span class="badge badge-primary">{{ total_org }}</span></td></tr>
+						<tr><td><a href="{% url 'struktura-list' 'nasional' %}">Struktura</a></td><td class="text-right"><span class="badge badge-primary">{{ total_str }}</span></td></tr>
+						<tr class="font-weight-bold"><td>Total</td><td class="text-right">{{ total_entidade }}</td></tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-lg-4 mb-3">
+				<h6 class="text-primary text-uppercase">Orgaun/Movimentu <small class="text-gray float-right">Pájina {{ page.number }} husi {{ page.paginator.num_pages }}</small></h6>
+				<table class="table table-sm table-bordered">
+					<thead class="thead-light"><tr><th>Naran</th><th class="text-right">Total</th></tr></thead>
+					<tbody>
+						{% for r in page %}
+						<tr><td><a href="{% url 'membro-list' %}?organizasaun={{ r.obj.pk }}">{{ r.obj.name }}</a></td><td class="text-right"><span class="badge badge-primary">{{ r.total }}</span></td></tr>
+						{% empty %}
+						<tr><td colspan="2" class="text-center text-gray">Seidauk iha orgaun/movimentu. Admin bele rejista iha Data Master.</td></tr>
+						{% endfor %}
+						<tr class="font-weight-bold"><td>Total</td><td class="text-right">{{ total_org }}</td></tr>
+					</tbody>
+				</table>
+				{% if page.paginator.num_pages > 1 %}
+				<nav aria-label="Pájina"><ul class="pagination pagination-sm justify-content-center">
+					{% if page.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page.previous_page_number }}">&laquo;</a></li>{% endif %}
+					{% for n in page.paginator.page_range %}<li class="page-item{% if n == page.number %} active{% endif %}"><a class="page-link" href="?page={{ n }}">{{ n }}</a></li>{% endfor %}
+					{% if page.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page.next_page_number }}">&raquo;</a></li>{% endif %}
+				</ul></nav>
+				{% endif %}
+			</div>
+			<div class="col-lg-4 mb-3">
+				<h6 class="text-primary text-uppercase">Struktura</h6>
+				<table class="table table-sm table-bordered">
+					<thead class="thead-light"><tr><th>Naran</th><th class="text-right">Total</th></tr></thead>
+					<tbody>
+						{% for r in struktura %}
+						<tr><td><a href="{% url 'struktura-list' r.slug %}">{{ r.name }}</a></td><td class="text-right"><span class="badge badge-primary">{{ r.total }}</span></td></tr>
+						{% endfor %}
+						<tr class="font-weight-bold"><td>Total</td><td class="text-right">{{ total_struktura }}</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="alert alert-success mb-0"><strong>Total Membru:</strong> <span class="h5">{{ total_membru }}</span></div>
+	</div>
+</div>
+{% endblock %}

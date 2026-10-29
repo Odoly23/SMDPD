@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class MembroConfig(AppConfig):
-    name = 'membro'
+	default_auto_field = 'django.db.models.BigAutoField'
+	name = 'membro'

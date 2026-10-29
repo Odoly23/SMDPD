@@ -1,0 +1,27 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+	<h5 class="mb-0 text-uppercase text-muted">{{ legend }}</h5>
+	{% if can_add %}<a class="btn btn-sm btn-primary" href="{% url 'anunsiu-add' %}"><i class="fa fa-bullhorn"></i> Anunsiu Foun</a>{% endif %}
+</div>
+{% for a in objects %}
+<div class="card anunsiu{% if a.importante %} anunsiu-importante{% endif %}">
+	<div class="card-header d-flex justify-content-between align-items-start">
+		<span>{% if a.importante %}<i class="fa fa-star text-warning"></i> {% endif %}{{ a.titulu }}</span>
+		<span class="badge badge-primary">{{ a.get_audiens_display }}{% if a.audiens != 'Hotu' %}: {{ a.alvu }}{% endif %}</span>
+	</div>
+	<div class="card-body">
+		<p class="pre-wrap mb-2 anunsiu-teks">{{ a.mensagem }}</p>
+		<small class="text-gray">{{ a.datetime|date:"d/m/Y H:i" }} · {{ a.kria_husi.first_name|default:a.kria_husi.username }}{% if a.data_remata %} · validu to'o {{ a.data_remata|date:"d/m/Y" }}{% endif %}</small>
+		{% if a.bele_edita %}
+		<span class="float-right no-print">
+			<a class="btn btn-sm btn-success" href="{% url 'anunsiu-update' a.pk %}"><i class="fa fa-edit"></i></a>
+			<form class="d-inline" method="post" action="{% url 'anunsiu-del' a.pk %}" data-confirm="Hamoos anunsiu ne'e?">{% csrf_token %}<button class="btn btn-sm btn-danger" type="submit"><i class="fa fa-times"></i></button></form>
+		</span>
+		{% endif %}
+	</div>
+</div>
+{% empty %}
+<div class="text-center text-gray py-5"><i class="fa fa-bullhorn fa-3x mb-2"></i><p>Seidauk iha anunsiu ativu.</p></div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "main/layout.html" %}
+{% block crumbs %}
+<li class="breadcrumb-item"><a href="{% url 'eventu-list' %}">Eventu</a></li>
+<li class="breadcrumb-item"><a href="{% url 'eventu-detail' ev.pk %}">{{ ev.titulu }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">Foti Prezensa</li>
+{% endblock %}
+{% block content %}
+<div class="card">
+	<div class="card-header">Foti Prezensa — {{ ev.titulu }}</div>
+	<div class="card-body">
+		<form class="form-inline mb-3 no-print" method="post" action="{% url 'prezensa-rapidu' ev.pk %}">{% csrf_token %}
+			<label class="mr-2" for="nu_eleitoral"><strong>Prezensa rápidu:</strong></label>
+			<input class="form-control form-control-sm mr-2 mb-1" type="text" name="nu_eleitoral" id="nu_eleitoral" placeholder="Nu. eleitoral" autocomplete="off" autofocus>
+			<button class="btn btn-sm btn-primary mb-1" type="submit"><i class="fa fa-check"></i> Prezente</button>
+		</form>
+		<form method="get" class="form-row mb-3 no-print">
+			<div class="col-md-5 mb-2"><input type="text" class="form-control form-control-sm" name="q" value="{{ q }}" placeholder="Buka naran ka nu. eleitoral"></div>
+			<div class="col-md-4 mb-2"><select class="form-control form-control-sm" name="hira"><option value="">Membru hotu</option><option value="seidauk"{% if hira == 'seidauk' %} selected{% endif %}>Seidauk rejistu deit</option></select></div>
+			<div class="col-md-3 mb-2"><button class="btn btn-sm btn-outline-primary" type="submit"><i class="fa fa-search"></i> Buka</button></div>
+		</form>
+		<form method="post">{% csrf_token %}
+			<div class="mb-2 no-print">
+				<button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save"></i> Rai prezensa pájina ne'e</button>
+				<button class="btn btn-sm btn-outline-success" type="button" id="hotu-prezente">Tanda hotu Prezente</button>
+				<button class="btn btn-sm btn-outline-secondary" type="button" id="hotu-falta">Tanda hotu Falta</button>
+				<span class="text-gray ml-2"><small>{{ page.paginator.count }} membru</small></span>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-sm table-hover">
+					<thead><tr><th>Naran</th><th>Nu. Eleitoral</th><th class="text-center">Prezente</th><th class="text-center">Lisensa</th><th class="text-center">Falta</th><th class="text-center">-</th></tr></thead>
+					<tbody>
+						{% for m in page %}
+						<tr>
+							<td>{{ m.nome }}<input type="hidden" name="membro_id" value="{{ m.pk }}"></td>
+							<td>{{ m.nu_eleitoral|default:"-" }}</td>
+							{% for e, l in estadu %}<td class="text-center"><input type="radio" name="estadu_{{ m.pk }}" value="{{ e }}"{% if m.estadu_atual == e %} checked{% endif %} aria-label="{{ e }}"></td>{% endfor %}
+							<td class="text-center"><input type="radio" name="estadu_{{ m.pk }}" value="-"{% if not m.estadu_atual %} checked{% endif %} aria-label="Laiha"></td>
+						</tr>
+						{% empty %}<tr><td colspan="6" class="text-center text-gray">Laiha membru.</td></tr>{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</form>
+		{% if page.paginator.num_pages > 1 %}
+		<nav class="no-print"><ul class="pagination pagination-sm justify-content-center mb-0">
+			{% if page.has_previous %}<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.previous_page_number }}">Antes</a></li>{% endif %}
+			<li class="page-item active"><span class="page-link">{{ page.number }} / {{ page.paginator.num_pages }}</span></li>
+			{% if page.has_next %}<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.next_page_number }}">Tuir</a></li>{% endif %}
+		</ul></nav>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+	$('#hotu-prezente').on('click', function () { $('input[type=radio][value=Prezente]').prop('checked', true); });
+	$('#hotu-falta').on('click', function () { $('input[type=radio][value=Falta]').prop('checked', true); });
+</script>
+{% endblock %}

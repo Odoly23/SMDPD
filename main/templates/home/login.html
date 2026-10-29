@@ -1,0 +1,41 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="tet">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>SMDPD - Tama</title>
+		<link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}">
+		<link rel="icon" href="{% static 'main/images/favicon.png' %}">
+		<link rel="stylesheet" href="{% static 'main/font-awesome/css/font-awesome.min.css' %}">
+		<link rel="stylesheet" href="{% static 'main/css/style.default.css' %}">
+		<link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+	</head>
+	<body>
+		<div class="page login-page">
+			<div class="container d-flex align-items-center">
+				<div class="form-outer text-center d-flex align-items-center">
+					<div class="form-inner w-100">
+						<img class="logo-plp rounded-circle" src="{% static 'main/images/logo_plp.png' %}" alt="PLP">
+						<h1>SMDPD</h1>
+						<p>Sistema Managemen Dadus Membru Partidu PLP</p>
+						{% if form.errors %}
+							<div class="alert alert-danger p-2 mt-3">{% if bloku %}Tentativa sala barak liu. Hein minutu 10 no koko fali.{% else %}Username ka password la loos.{% endif %}</div>
+						{% endif %}
+						<form method="post" novalidate>
+							{% csrf_token %}
+							{{ form.username|as_crispy_field }}
+							{{ form.password|as_crispy_field }}
+							<input type="hidden" name="next" value="{{ next }}">
+							<button class="btn btn-primary btn-block mt-3" type="submit">Tama <i class="fa fa-sign-in"></i></button>
+						</form>
+					</div>
+					<div class="copyrights text-center">
+						<p>&copy; {% now "Y" %} Partidu Libertasaun Popular (PLP)</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

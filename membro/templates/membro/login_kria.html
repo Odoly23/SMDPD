@@ -1,0 +1,27 @@
+{% extends "main/layout.html" %}
+{% block crumbs %}
+<li class="breadcrumb-item"><a href="{{ back_url }}">Struktura</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ legend }}</li>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col-md-8 col-lg-6">
+		<div class="card kartu-login">
+			<div class="card-header">Konta login foun</div>
+			<div class="card-body">
+				<div class="alert alert-warning p-2"><i class="fa fa-exclamation-triangle"></i> Password ne'e hatudu <strong>dala ida deit</strong>. Hakerek ka imprime agora, no fó ba membru ne'e.</div>
+				<table class="table table-sm mb-3">
+					<tr><td width="35%">Membru</td><td>{{ membro.nome }}</td></tr>
+					<tr><td>Pozisaun</td><td>{{ alokasaun.pozisaun }} · {{ alokasaun.get_nivel_display }} {{ alokasaun.unit|default:"" }}</td></tr>
+					<tr><td>Peran</td><td>{{ peran }}</td></tr>
+					<tr><td>Username</td><td><code class="kredensial">{{ akun.username }}</code></td></tr>
+					<tr><td>Password</td><td><code class="kredensial">{{ password }}</code></td></tr>
+				</table>
+				<p class="text-gray"><small>Membru bele troka password iha menu uzuáriu (Troka Password) depois login. Membru ordináriu (la iha pozisaun login) la iha konta.</small></p>
+				<button class="btn btn-outline-secondary no-print" type="button" onclick="window.print()"><i class="fa fa-print"></i> Imprime</button>
+				<a class="btn btn-primary no-print" href="{{ back_url }}">Remata <i class="fa fa-check"></i></a>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

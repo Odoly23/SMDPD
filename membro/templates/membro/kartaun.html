@@ -1,0 +1,15 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% block crumbs %}
+<li class="breadcrumb-item"><a href="{% url 'membro-list' %}">Lista Membru</a></li>
+<li class="breadcrumb-item"><a href="{% url 'membro-detail' hashid %}">{{ obj.nome }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">Kartaun</li>
+{% endblock %}
+{% block content %}
+<div class="mb-3 no-print text-center">
+	<a class="btn btn-primary" href="?cetak=1" target="_blank" rel="noopener"><i class="fa fa-print"></i> Imprime Kartaun</a>
+	<a class="btn btn-secondary" href="{% url 'membro-detail' hashid %}">Fila</a>
+	<div class="small text-muted mt-2">Imprime iha folha A4, eskala 100% (la tau "fit to page"). Kartaun hanesan CR80 (85,6 × 54 mm): frente no kotuk.</div>
+</div>
+{% include "membro/_kartaun_kartu.html" %}
+{% endblock %}

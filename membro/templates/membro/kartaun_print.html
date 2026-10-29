@@ -1,0 +1,14 @@
+{% load static %}<!DOCTYPE html>
+<html lang="tet">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kartaun {{ obj.nome }}</title>
+<link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+<style>body { margin: 0; padding: 12px; background: #fff; }</style>
+</head>
+<body>
+{% include "membro/_kartaun_kartu.html" %}
+<script src="{% static 'main/js/kartaun_print.js' %}"></script>
+</body>
+</html>

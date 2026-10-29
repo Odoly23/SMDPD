@@ -1,3 +1,4 @@
 from django.contrib import admin
+from notif.models import Notifikasaun
 
-# Register your models here.
+admin.site.register(Notifikasaun)

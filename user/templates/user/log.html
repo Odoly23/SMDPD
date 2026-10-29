@@ -1,0 +1,27 @@
+{% extends "main/layout.html" %}
+{% block content %}
+<div class="card">
+	<div class="card-header">{{ legend }}</div>
+	<div class="card-body">
+		<form method="get" class="form-row mb-3">
+			<div class="col-md-4 mb-2"><input type="text" class="form-control form-control-sm" name="q" value="{{ q }}" placeholder="Buka username ka IP"></div>
+			<div class="col-md-3 mb-2"><select class="form-control form-control-sm" name="hasil"><option value="">Hotu</option>{% for h in hasils %}<option value="{{ h }}"{% if h == hasil %} selected{% endif %}>{{ h }}</option>{% endfor %}</select></div>
+			<div class="col-md-2 mb-2"><button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-search"></i> Buka</button></div>
+		</form>
+		<div class="table-responsive"><table class="table table-sm table-stack">
+			<thead><tr><th>Data</th><th>Username</th><th>Rezultadu</th><th>IP</th><th>Browser</th></tr></thead>
+			<tbody>
+				{% for l in page %}<tr>
+					<td data-label="Data">{{ l.datetime|date:"d/m/Y H:i:s" }}</td><td data-label="Username">{{ l.username }}</td>
+					<td data-label="Rezultadu"><span class="badge badge-{% if l.hasil == 'Susesu' or l.hasil == 'Sai' %}ativu{% elif l.hasil == 'Sala' or l.hasil == '2FA sala' %}pendente{% else %}rejeitadu{% endif %}">{{ l.hasil }}</span></td>
+					<td data-label="IP">{{ l.ip|default:"-" }}</td><td data-label="Browser"><small>{{ l.user_agent|truncatechars:60 }}</small></td>
+				</tr>{% empty %}<tr><td colspan="5" class="text-center text-gray">Laiha log.</td></tr>{% endfor %}
+			</tbody></table></div>
+		{% if page.paginator.num_pages > 1 %}<nav><ul class="pagination pagination-sm justify-content-center mb-0">
+			{% if page.has_previous %}<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.previous_page_number }}">Antes</a></li>{% endif %}
+			<li class="page-item active"><span class="page-link">{{ page.number }} / {{ page.paginator.num_pages }}</span></li>
+			{% if page.has_next %}<li class="page-item"><a class="page-link" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.next_page_number }}">Tuir</a></li>{% endif %}
+		</ul></nav>{% endif %}
+	</div>
+</div>
+{% endblock %}

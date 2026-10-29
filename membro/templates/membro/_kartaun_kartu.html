@@ -1,0 +1,37 @@
+{% load static %}
+<div class="kartaun-wrap">
+	<div class="kartaun-par">
+		<!-- FRENTE -->
+		<div class="kartaun kartaun-frente">
+			<img class="k-flag k-flag-kiri" src="{% static 'main/images/bandeira_plp.jpg' %}" alt="PLP">
+			{% if logo_org %}<img class="k-flag k-flag-kanan k-org" src="{{ logo_org }}" alt="{{ obj.organizasaun }}">
+			{% else %}<div class="k-flag k-flag-kanan k-emblema" style="background-image:url('{% static 'main/images/bandeira_plp.jpg' %}')"><img src="{% static 'main/images/logo_plp.png' %}" alt="PLP"></div>{% endif %}
+			<div class="k-t1">PARTIDO DA LIBERTAÇÃO POPULAR - PLP</div>
+			<div class="k-t2">SEDE NACIONAL RUA FOMENTO II, DILI, TIMOR-LESTE</div>
+			<div class="k-t3">CARTÃO DE MEMBRO</div>
+			<div class="k-biru"></div><div class="k-verde"></div>
+			<div class="k-lokal" style="left:11.5px"><b>Município:</b><span>{{ obj.municipality|default:"-" }}</span></div>
+			<div class="k-lokal" style="left:67px"><b>Postu Administrativo:</b><span>{{ obj.post|default:"-" }}</span></div>
+			<div class="k-lokal" style="left:205px"><b>Suco:</b><span>{{ obj.village|default:"-" }}</span></div>
+			<div class="k-garis"></div>
+			{% if presidente_fotu %}<img class="k-pres-fotu" src="{% static 'main/images/presidente_plp.jpg' %}" alt="{{ presidente_naran }}">{% endif %}
+			<div class="k-foto">{% if obj.image %}<img src="{% url 'membro-fotu' hashid %}" alt="{{ obj.nome }}">{% else %}<i class="fa fa-user"></i>{% endif %}</div>
+			<div class="k-col k-col1">
+				<div class="k-f"><b>No. Militante:</b><span>{{ nu_militante }}</span></div>
+				<div class="k-f"><b>Nome:</b><span{% if obj.nome|length > 24 %} class="k-kecil"{% endif %}>{{ obj.nome }}</span></div>
+				<div class="k-f"><b>Posição:</b><span{% if posisaun|length > 24 %} class="k-kecil"{% endif %}>{{ posisaun }}</span></div>
+				<div class="k-f"><b>Data de Nascimento:</b><span>{{ obj.date_of_birth|date:"d/m/Y"|default:"-" }}</span></div>
+			</div>
+			<div class="k-col k-col2">
+				<div class="k-f"><b>Aldeia:</b><span class="k-satu" title="{{ obj.aldeia|default:'' }}">{{ obj.aldeia|default:"-" }}</span></div>
+				<div class="k-f"><b>No. Eleitoral:</b><span class="k-satu">{{ obj.nu_eleitoral|default:"-" }}</span></div>
+				<div class="k-f"><b>Emitido:</b><span>{{ emitidu|date:"d/m/Y" }}</span></div>
+			</div>
+			<div class="k-pres-naran">{{ presidente_naran }}</div>
+			<div class="k-pres-titulu">{{ presidente_titulu }}</div>
+			<div class="k-rodape">Este Cartão é a propriedade de militante do PLP</div>
+		</div>
+		<!-- KOTUK -->
+		<div class="kartaun kartaun-kotuk" style="background-image:url('{% static 'main/images/bandeira_plp.jpg' %}')" role="img" aria-label="Bandeira PLP"></div>
+	</div>
+</div>

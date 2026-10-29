@@ -1,0 +1,31 @@
+name: CI seguransa no tes
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Instala dependénsia
+        run: |
+          pip install -r requirements.txt
+          pip install bandit pip-audit
+      - name: Tes (Django)
+        run: python manage.py test --parallel
+      - name: Analiza seguransa kódigu (bandit, severidade médiu+)
+        run: bandit -q -ll -r Core config custom main membro notif report user anunsiu eventu kuota -x '*/tests*.py,*/migrations/*'
+      - name: Verifika vulnerabilidade dependénsia
+        run: pip-audit -r requirements.txt
+      - name: Verifika konfigurasaun produksaun
+        env:
+          DJANGO_DEBUG: 'False'
+          DJANGO_SECRET_KEY: ci-only-secret-key-ci-only-secret-key-ci-only-secret-key
+          DJANGO_ALLOWED_HOSTS: smdpd.example.tl
+        run: python manage.py check --deploy --fail-level ERROR
