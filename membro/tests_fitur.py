@@ -88,7 +88,16 @@ class KartaunTests(BaseData):
 		self.login(roles.PRESIDENTE)
 		r = self.client.get(reverse('membro-kartaun', args=[self.m1.hashed]))
 		self.assertContains(r, 'Joao Silva')
-		self.assertContains(r, 'E-0001')
+		self.assertContains(r, "E-0001")
+		self.assertContains(r, "CARTÃO DE MEMBRO")
+		self.assertContains(r, "TAUR MATAN RUAK")
+		self.assertContains(r, "No. Militante")
+
+	def test_kartaun_cetak_mode(self):
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('membro-kartaun', args=[self.m1.hashed]) + '?cetak=1')
+		self.assertTemplateUsed(r, 'membro/kartaun_print.html')
+		self.assertContains(r, 'Joao Silva')
 
 	def test_kartaun_pendente_404(self):
 		p = self.buat('Pendente', 'E-9100', self.mun1, self.post1, self.vil1, self.ald1, aprovasaun='Pendente')

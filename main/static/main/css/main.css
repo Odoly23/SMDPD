@@ -83,23 +83,48 @@ canvas { max-width: 100%; }
 
 /* ---- Kartaun membru ---- */
 .kartaun-wrap { display: flex; justify-content: center; }
-.kartaun { width: 100%; max-width: 520px; border: 2px solid #04d419; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.12); }
-.kartaun-topu { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #04d419; border-bottom: 3px solid #f9d71c; color: #fff; }
-.kartaun-topu img { width: 46px; height: 46px; border-radius: 50%; background: #fff; border: 2px solid #f9d71c; object-fit: contain; }
-.kartaun-titulu { flex: 1; line-height: 1.15; }
-.kartaun-titulu strong { display: block; font-size: .8rem; letter-spacing: .04em; }
-.kartaun-titulu span { font-size: .72rem; opacity: .95; }
-.kartaun-isi { display: flex; gap: 14px; padding: 14px; }
-.kartaun-foto { flex: 0 0 105px; height: 130px; border: 1px solid #ddd; background: #f4f6f5; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #bbb; overflow: hidden; }
-.kartaun-foto img { width: 100%; height: 100%; object-fit: cover; }
-.kartaun-data { flex: 1; min-width: 0; }
-.kartaun-data h3 { font-size: 1.05rem; margin-bottom: 6px; color: #027a0f; text-transform: uppercase; word-break: break-word; }
-.kartaun-data dl { margin: 0; font-size: .78rem; }
-.kartaun-data dt { float: left; clear: left; width: 38%; color: #777; font-weight: 500; }
-.kartaun-data dd { margin-left: 40%; margin-bottom: 2px; font-weight: 600; word-break: break-word; }
-.kartaun-rodape { padding: 6px 14px; background: #f0f6f2; border-top: 2px solid #f9d71c; font-size: .72rem; color: #555; text-align: center; }
-@media (max-width: 420px) { .kartaun-isi { flex-direction: column; align-items: center; } .kartaun-data { width: 100%; } }
-@media print { .kartaun { box-shadow: none; max-width: 100%; page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+.kartaun-par { display: flex; flex-direction: column; gap: 18px; align-items: center; zoom: 1.3; }
+/* Kartaun CR80 = 324 x 204 px (96 dpi) = 85,7 x 54 mm. Koordenada hotu iha px kartaun; zoom ba ekran, 1 bainhira imprime. */
+.kartaun { width: 324px; height: 204px; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.18);
+	position: relative; font-family: Arial, Helvetica, sans-serif; color: #222; box-sizing: border-box; }
+.kartaun > * { position: absolute; }
+.k-flag { top: 15px; width: 37px; height: 40px; object-fit: fill; }
+.k-flag-kiri { left: 12px; }
+.k-flag-kanan { left: 275px; }
+.k-emblema { background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+.k-emblema img { width: 30px; height: 31px; object-fit: contain; position: static; }
+.k-org { object-fit: contain; }
+.k-t1, .k-t2, .k-t3 { left: 54px; right: 54px; overflow: hidden; text-align: center; white-space: nowrap; }
+.k-t1 { top: 13.5px; font-size: 10px; line-height: 15px; }
+.k-t2 { top: 28px; font-size: 7.3px; line-height: 10px; font-weight: 700; }
+.k-t3 { top: 39px; font-size: 12.5px; line-height: 14px; font-weight: 700; }
+.k-biru { top: 59px; left: 0; right: 0; height: 3.5px; background: #1bb3d9; }
+.k-verde { top: 62.5px; left: 0; right: 0; height: 3px; background: #3cb34a; }
+.k-lokal { top: 70px; font-size: 8.3px; line-height: 10px; white-space: nowrap; }
+.k-lokal b, .k-f b { display: block; font-weight: 700; color: #222; }
+.k-lokal span, .k-f span { display: block; color: #666; }
+.k-garis { top: 95px; left: 12px; right: 12px; height: 1px; background: #3cb34a; }
+.k-pres-fotu { left: 232px; top: 67px; width: 90px; height: 106px; object-fit: cover; object-position: top; z-index: 0; }
+.k-foto { left: 20.5px; top: 99px; width: 62px; height: 74px; border: 1px solid #333; background: #f4f6f5; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #bbb; z-index: 1; }
+.k-foto img { width: 100%; height: 100%; object-fit: cover; }
+.k-col { top: 100px; font-size: 8.3px; line-height: 9px; z-index: 1; }
+.k-col1 { left: 86px; width: 98px; }
+.k-col2 { left: 186.5px; width: 56px; white-space: nowrap; }
+.k-f { min-height: 18px; margin-bottom: 3px; }
+.k-f span.k-kecil { font-size: 6.8px; line-height: 7.5px; max-height: 15px; overflow: hidden; }
+.k-f span.k-satu { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.k-pres-naran { left: 232px; width: 90px; top: 172.5px; font-size: 7.8px; line-height: 9px; font-weight: 700; text-align: center; white-space: nowrap; }
+.k-pres-titulu { left: 232px; width: 90px; top: 184px; font-size: 7px; line-height: 8px; text-align: center; color: #1e5aa8; }
+.k-rodape { left: 11.5px; top: 183px; font-size: 7px; line-height: 8px; color: #444; }
+.kartaun-kotuk { background-size: cover; background-position: center; }
+@media (max-width: 767px) { .kartaun-par { zoom: .95; } }
+@media print {
+	@page { size: A4; margin: 10mm; }
+	html, body, .main-content { background: #fff !important; }
+	.kartaun-wrap { display: block; }
+	.kartaun-par { flex-direction: row; gap: 8mm; align-items: flex-start; zoom: 1; }
+	.kartaun { box-shadow: none; border: .2mm solid #bbb; page-break-inside: avoid; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
 
 /* ---- Dokumentu Rekursu Intelektual (formulariu) ---- */
 .dokumentu { background: #fff; }

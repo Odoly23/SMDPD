@@ -175,6 +175,9 @@ if TRUST_PROXY:
 
 # 2FA obrigatóriu ba Admin, Presidente no Sekretaria Nasionál (aktiva iha produksaun ho DJANGO_2FA_WAJIBA=True)
 SMDPD_2FA_WAJIBA = _env_bool('DJANGO_2FA_WAJIBA', False)
+# Kartaun membru: naran/títulu presidente ne'ebé sai iha kartaun (fotu: main/images/presidente_plp.jpg, opsionál)
+KARTAUN_PRESIDENTE_NARAN = os.environ.get('KARTAUN_PRESIDENTE_NARAN', 'TAUR MATAN RUAK')
+KARTAUN_PRESIDENTE_TITULU = os.environ.get('KARTAUN_PRESIDENTE_TITULU', 'Presidente do PLP')
 
 # URL admin Django bele muda (ez. DJANGO_ADMIN_URL=gestaun-rahasia/)
 ADMIN_URL = os.environ.get('DJANGO_ADMIN_URL', 'admin/').strip('/') + '/'

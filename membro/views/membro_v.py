@@ -1,3 +1,7 @@
+import datetime
+
+from django.conf import settings
+from django.contrib.staticfiles import finders
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -161,11 +165,27 @@ def MembroKartaun(request, hashid):
 	alokasauns = Alokasaun.objects.filter(membro=obj, ativu='Sim').select_related(
 		'departamentu__organizasaun', 'municipality', 'post', 'village', 'aldeia', 'organizasaun')
 	org = obj.organizasaun
+	utama = next((a for a in alokasauns if a.pozisaun != 'Membru'), None) or next(iter(alokasauns), None)
+	posisaun = utama.pozisaun if utama else 'Membru'
+	org_kartaun = (utama.organizasaun if utama and utama.organizasaun_id else None) or (
+		utama.departamentu.organizasaun if utama and utama.departamentu_id else None) or org
+	if org_kartaun:
+		posisaun = '{0} - {1}'.format(posisaun, org_kartaun.code)
+	elif utama and utama.unit():
+		posisaun = '{0} - {1}'.format(posisaun, utama.unit())
 	context = {
 		'group': c_user_group(request.user), 'obj': obj, 'alokasauns': alokasauns, 'hashid': hashid,
 		'logo_org': org.logo.url if org and org.logo else None,
+		'posisaun': posisaun,
+		'nu_militante': '{0:06d}'.format(obj.pk)[:3] + ' ' + '{0:06d}'.format(obj.pk)[3:],
+		'emitidu': datetime.date.today(),
+		'presidente_naran': settings.KARTAUN_PRESIDENTE_NARAN,
+		'presidente_titulu': settings.KARTAUN_PRESIDENTE_TITULU,
+		'presidente_fotu': bool(finders.find('main/images/presidente_plp.jpg')),
 		'title': 'Kartaun Membru', 'legend': 'Kartaun Membru'
 	}
+	if request.GET.get('cetak'):
+		return render(request, 'membro/kartaun_print.html', context)
 	return render(request, 'membro/kartaun.html', context)
 
 

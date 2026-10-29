@@ -7,31 +7,9 @@
 {% endblock %}
 {% block content %}
 <div class="mb-3 no-print text-center">
-	<button class="btn btn-primary" type="button" onclick="window.print()"><i class="fa fa-print"></i> Imprime Kartaun</button>
+	<a class="btn btn-primary" href="?cetak=1" target="_blank" rel="noopener"><i class="fa fa-print"></i> Imprime Kartaun</a>
 	<a class="btn btn-secondary" href="{% url 'membro-detail' hashid %}">Fila</a>
+	<div class="small text-muted mt-2">Imprime iha folha A4, eskala 100% (la tau "fit to page"). Kartaun hanesan CR80 (85,6 × 54 mm): frente no kotuk.</div>
 </div>
-<div class="kartaun-wrap">
-	<div class="kartaun">
-		<div class="kartaun-topu">
-			<img src="{% static 'main/images/logo_plp.png' %}" alt="PLP">
-			<div class="kartaun-titulu"><strong>PARTIDU LIBERTASAUN POPULAR</strong><span>Kartaun Membru</span></div>
-			{% if logo_org %}<img src="{{ logo_org }}" alt="{{ obj.organizasaun }}" class="kartaun-org">{% endif %}
-		</div>
-		<div class="kartaun-isi">
-			<div class="kartaun-foto">{% if obj.image %}<img src="{% url 'membro-fotu' hashid %}" alt="{{ obj.nome }}">{% else %}<i class="fa fa-user"></i>{% endif %}</div>
-			<div class="kartaun-data">
-				<h3>{{ obj.nome }}</h3>
-				<dl>
-					<dt>Nu. Eleitoral</dt><dd>{{ obj.nu_eleitoral|default:"-" }}</dd>
-					<dt>Data Moris</dt><dd>{{ obj.date_of_birth|date:"d/m/Y"|default:"-" }}</dd>
-					<dt>Munisipiu</dt><dd>{{ obj.municipality|default:"-" }} · {{ obj.post|default:"-" }}</dd>
-					<dt>Suku/Aldeia</dt><dd>{{ obj.village|default:"-" }} · {{ obj.aldeia|default:"-" }}</dd>
-					{% if obj.organizasaun %}<dt>Orgaun/Movimentu</dt><dd>{{ obj.organizasaun.name }}</dd>{% endif %}
-					{% for a in alokasauns %}{% if a.pozisaun != 'Membru' %}<dt>Pozisaun</dt><dd>{{ a.pozisaun }} · {{ a.unit|default:"PLP Nasionál" }}</dd>{% endif %}{% endfor %}
-				</dl>
-			</div>
-		</div>
-		<div class="kartaun-rodape">Membru husi {{ obj.data_hakbit|date:"Y"|default:"—" }} · Status: {{ obj.status }}</div>
-	</div>
-</div>
+{% include "membro/_kartaun_kartu.html" %}
 {% endblock %}
