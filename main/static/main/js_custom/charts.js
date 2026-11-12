@@ -1,4 +1,4 @@
-/* Grafik Chart.js (v2) ho data husi API report. Kór tuir tema SMDPD. */
+/* Grafik Chart.js (v2) ho data husi API report. Kór tuir tema SPBD-PLP. */
 var KOR = ['#04d419', '#02b0ed', '#ffc107', '#dc3545', '#6f42c1', '#17a2b8', '#fd7e14', '#868e96', '#20c997', '#e83e8c'];
 
 /* tipu: 'bar' | 'doughnut' | 'pie' | 'horizontalBar' */

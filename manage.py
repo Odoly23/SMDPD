@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Utilitas command-line Django ba SMDPD."""
+"""Utilitas command-line Django ba SPBD-PLP."""
 import os
 import sys
 

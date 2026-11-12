@@ -1,6 +1,6 @@
-# SMDPD
+# SPBD-PLP
 
-Sistema Managemen Dadus Membru Partidu PLP (Partidu Libertasaun Popular). Aplikasaun web Django ho interface Tetun.
+Sistema Plataforma Base de Dadus Partidu Libertasaun Popular (SPBD-PLP). Aplikasaun web Django ho interface Tetun.
 
 ## Estrutura partidu
 

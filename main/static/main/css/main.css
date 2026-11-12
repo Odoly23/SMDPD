@@ -1,4 +1,4 @@
-/* Tambahan SMDPD ba tema Bootstrapious (style.default.css) no layout (layout.css) */
+/* Tambahan SPBD-PLP ba tema Bootstrapious (style.default.css) no layout (layout.css) */
 .main-content .card { box-shadow: none; border: 1px solid #e3e9e5; margin-bottom: 20px; }
 .main-content .card:last-child { margin-bottom: 0; }
 .main-content .card-header { background: #f6faf7; }
@@ -155,3 +155,30 @@ canvas { max-width: 100%; }
 .eventu-data span { font-size: .65rem; text-transform: uppercase; }
 
 .card.h-100 { height: calc(100% - 30px) !important; }
+
+/* ---- Painel Varanda (estilu repozitóriu) ---- */
+.painel { max-width: 1100px; margin: 0 auto; }
+.painel-kabesalhu { margin: 4px 0 18px; }
+.painel-entidade { font-size: 1.35rem; font-weight: 700; color: #036b10; letter-spacing: .02em; margin: 0; }
+.painel-sistema { font-size: .8rem; font-weight: 700; color: #34495e; margin: 2px 0 8px; }
+.painel-logo { width: 78px; height: 78px; object-fit: contain; }
+.painel-buka { max-width: 520px; margin: 0 auto 16px; }
+.painel-buka .btn-primary { background: #02b0ed; border-color: #02b0ed; }
+.painel-total { font-size: .95rem; font-weight: 700; margin: 6px 0; }
+.painel-total a, .painel-status a, .painel-area a { color: inherit; text-decoration: none; }
+.painel-total a:hover, .painel-status a:hover, .painel-area a:hover { color: #027a0f; text-decoration: underline; }
+.painel-status { font-size: .8rem; color: #555; margin-bottom: 10px; }
+.painel-area { font-size: .72rem; font-weight: 700; color: #34495e; line-height: 1.9; margin-bottom: 16px; }
+.painel-area .naran { text-transform: uppercase; }
+.painel-area .sep { color: #aaa; font-weight: 400; }
+.painel-seksaun { font-size: .85rem; font-weight: 700; color: #027a0f; text-transform: uppercase; margin: 16px 0 8px; border-left: 3px solid #f9d71c; padding-left: 8px; }
+.painel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.painel-kartu { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 58px; padding: 6px 4px;
+	background: #fff; border: 1px solid #dfe6ea; border-radius: 4px; color: #34495e; text-decoration: none; }
+.painel-kartu .naran { font-size: .66rem; font-weight: 700; line-height: 1.2; }
+.painel-kartu b { font-size: .8rem; color: #555; font-weight: 600; }
+.painel-kartu:hover { border-color: #04d419; box-shadow: 0 0 0 2px rgba(4,212,25,.25); text-decoration: none; }
+.painel-grafik-titulu { font-size: .8rem; font-weight: 700; margin: 24px 0 6px; }
+.painel-grafik { overflow-x: auto; border: 1px solid #eef1f3; border-radius: 4px; padding: 6px; background: #fff; }
+.painel-grafik-isi { position: relative; height: 360px; width: 100%; }
+@media (max-width: 575px) { .painel-entidade { font-size: 1.05rem; } .painel-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); } }

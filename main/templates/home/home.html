@@ -16,33 +16,48 @@
 	{% for a in anunsius %}
 	<div class="alert alert-{% if a.importante %}warning{% else %}success{% endif %} p-2 mb-2"><i class="fa fa-bullhorn"></i> <strong>{{ a.titulu }}</strong> — {{ a.mensagem|truncatechars:140 }} <a href="{% url 'anunsiu-list' %}">Lee tan</a></div>
 	{% endfor %}
-	<section class="dashboard-counts no-padding-bottom">
-		<div class="card"><div class="card-body"><div class="row">
-			<div class="col-6 col-md-3 mb-2">
-				<div class="d-flex align-items-center justify-content-center text-center">
-					<div class="icon mr-3"><i class="fa fa-users fa-2x text-primary"></i></div>
-					<div><span class="stat-label">Total Membru</span><h4 class="stat-number"><a href="{% url 'membro-list' %}">{{ counts.total }}</a></h4></div>
-				</div>
+	<section class="painel">
+		<div class="painel-kabesalhu text-center">
+			<h2 class="painel-entidade">{{ nav_entidade|upper }}</h2>
+			<div class="painel-sistema">SISTEMA PLATAFORMA BASE DE DADUS</div>
+			<img class="painel-logo" src="{{ nav_logo }}" alt="Logo">
+		</div>
+		<form class="painel-buka" method="get" action="{% url 'membro-list' %}" role="search">
+			<div class="input-group">
+				<div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div>
+				<input type="search" class="form-control" name="q" maxlength="60" placeholder="Liafuan xave: [Naran, Nu. Eleitoral, Telemovel]" aria-label="Buka membru">
+				<div class="input-group-append"><button class="btn btn-primary" type="submit">Buka <i class="fa fa-search"></i></button></div>
 			</div>
-			<div class="col-6 col-md-3 mb-2">
-				<div class="d-flex align-items-center justify-content-center text-center">
-					<div class="icon mr-3"><i class="fa fa-hourglass-half fa-2x text-warning"></i></div>
-					<div><span class="stat-label">Hein Aprovasaun</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?aprovasaun=Pendente">{{ counts.pendente }}</a></h4></div>
-				</div>
-			</div>
-			<div class="col-6 col-md-3 mb-2">
-				<div class="d-flex align-items-center justify-content-center text-center">
-					<div class="icon mr-3"><i class="fa fa-check-circle fa-2x text-success"></i></div>
-					<div><span class="stat-label">Aprovadu</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?aprovasaun=Aprovadu">{{ counts.aprovadu }}</a></h4></div>
-				</div>
-			</div>
-			<div class="col-6 col-md-3 mb-2">
-				<div class="d-flex align-items-center justify-content-center text-center">
-					<div class="icon mr-3"><i class="fa fa-times-circle fa-2x text-danger"></i></div>
-					<div><span class="stat-label">Rejeitadu</span><h4 class="stat-number"><a href="{% url 'membro-list' %}?aprovasaun=Rejeitadu">{{ counts.rejeitadu }}</a></h4></div>
-				</div>
-			</div>
-		</div></div></div>
+		</form>
+		<div class="painel-total text-center">Total Membru: <strong><a href="{% url 'membro-list' %}">{{ counts.total }}</a></strong></div>
+		<div class="painel-status text-center">
+			<a href="{% url 'membro-list' %}?aprovasaun=Aprovadu">Aprovadu: <b>{{ counts.aprovadu }}</b></a> |
+			<a href="{% url 'membro-list' %}?aprovasaun=Pendente">Hein Aprovasaun: <b>{{ counts.pendente }}</b></a> |
+			<a href="{% url 'membro-list' %}?aprovasaun=Rejeitadu">Rejeitadu: <b>{{ counts.rejeitadu }}</b></a>
+		</div>
+		{% if area %}
+		<div class="painel-area text-center" aria-label="Total tuir {{ titulu_area }}">
+			{% for a in area %}<a href="{% url 'membro-list' %}?{{ a.param }}={{ a.valor }}"><span class="naran">{{ a.naran|upper }}</span> : <b>{{ a.total }}</b></a>{% if not forloop.last %} <span class="sep">|</span> {% endif %}{% endfor %}
+		</div>
+		{% endif %}
+		{% if departamentus %}
+		<h3 class="painel-seksaun">Departamentu</h3>
+		<div class="painel-grid">
+			{% for d in departamentus %}<a class="painel-kartu" href="{% url 'membro-list' %}?departamentu={{ d.id }}"><span class="naran">{{ d.naran }}</span><b>{{ d.total }}</b></a>{% endfor %}
+		</div>
+		{% endif %}
+		{% if orgauns %}
+		<h3 class="painel-seksaun">Orgaun / Movimentu</h3>
+		<div class="painel-grid">
+			{% for o in orgauns %}<a class="painel-kartu" href="{% url 'membro-list' %}?organizasaun={{ o.id }}"><span class="naran">{{ o.naran }}</span><b>{{ o.total }}</b></a>{% endfor %}
+		</div>
+		{% endif %}
+		{% if grafik_label %}
+		<h3 class="painel-grafik-titulu text-center">{{ grafik_titulu }}</h3>
+		<div class="painel-grafik"><div class="painel-grafik-isi" id="painel_isi" data-n="{{ grafik_label|length }}"><canvas id="painel_grafik" aria-label="{{ grafik_titulu }}" role="img"></canvas></div></div>
+		{{ grafik_label|json_script:"painel-label" }}
+		{{ grafik_data|json_script:"painel-data" }}
+		{% endif %}
 	</section>
 	<div class="row mt-4">
 		<div class="col-md-6">
@@ -72,6 +87,7 @@
 {% if group and group != 'admin' %}
 <script src="{% static 'main/js_custom/Chart.min.js' %}"></script>
 <script src="{% static 'main/js_custom/charts.js' %}"></script>
+<script src="{% static 'main/js_custom/painel.js' %}"></script>
 <script>
 	grafik('chart_sexo', "{% url 'api-gender' %}", 'doughnut', 'Sexu');
 	grafik('chart_idade', "{% url 'api-age' %}", 'bar', 'Membru');

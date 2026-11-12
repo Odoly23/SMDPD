@@ -198,7 +198,7 @@ class LoginAmanTests(BaseData):
 		self.client.post(reverse('seguransa-2fa'), {'asaun': 'desativa', 'password': PASS, 'kode': kode_sekarang(t.secret)})
 		self.assertFalse(Totp.objects.filter(user=u).exists())
 
-	@override_settings(SMDPD_2FA_WAJIBA=True)
+	@override_settings(SPBD_2FA_WAJIBA=True)
 	def test_2fa_obrigatoriu_ba_peran_sensitivu(self):
 		for role in (roles.PRESIDENTE, roles.SEKRETARIA, roles.ADMIN):
 			self.client.force_login(self.users[role])
@@ -209,7 +209,7 @@ class LoginAmanTests(BaseData):
 			self.client.force_login(self.users[role])
 			self.assertEqual(self.client.get(reverse('home')).status_code, 200, role)
 
-	@override_settings(SMDPD_2FA_WAJIBA=True)
+	@override_settings(SPBD_2FA_WAJIBA=True)
 	def test_2fa_obrigatoriu_hotu_depois_aktiva(self):
 		u = self.users[roles.PRESIDENTE]
 		self.aktiva_2fa(u)

@@ -1,5 +1,5 @@
 """
-Settings project SMDPD (Sistema Managemen Dadus Membru Partidu PLP).
+Settings project SPBD-PLP (Sistema Plataforma Base de Dadus Partidu Libertasaun Popular).
 """
 import os
 from pathlib import Path
@@ -174,7 +174,7 @@ if TRUST_PROXY:
 	SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # 2FA obrigatóriu ba Admin, Presidente no Sekretaria Nasionál (aktiva iha produksaun ho DJANGO_2FA_WAJIBA=True)
-SMDPD_2FA_WAJIBA = _env_bool('DJANGO_2FA_WAJIBA', False)
+SPBD_2FA_WAJIBA = _env_bool('DJANGO_2FA_WAJIBA', False)
 # Kartaun membru: naran/títulu presidente ne'ebé sai iha kartaun (fotu: main/images/presidente_plp.jpg, opsionál)
 KARTAUN_PRESIDENTE_NARAN = os.environ.get('KARTAUN_PRESIDENTE_NARAN', 'TAUR MATAN RUAK')
 KARTAUN_PRESIDENTE_TITULU = os.environ.get('KARTAUN_PRESIDENTE_TITULU', 'Presidente do PLP')

@@ -16,7 +16,7 @@
 <nav class="main-navbar">
 	<div class="container">
 		<a class="brand" href="{% if user.is_authenticated %}{% url 'home' %}{% else %}{% url 'login' %}{% endif %}">
-			<img src="{{ nav_logo }}" alt="Logo"><span>SMDPD</span>
+			<img src="{{ nav_logo }}" alt="Logo"><span>SPBD-PLP</span>
 		</a>
 		{% if user.is_authenticated %}
 		<ul class="nav-links">

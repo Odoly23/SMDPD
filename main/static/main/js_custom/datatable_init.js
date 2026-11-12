@@ -1,4 +1,4 @@
-/* DataTables standar SMDPD ba tabela ki'ik (la iha server-side). */
+/* DataTables standar SPBD-PLP ba tabela ki'ik (la iha server-side). */
 $(document).ready(function () {
 	var $t = $('table.datatable');
 	if (!$t.length) { return; }

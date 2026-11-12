@@ -38,7 +38,7 @@ def verifika(secret, kode, ultimu_step=0, t=None, janela=1):
 	return None
 
 
-def uri(secret, username, emisor='SMDPD PLP'):
+def uri(secret, username, emisor='SPBD-PLP'):
 	return f'otpauth://totp/{quote(emisor)}:{quote(username)}?secret={secret}&issuer={quote(emisor)}&digits={DIGITU}&period={PERIODU}'
 
 

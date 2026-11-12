@@ -1,4 +1,4 @@
-/* UX umum SMDPD: modal konfirmasaun, alerta otomátiku, botaun fila ba leten, proteje submit dala rua. */
+/* UX umum SPBD-PLP: modal konfirmasaun, alerta otomátiku, botaun fila ba leten, proteje submit dala rua. */
 $(function () {
 	// 1) Konfirmasaun ho modal Bootstrap (form[data-confirm])
 	var $modal = $('#modal-konfirma'), pendente = null;

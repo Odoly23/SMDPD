@@ -19,7 +19,7 @@ class SeguransaMiddleware:
 			if UserScope.objects.filter(user=user, troka_password=True).exists():
 				messages.warning(request, 'Favór troka password uluk molok kontinua.')
 				return redirect('change-password')
-			if getattr(settings, 'SMDPD_2FA_WAJIBA', False) and self._wajiba(user):
+			if getattr(settings, 'SPBD_2FA_WAJIBA', False) and self._wajiba(user):
 				messages.warning(request, 'Peran ida-ne\'e tenke aktiva autentikasaun rua faktór (2FA) molok kontinua.')
 				return redirect('seguransa-2fa')
 		response = self.get_response(request)

@@ -48,6 +48,9 @@ def apply_filters(qs, params):
 		val = params.get(key)
 		if val and val.isdigit():
 			qs = qs.filter(**{f'{key}_id': int(val)})
+	dep = params.get('departamentu')
+	if dep and dep.isdigit():
+		qs = qs.filter(alokasaun__nivel='Departamentu', alokasaun__ativu='Sim', alokasaun__departamentu_id=int(dep)).distinct()
 	hakbit = params.get('hakbit')
 	if hakbit and hakbit.isdigit():
 		qs = qs.filter(data_hakbit__year=int(hakbit))

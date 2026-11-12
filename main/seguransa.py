@@ -105,7 +105,7 @@ def seguransa_2fa(request):
 			elif not totp.verifika(t.secret, request.POST.get('kode'), t.ultimu_step):
 				messages.error(request, 'Kódigu 2FA la loos.')
 			elif asaun == 'desativa':
-				if c_user_group(user) in ('admin', 'presidente', 'sekretaria') and getattr(__import__('django.conf', fromlist=['settings']).settings, 'SMDPD_2FA_WAJIBA', False):
+				if c_user_group(user) in ('admin', 'presidente', 'sekretaria') and getattr(__import__('django.conf', fromlist=['settings']).settings, 'SPBD_2FA_WAJIBA', False):
 					messages.error(request, 'Peran ida-ne\'e la bele desativa 2FA (obrigatóriu).')
 				else:
 					t.delete()

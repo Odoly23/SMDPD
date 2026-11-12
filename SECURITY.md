@@ -1,4 +1,4 @@
-# Seguransa SMDPD
+# Seguransa SPBD-PLP
 
 Dokumentu ne'e rezume proteksaun iha sistema, buat ne'ebé testa ona, no lista ba produksaun. Hatene vulnerabilidade? Haruka relatóriu privadu ba Admin sistema (la publika iha issue públiku).
 
