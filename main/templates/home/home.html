@@ -44,8 +44,8 @@
 		<h3 class="painel-seksaun">Struktura no Orgaun / Movimentu</h3>
 		<div class="painel-grid painel-grid-entidade">
 			{% for e in entidades %}
-			<a class="painel-kartu painel-entidade-kartu" href="{{ e.url }}">
-				<img src="{{ e.logo }}" alt="" loading="lazy">
+			<a class="painel-kartu painel-entidade-kartu" href="{{ e.url }}"{% if e.modal %} data-modal="{{ e.url }}?modal=1" data-naran="{{ e.naran }}" aria-haspopup="dialog"{% endif %}>
+				{% if e.logo %}<img src="{{ e.logo }}" alt="Logo {{ e.naran }}" loading="lazy">{% else %}<span class="logo-kode{% if e.kode|length > 4 %} kecil{% endif %}" aria-hidden="true">{{ e.kode }}</span>{% endif %}
 				<span class="naran">{{ e.naran }}</span>
 				<b>{{ e.total }} membru</b>
 				{% if e.lider %}<small>Presidente: {{ e.lider }}</small>{% endif %}
@@ -88,6 +88,23 @@
 {% endif %}
 {% endblock %}
 {% block scripts %}
+{% if group and group != 'admin' %}
+<div class="modal fade" id="modal-entidade" tabindex="-1" role="dialog" aria-labelledby="modal-entidade-titulu" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modal-entidade-titulu">Detallu</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Taka"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body" id="modal-entidade-isi"><div class="text-center text-muted py-4"><i class="fa fa-spinner fa-spin"></i> Hein...</div></div>
+			<div class="modal-footer">
+				<a class="btn btn-outline-primary mr-auto" id="modal-entidade-link" href="#"><i class="fa fa-external-link"></i> Loke pájina kompletu</a>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Taka</button>
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %}
 {% if group and group != 'admin' %}
 <script src="{% static 'main/js_custom/Chart.min.js' %}"></script>
 <script src="{% static 'main/js_custom/charts.js' %}"></script>

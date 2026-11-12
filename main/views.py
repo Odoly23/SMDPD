@@ -28,6 +28,11 @@ def _counts(user):
 	)
 
 
+# Entidade simples (departamentu no lideransa uitoan) loke iha modal; entidade ho informasaun barak (ez. SEE) loke iha pájina kompletu.
+MODAL_MAKS_DEP = 4
+MODAL_MAKS_LIDER = 8
+
+
 def entitas_ba(user, group=None):
 	"""Entidade (PLP Nasionál no orgaun/movimentu) ne'ebé user bele hare: [(kode, Organizasaun|None)]."""
 	group = group or c_user_group(user)
@@ -89,14 +94,23 @@ def _painel(user, group, tinan, mode):
 		elif a.municipality_id is None:
 			lider.setdefault(a.organizasaun_id, a.membro.nome)
 	hira_org = {r['organizasaun_id']: r['n'] for r in qs.values('organizasaun_id').annotate(n=Count('id', distinct=True))}
+	n_dep = {r['organizasaun_id']: r['n'] for r in Departamentu.objects.filter(is_active=True).values('organizasaun_id').annotate(n=Count('id'))}
+	n_lider = {}
+	for r in Alokasaun.objects.filter(ativu='Sim', nivel__in=['Nasional', 'Organizasaun']).exclude(pozisaun='Membru').values('nivel', 'organizasaun_id').annotate(n=Count('id')):
+		n_lider[r['organizasaun_id'] if r['nivel'] == 'Organizasaun' else None] = r['n']
+
+	def simples(org_id):
+		dep = 1 if group in roles.DEP_ROLES else n_dep.get(org_id, 0)
+		return dep <= MODAL_MAKS_DEP and n_lider.get(org_id, 0) <= MODAL_MAKS_LIDER
+
 	entidades = []
 	for kode, org in lista:
 		if kode == 'nasional':
-			entidades.append({'naran': 'PLP Nasionál', 'total': qs.count(), 'lider': lider.get(None, ''), 'url': reverse('entidade-nasional'),
-				'logo': static('main/images/logo_plp.png')})
+			entidades.append({'naran': 'PLP Nasionál', 'total': qs.count(), 'lider': lider.get(None, ''), 'url': reverse('entidade-nasional'), 'modal': simples(None),
+				'logo': static('main/images/logo_plp.png'), 'kode': 'PLP'})
 		else:
-			entidades.append({'naran': org.name, 'total': hira_org.get(org.pk, 0), 'lider': lider.get(org.pk, ''), 'url': reverse('entidade-orgaun', args=[org.hashed]),
-				'logo': org.logo.url if org.logo else static('main/images/logo_plp.png')})
+			entidades.append({'naran': org.name, 'total': hira_org.get(org.pk, 0), 'lider': lider.get(org.pk, ''), 'url': reverse('entidade-orgaun', args=[org.hashed]), 'modal': simples(org.pk),
+				'logo': org.logo.url if org.logo else None, 'kode': org.code})
 
 	# grafik Mane x Feto tuir área, ba tinan ativu (membru aprovadu)
 	base = _tinan_filtru(qs.filter(aprovasaun='Aprovadu'), tinan, mode)
@@ -238,10 +252,13 @@ def EntidadeDetail(request, hashid=None):
 	hira_sex = {r['sex']: r['n'] for r in qs.values('sex').annotate(n=Count('id', distinct=True))}
 	context = {
 		'group': group, 'org': org, 'naran': org.name if org else 'PLP Nasionál',
-		'logo': (org.logo.url if org and org.logo else static('main/images/logo_plp.png')),
+		'logo': (org.logo.url if org and org.logo else (None if org else static('main/images/logo_plp.png'))),
+		'kode': org.code if org else 'PLP',
 		'total': qs.count(), 'mane': hira_sex.get('Mane', 0), 'feto': hira_sex.get('Feto', 0),
 		'lideransa': lideransa, 'rows': rows,
 		'filtru_membru': ('organizasaun=%d' % org.pk) if org else '',
 		'title': org.name if org else 'PLP Nasionál', 'legend': org.name if org else 'PLP Nasionál',
 	}
+	if request.GET.get('modal'):
+		return render(request, 'home/_entidade_isi.html', context)    # fragmentu ba modal Varanda
 	return render(request, 'home/entidade.html', context)

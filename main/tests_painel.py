@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.utils import timezone
 from config import roles
 from config.tests import BaseData
+from custom.models import Departamentu
+from main.views import MODAL_MAKS_DEP, MODAL_MAKS_LIDER
 from membro.models import Alokasaun
 
 HOJE = datetime.date(2024, 1, 1)
@@ -194,3 +196,192 @@ class KartaunHotuTests(BaseData):
 	def test_botaun_iha_lista(self):
 		self.login(roles.PRESIDENTE)
 		self.assertContains(self.client.get(reverse('membro-list')), reverse('membro-kartaun-hotu'))
+
+
+class ModalEntidadeTests(BaseData):
+	def test_entidade_simples_uza_modal(self):
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('home'))
+		self.assertContains(r, 'id="modal-entidade"')
+		self.assertContains(r, 'data-modal="%s?modal=1"' % reverse('entidade-orgaun', args=[self.org.hashed]))
+		self.assertTrue(all(e['modal'] for e in r.context['entidades']))
+
+	def test_entidade_kompleksu_la_uza_modal(self):
+		for i in range(MODAL_MAKS_DEP + 1):
+			Departamentu.objects.create(code='D%d' % i, name='Dep %d' % i, organizasaun=self.org2)
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('home'))
+		por_naran = {e['naran']: e['modal'] for e in r.context['entidades']}
+		self.assertFalse(por_naran['Organizasaun Feto'])
+		self.assertTrue(por_naran['Organizasaun Juventude'])
+		url = reverse('entidade-orgaun', args=[self.org2.hashed])
+		self.assertNotContains(r, 'data-modal="%s?modal=1"' % url)
+		self.assertContains(r, 'href="%s"' % url)
+
+	def test_entidade_kompleksu_tanba_lideransa_barak(self):
+		for i in range(MODAL_MAKS_LIDER + 1):
+			m = self.buat('Lider %d' % i, 'E-7%03d' % i, self.mun1, self.post1, self.vil1, self.ald1)
+			Alokasaun.objects.create(membro=m, nivel='Organizasaun', pozisaun='Koordenador', organizasaun=self.org2, ativu='Sim', data_hahu=HOJE)
+		self.login(roles.PRESIDENTE)
+		por_naran = {e['naran']: e['modal'] for e in self.client.get(reverse('home')).context['entidades']}
+		self.assertFalse(por_naran['Organizasaun Feto'])
+
+	def test_modac_iha_seed(self):
+		from config.management.commands.seed_inisial import ORGAUN
+		self.assertIn(('MODAC', 'MODAC'), ORGAUN)
+
+	def test_fragmentu_modal_la_iha_layout(self):
+		Alokasaun.objects.create(membro=self.m1, nivel='Organizasaun', pozisaun='Presidente', organizasaun=self.org, ativu='Sim', data_hahu=HOJE)
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('entidade-orgaun', args=[self.org.hashed]) + '?modal=1')
+		self.assertEqual(r.status_code, 200)
+		self.assertContains(r, 'Joao Silva')
+		self.assertContains(r, 'DEPARTAMENTU')
+		self.assertNotContains(r, '<html')
+		self.assertNotContains(r, 'topbar')
+
+	def test_modal_tuir_peran(self):
+		self.login(roles.PRES_ORG)
+		self.assertEqual(self.client.get(reverse('entidade-orgaun', args=[self.org2.hashed]) + '?modal=1').status_code, 404)
+		self.client.logout()
+		self.assertEqual(self.client.get(reverse('entidade-nasional') + '?modal=1').status_code, 302)
+
+
+import shutil, tempfile
+from io import BytesIO
+from PIL import Image
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import override_settings
+
+
+def _png():
+	b = BytesIO()
+	Image.new('RGB', (200, 240), (200, 30, 30)).save(b, 'PNG')
+	return SimpleUploadedFile('foto.png', b.getvalue(), content_type='image/png')
+
+
+class FotuKartaunTests(BaseData):
+	@classmethod
+	def setUpClass(cls):
+		cls._tmp = tempfile.mkdtemp()
+		cls._ov = override_settings(PRIVATE_MEDIA_ROOT=cls._tmp)
+		cls._ov.enable()
+		super().setUpClass()
+
+	@classmethod
+	def tearDownClass(cls):
+		super().tearDownClass()
+		cls._ov.disable()
+		shutil.rmtree(cls._tmp, ignore_errors=True)
+
+	def setUp(self):
+		self.m1.image.save('foto.png', _png(), save=True)
+
+	def test_kartaun_individual_ho_fotu(self):
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('membro-kartaun', args=[self.m1.hashed]))
+		self.assertContains(r, reverse('membro-fotu', args=[self.m1.hashed]))
+		self.assertNotContains(r, 'seidauk iha fotu')
+		f = self.client.get(reverse('membro-fotu', args=[self.m1.hashed]))
+		self.assertEqual(f.status_code, 200)
+		self.assertEqual(f['Content-Type'], 'image/png')
+		self.assertEqual(self.client.get(reverse('membro-kartaun', args=[self.m1.hashed]) + '?cetak=1').status_code, 200)
+
+	def test_kartaun_sein_fotu_hatudu_avizu(self):
+		self.login(roles.SEKRETARIA)
+		r = self.client.get(reverse('membro-kartaun', args=[self.m2.hashed]))
+		self.assertContains(r, 'seidauk iha fotu')
+		self.assertContains(r, reverse('membro-update', args=[self.m2.hashed]))
+
+	def test_kartaun_hotu_ho_fotu_no_filtru(self):
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('membro-kartaun-hotu'), {'cetak': 1})
+		self.assertContains(r, reverse('membro-fotu', args=[self.m1.hashed]))
+		self.assertNotContains(r, reverse('membro-fotu', args=[self.m2.hashed]))   # m2 laiha fotu: kuadru mamuk
+		r = self.client.get(reverse('membro-kartaun-hotu'))
+		self.assertEqual(r.context['sen_fotu'], 1)
+		self.assertContains(r, 'seidauk iha fotu')
+		r = self.client.get(reverse('membro-kartaun-hotu'), {'fotu': 'iha'})
+		self.assertEqual([c['obj'].nome for f in r.context['folhas'] for c in f], ['Joao Silva'])
+		r = self.client.get(reverse('membro-kartaun-hotu'), {'fotu': 'laiha'})
+		self.assertEqual([c['obj'].nome for f in r.context['folhas'] for c in f], ['Maria Costa'])
+
+	def test_fotu_la_bele_hare_membru_área_seluk(self):
+		self.login(roles.KOORD_SUKU)                      # suku Comoro: m1 sim, m2 lae
+		self.assertEqual(self.client.get(reverse('membro-fotu', args=[self.m1.hashed])).status_code, 200)
+		self.m2.image.save('foto2.png', _png(), save=True)
+		self.assertEqual(self.client.get(reverse('membro-fotu', args=[self.m2.hashed])).status_code, 404)
+
+	def test_kartaun_la_uza_background_image_ba_imajen(self):
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('membro-kartaun', args=[self.m1.hashed]))
+		self.assertContains(r, 'k-kotuk-bg')
+		self.assertNotContains(r, 'background-image')
+
+
+class LogoOrgaunTests(BaseData):
+	@classmethod
+	def setUpClass(cls):
+		cls._media = tempfile.mkdtemp()
+		cls._ov = override_settings(MEDIA_ROOT=cls._media)
+		cls._ov.enable()
+		super().setUpClass()
+
+	@classmethod
+	def tearDownClass(cls):
+		super().tearDownClass()
+		cls._ov.disable()
+		shutil.rmtree(cls._media, ignore_errors=True)
+
+	def kartaun(self, m, **extra):
+		self.login(roles.PRESIDENTE)
+		return self.client.get(reverse('membro-kartaun', args=[m.hashed]), extra)
+
+	def test_kartaun_membru_orgaun_ho_logo_karuk_no_plp_los(self):
+		self.org.logo.save('logo.png', _png(), save=True)
+		html = self.kartaun(self.m1).content.decode('utf-8')           # m1 = membru orgaun OJP
+		kiri = html.index('k-flag-kiri'); kanan = html.index('k-flag-kanan')
+		self.assertLess(kiri, kanan)
+		self.assertIn(self.org.logo.url, html[kiri:kanan])             # logo orgaun iha karuk
+		self.assertIn('logo_plp.png', html[kanan:html.index('k-t1')])  # logo PLP iha los
+		self.assertNotIn('bandeira_plp.jpg" alt="PLP"', html[kiri:kanan])
+
+	def test_kartaun_orgaun_sein_logo_hatudu_kodigu(self):
+		html = self.kartaun(self.m1).content.decode('utf-8')
+		kiri = html[html.index('k-flag-kiri'):html.index('k-flag-kanan')]
+		self.assertIn('k-org-kode', kiri)
+		self.assertIn('>OJP<', kiri)
+
+	def test_kartaun_membru_sein_orgaun_hanesan_modelu(self):
+		html = self.kartaun(self.m2).content.decode('utf-8')           # m2 laiha orgaun
+		kiri = html[html.index('k-flag-kiri'):html.index('k-flag-kanan')]
+		self.assertIn('bandeira_plp.jpg', kiri)
+		self.assertNotIn('k-org', kiri)
+
+	def test_kartaun_hotu_logo_orgaun_tuir_membru(self):
+		self.org.logo.save('logo.png', _png(), save=True)
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('membro-kartaun-hotu'), {'cetak': 1})
+		html = r.content.decode('utf-8')
+		self.assertEqual(html.count(self.org.logo.url), 1)             # m1 deit; m2 laiha orgaun
+		self.assertEqual(html.count('k-emblema-logo'), 2)              # logo PLP iha los iha kartaun hotu
+
+	def test_varanda_logo_orgaun_rasik_no_kodigu(self):
+		self.org.logo.save('logo.png', _png(), save=True)
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('home'))
+		por = {e['naran']: e for e in r.context['entidades']}
+		self.assertEqual(por['Organizasaun Juventude']['logo'], self.org.logo.url)
+		self.assertIsNone(por['Organizasaun Feto']['logo'])
+		self.assertEqual(por['Organizasaun Feto']['kode'], 'OFP')
+		self.assertContains(r, 'class="logo-kode"')
+		self.assertContains(r, self.org.logo.url)
+		self.assertTrue(por['PLP Nasionál']['logo'].endswith('logo_plp.png'))
+
+	def test_detallu_orgaun_logo(self):
+		self.login(roles.PRESIDENTE)
+		r = self.client.get(reverse('entidade-orgaun', args=[self.org.hashed]))
+		self.assertContains(r, 'logo-kode')                            # seidauk iha logo: kódigu OJP
+		self.org.logo.save('logo.png', _png(), save=True)
+		r = self.client.get(reverse('entidade-orgaun', args=[self.org.hashed]))
+		self.assertContains(r, self.org.logo.url)

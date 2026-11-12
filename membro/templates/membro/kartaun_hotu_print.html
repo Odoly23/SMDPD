@@ -10,7 +10,7 @@
 <body>
 {% for folha in folhas %}
 <div class="kartaun-folha">
-	{% for c in folha %}{% if sisi == 'kotuk' %}{% include "membro/_kartaun_kotuk.html" %}{% else %}{% include "membro/_kartaun_depan.html" with obj=c.obj hashid=c.hashid posisaun=c.posisaun nu_militante=c.nu_militante logo_org=c.logo_org %}{% endif %}{% endfor %}
+	{% for c in folha %}{% if sisi == 'kotuk' %}{% include "membro/_kartaun_kotuk.html" %}{% else %}{% include "membro/_kartaun_depan.html" with obj=c.obj hashid=c.hashid posisaun=c.posisaun nu_militante=c.nu_militante logo_org=c.logo_org org_kode=c.org_kode %}{% endif %}{% endfor %}
 </div>
 {% endfor %}
 <script src="{% static 'main/js/kartaun_print.js' %}"></script>

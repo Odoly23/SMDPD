@@ -48,6 +48,11 @@ def apply_filters(qs, params):
 		val = params.get(key)
 		if val and val.isdigit():
 			qs = qs.filter(**{f'{key}_id': int(val)})
+	fotu = params.get('fotu')
+	if fotu == 'laiha':
+		qs = qs.filter(Q(image__isnull=True) | Q(image=''))
+	elif fotu == 'iha':
+		qs = qs.exclude(Q(image__isnull=True) | Q(image=''))
 	dep = params.get('departamentu')
 	if dep and dep.isdigit():
 		qs = qs.filter(alokasaun__nivel='Departamentu', alokasaun__ativu='Sim', alokasaun__departamentu_id=int(dep)).distinct()

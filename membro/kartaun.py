@@ -16,5 +16,5 @@ def data_kartaun(m, alokasauns):
 		posisaun = '{0} - {1}'.format(posisaun, org.code)
 	elif utama and utama.unit():
 		posisaun = '{0} - {1}'.format(posisaun, utama.unit())
-	logo = m.organizasaun.logo.url if m.organizasaun_id and m.organizasaun.logo else None
-	return {'posisaun': posisaun, 'nu_militante': nu_militante(m), 'logo_org': logo}
+	return {'posisaun': posisaun, 'nu_militante': nu_militante(m), 'org_kode': org.code if org else '',
+		'logo_org': org.logo.url if org and org.logo else None}

@@ -1,8 +1,10 @@
 {% load static %}
 		<div class="kartaun kartaun-frente">
-			<img class="k-flag k-flag-kiri" src="{% static 'main/images/bandeira_plp.jpg' %}" alt="PLP">
-			{% if logo_org %}<img class="k-flag k-flag-kanan k-org" src="{{ logo_org }}" alt="{{ obj.organizasaun }}">
-			{% else %}<div class="k-flag k-flag-kanan k-emblema" style="background-image:url('{% static 'main/images/bandeira_plp.jpg' %}')"><img src="{% static 'main/images/logo_plp.png' %}" alt="PLP"></div>{% endif %}
+			{% if org_kode %}
+			{% if logo_org %}<img class="k-flag k-flag-kiri k-org" src="{{ logo_org }}" alt="{{ org_kode }}">
+			{% else %}<div class="k-flag k-flag-kiri k-org-kode" role="img" aria-label="{{ org_kode }}"><span>{{ org_kode }}</span></div>{% endif %}
+			{% else %}<img class="k-flag k-flag-kiri" src="{% static 'main/images/bandeira_plp.jpg' %}" alt="PLP">{% endif %}
+			<div class="k-flag k-flag-kanan k-emblema"><img class="k-emblema-bg" src="{% static 'main/images/bandeira_plp.jpg' %}" alt=""><img class="k-emblema-logo" src="{% static 'main/images/logo_plp.png' %}" alt="PLP"></div>
 			<div class="k-t1">PARTIDO DA LIBERTAÇÃO POPULAR - PLP</div>
 			<div class="k-t2">SEDE NACIONAL RUA FOMENTO II, DILI, TIMOR-LESTE</div>
 			<div class="k-t3">CARTÃO DE MEMBRO</div>
@@ -12,7 +14,7 @@
 			<div class="k-lokal" style="left:205px"><b>Suco:</b><span>{{ obj.village|default:"-" }}</span></div>
 			<div class="k-garis"></div>
 			{% if presidente_fotu %}<img class="k-pres-fotu" src="{% static 'main/images/presidente_plp.jpg' %}" alt="{{ presidente_naran }}">{% endif %}
-			<div class="k-foto">{% if obj.image %}<img src="{% url 'membro-fotu' hashid %}" alt="{{ obj.nome }}">{% else %}<i class="fa fa-user"></i>{% endif %}</div>
+			<div class="k-foto">{% if obj.image %}<img src="{% url 'membro-fotu' hashid %}" alt="Fotu">{% else %}<i class="fa fa-user"></i>{% endif %}</div>
 			<div class="k-col k-col1">
 				<div class="k-f"><b>No. Militante:</b><span>{{ nu_militante }}</span></div>
 				<div class="k-f"><b>Nome:</b><span{% if obj.nome|length > 24 %} class="k-kecil"{% endif %}>{{ obj.nome }}</span></div>

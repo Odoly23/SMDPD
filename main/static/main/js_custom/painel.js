@@ -1,3 +1,24 @@
+/* Modal detallu entidade (PLP Nasionál / orgaun-movimentu): lideransa + tabela departamentu, husi pájina servidor (?modal=1). */
+(function () {
+	if (typeof $ === 'undefined' || !$.fn.modal) { return; }
+	var $m = $('#modal-entidade');
+	if (!$m.length) { return; }
+	$(document).on('click', 'a.painel-entidade-kartu[data-modal]', function (e) {
+		if (e.ctrlKey || e.metaKey || e.shiftKey || e.which === 2) { return; }   // tab foun: baibain
+		e.preventDefault();
+		var $a = $(this);
+		$('#modal-entidade-titulu').text($a.data('naran'));
+		$('#modal-entidade-link').attr('href', $a.attr('href'));
+		$('#modal-entidade-isi').html('<div class="text-center text-muted py-4"><i class="fa fa-spinner fa-spin"></i> Hein...</div>');
+		$m.modal('show');
+		$.get($a.data('modal')).done(function (html) {
+			$('#modal-entidade-isi').html(html);
+		}).fail(function () {
+			$('#modal-entidade-isi').html('<div class="alert alert-danger mb-0">La konsege loke detallu. <a href="' + $a.attr('href') + '">Loke pájina kompletu</a></div>');
+		});
+	});
+})();
+
 /* Grafik bara Mane x Feto ba painel Varanda (Chart.js v2): bara kluster ho númeru iha leten. */
 (function () {
 	var kanvas = document.getElementById('painel_grafik');

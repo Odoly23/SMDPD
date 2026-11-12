@@ -5,6 +5,7 @@ from django.contrib.staticfiles import finders
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -176,6 +177,7 @@ def MembroKartaun(request, hashid):
 		'departamentu__organizasaun', 'municipality', 'post', 'village', 'aldeia', 'organizasaun'))
 	context = {
 		'group': c_user_group(request.user), 'obj': obj, 'alokasauns': alokasauns, 'hashid': hashid,
+		'can_edit': c_user_group(request.user) in roles.INPUT_ROLES,
 		'title': 'Kartaun Membru', 'legend': 'Kartaun Membru', **_kartaun_umum(), **data_kartaun(obj, alokasauns)
 	}
 	if request.GET.get('cetak'):
@@ -205,7 +207,13 @@ def MembroKartaunHotu(request):
 	params = request.GET.copy()
 	for k in ('page', 'sisi', 'cetak'):
 		params.pop(k, None)
+	sen_fotu = objects.filter(Q(image__isnull=True) | Q(image='')).count()
+	qs_fotu = params.copy()
+	qs_fotu['fotu'] = 'iha'
+	qs_laiha = params.copy()
+	qs_laiha['fotu'] = 'laiha'
 	context = {
+		'sen_fotu': sen_fotu, 'qs_iha_fotu': qs_fotu.urlencode(), 'qs_laiha_fotu': qs_laiha.urlencode(),
 		'group': c_user_group(request.user), 'page': page, 'total': page.paginator.count, 'folhas': folhas, 'sisi': sisi,
 		'qs': params.urlencode(), 'title': 'Imprime Kartaun Hotu', 'legend': 'Imprime Kartaun Hotu', **_kartaun_umum()
 	}

@@ -91,9 +91,11 @@ canvas { max-width: 100%; }
 .k-flag { top: 15px; width: 37px; height: 40px; object-fit: fill; }
 .k-flag-kiri { left: 12px; }
 .k-flag-kanan { left: 275px; }
-.k-emblema { background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
-.k-emblema img { width: 30px; height: 31px; object-fit: contain; position: static; }
-.k-org { object-fit: contain; }
+.k-emblema { overflow: hidden; }
+.k-emblema-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.k-emblema-logo { position: absolute; left: 3.5px; top: 4.5px; width: 30px; height: 31px; object-fit: contain; }
+.k-org { object-fit: contain; background: #fff; }
+.k-org-kode { display: flex; align-items: center; justify-content: center; background: #04d419; border: 1px solid #f9d71c; color: #fff; font-weight: 700; font-size: 9px; text-align: center; line-height: 1.05; overflow: hidden; word-break: break-all; }
 .k-t1, .k-t2, .k-t3 { left: 54px; right: 54px; overflow: hidden; text-align: center; white-space: nowrap; }
 .k-t1 { top: 13.5px; font-size: 10px; line-height: 15px; }
 .k-t2 { top: 28px; font-size: 7.3px; line-height: 10px; font-weight: 700; }
@@ -105,7 +107,8 @@ canvas { max-width: 100%; }
 .k-lokal span, .k-f span { display: block; color: #666; }
 .k-garis { top: 95px; left: 12px; right: 12px; height: 1px; background: #3cb34a; }
 .k-pres-fotu { left: 232px; top: 67px; width: 90px; height: 106px; object-fit: cover; object-position: top; z-index: 0; }
-.k-foto { left: 20.5px; top: 99px; width: 62px; height: 74px; border: 1px solid #333; background: #f4f6f5; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #bbb; z-index: 1; }
+.k-foto { left: 20.5px; top: 99px; width: 62px; height: 74px; border: 1px solid #333; background: #f4f6f5; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #bbb; z-index: 1; }
+.k-foto i { font-size: 2rem; }
 .k-foto img { width: 100%; height: 100%; object-fit: cover; }
 .k-col { top: 100px; font-size: 8.3px; line-height: 9px; z-index: 1; }
 .k-col1 { left: 86px; width: 98px; }
@@ -116,7 +119,7 @@ canvas { max-width: 100%; }
 .k-pres-naran { left: 232px; width: 90px; top: 172.5px; font-size: 7.8px; line-height: 9px; font-weight: 700; text-align: center; white-space: nowrap; }
 .k-pres-titulu { left: 232px; width: 90px; top: 184px; font-size: 7px; line-height: 8px; text-align: center; color: #1e5aa8; }
 .k-rodape { left: 11.5px; top: 183px; font-size: 7px; line-height: 8px; color: #444; }
-.kartaun-kotuk { background-size: cover; background-position: center; }
+.k-kotuk-bg { left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
 /* Imprime kartaun hotu: grade 2 kolona x 5 liña (10 kartaun) kada folha A4 */
 .kartaun-folha { display: grid; grid-template-columns: repeat(auto-fill, 324px); gap: 14px 18px; justify-content: center; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px dashed #ccc; }
 @media (max-width: 767px) { .kartaun-par { zoom: .95; } }
@@ -206,3 +209,10 @@ canvas { max-width: 100%; }
 .lideransa-kartu .pozisaun { font-size: .68rem; font-weight: 700; text-transform: uppercase; color: #027a0f; }
 .lideransa-kartu .naran { font-size: .85rem; font-weight: 600; color: #222; }
 .lideransa-kartu small { color: #777; }
+
+/* Logo orgaun/movimentu iha Varanda: logo rasik; se seidauk iha, hatudu kódigu orgaun (la konfunde ho logo PLP) */
+.painel-entidade-kartu .logo-kode { width: 38px; height: 38px; margin-bottom: 2px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
+	background: #04d419; border: 2px solid #f9d71c; color: #fff; font-size: .62rem; font-weight: 700; line-height: 1; overflow: hidden; }
+.entidade-kabesalhu .logo-kode { width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex: 0 0 72px;
+	background: #04d419; border: 3px solid #f9d71c; color: #fff; font-size: 1rem; font-weight: 700; }
+.painel-entidade-kartu .logo-kode.kecil { font-size: .5rem; letter-spacing: -.02em; }

@@ -9,6 +9,11 @@
 		<h5 class="mb-1">Kartaun membru aprovadu: <span class="badge badge-primary">{{ total }}</span></h5>
 		<div class="small text-muted mb-2">10 kartaun kada folha A4 (85,6 × 54 mm). Imprime eskala 100% (la tau "fit to page") no hasai "Headers and footers".
 			Filtru lista membru (munisipiu, orgaun, departamentu...) mós vale iha ne'e.</div>
+		{% if sen_fotu %}
+		<div class="alert alert-warning py-2 mx-auto" style="max-width:640px"><i class="fa fa-camera"></i> <strong>{{ sen_fotu }}</strong> membru seidauk iha fotu (kartaun sei iha kuadru mamuk).
+			<a href="{% url 'membro-kartaun-hotu' %}?{{ qs_iha_fotu }}">Imprime deit ho fotu</a> &middot;
+			<a href="{% url 'membro-list' %}?{{ qs_laiha_fotu }}">Hare membru laiha fotu</a></div>
+		{% endif %}
 		{% if total %}
 		<a class="btn btn-primary" target="_blank" rel="noopener" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.number }}&cetak=1&sisi=depan"><i class="fa fa-print"></i> Imprime Fronte ({{ page.object_list|length }})</a>
 		<a class="btn btn-outline-primary" target="_blank" rel="noopener" href="?{{ qs }}{% if qs %}&{% endif %}page={{ page.number }}&cetak=1&sisi=kotuk"><i class="fa fa-print"></i> Imprime Kotuk</a>
@@ -23,7 +28,7 @@
 	</div>
 	{% for folha in folhas %}
 	<div class="kartaun-folha">
-		{% for c in folha %}{% include "membro/_kartaun_depan.html" with obj=c.obj hashid=c.hashid posisaun=c.posisaun nu_militante=c.nu_militante logo_org=c.logo_org %}{% endfor %}
+		{% for c in folha %}{% include "membro/_kartaun_depan.html" with obj=c.obj hashid=c.hashid posisaun=c.posisaun nu_militante=c.nu_militante logo_org=c.logo_org org_kode=c.org_kode %}{% endfor %}
 	</div>
 	{% empty %}
 	<div class="alert alert-info text-center">Laiha membru aprovadu ba filtru ne'e.</div>

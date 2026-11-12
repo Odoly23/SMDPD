@@ -11,5 +11,9 @@
 	<a class="btn btn-secondary" href="{% url 'membro-detail' hashid %}">Fila</a>
 	<div class="small text-muted mt-2">Imprime iha folha A4, eskala 100% (la tau "fit to page"). Kartaun hanesan CR80 (85,6 × 54 mm): frente no kotuk.</div>
 </div>
+{% if not obj.image %}
+<div class="alert alert-warning text-center no-print mx-auto" style="max-width:560px"><i class="fa fa-camera"></i> Membru ne'e seidauk iha fotu.
+	{% if can_edit %}<a href="{% url 'membro-update' hashid %}">Aumenta fotu</a> molok imprime.{% endif %}</div>
+{% endif %}
 {% include "membro/_kartaun_kartu.html" %}
 {% endblock %}

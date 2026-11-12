@@ -13,6 +13,7 @@ ORGAUN = [
 	('MLS', 'Movimento Lorico Saudavel'), ('LFM', 'Lorico Forma (Forsa Matak)'),
 	('RACA', 'Movimento RACA'), ('ADST', 'Assosiadu Defisiente Salva Timor'),
 	('MDIA', 'Movimento Diaspora'), ('MLM', 'Movimento Loriko Matak'),
+	('MODAC', 'MODAC'),
 ]
 
 
