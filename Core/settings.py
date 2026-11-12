@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
+	'whitenoise.middleware.WhiteNoiseMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
@@ -109,6 +110,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STORAGES = {
+	'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+	'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage'},
+}
 
 # MEDIA = file públiku (logo orgaun). Fotu membru rai iha PRIVATE_MEDIA_ROOT (la públiku): hatudu liu husi view ho login no área.
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -175,6 +180,8 @@ if TRUST_PROXY:
 
 # 2FA obrigatóriu ba Admin, Presidente no Sekretaria Nasionál (aktiva iha produksaun ho DJANGO_2FA_WAJIBA=True)
 SPBD_2FA_WAJIBA = _env_bool('DJANGO_2FA_WAJIBA', False)
+# Media públiku = deit logo orgaun. Se nginx/Caddy fo /media/ rasik, bele define DJANGO_SERVE_MEDIA=False.
+SERVE_MEDIA = _env_bool('DJANGO_SERVE_MEDIA', True)
 # Kartaun membru: naran/títulu presidente ne'ebé sai iha kartaun (fotu: main/images/presidente_plp.jpg, opsionál)
 KARTAUN_PRESIDENTE_NARAN = os.environ.get('KARTAUN_PRESIDENTE_NARAN', 'TAUR MATAN RUAK')
 KARTAUN_PRESIDENTE_TITULU = os.environ.get('KARTAUN_PRESIDENTE_TITULU', 'Presidente do PLP')
