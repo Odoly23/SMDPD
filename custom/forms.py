@@ -132,3 +132,27 @@ class OrganizasaunForm(CodeNameForm):
 	class Meta:
 		model = Organizasaun
 		fields = ['code', 'name', 'titulu', 'sede', 'logo', 'is_active']
+
+
+class LogoOrgaunForm(forms.ModelForm):
+	"""Presidente orgaun/movimentu troka logo rasik: JPG/PNG deit (formatu loos iha konteúdu, la deit naran file), maks. 2 MB."""
+
+	class Meta:
+		model = Organizasaun
+		fields = ['logo']
+
+	def clean_logo(self):
+		from PIL import Image
+		f = self.cleaned_data.get('logo')
+		if not f or f is False or not hasattr(f, 'read'):
+			raise forms.ValidationError('Hili file logo (JPG ka PNG).')
+		try:
+			f.seek(0)
+			with Image.open(f) as im:
+				formatu = im.format
+			f.seek(0)
+		except Exception:
+			raise forms.ValidationError("File la'ós imajen JPG/PNG ne'ebé validu.")
+		if formatu not in ('JPEG', 'PNG'):
+			raise forms.ValidationError('Logo tenke JPG ka PNG.')
+		return f

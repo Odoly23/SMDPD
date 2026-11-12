@@ -415,3 +415,111 @@ class MediaPublikuTests(BaseData):
 	def test_fotu_membru_la_iha_iha_media(self):
 		from django.conf import settings
 		self.assertNotEqual(settings.MEDIA_ROOT, settings.PRIVATE_MEDIA_ROOT)
+
+
+class LogoUploadTests(BaseData):
+	@classmethod
+	def setUpClass(cls):
+		cls._media = tempfile.mkdtemp()
+		cls._ov = override_settings(MEDIA_ROOT=cls._media)
+		cls._ov.enable()
+		super().setUpClass()
+
+	@classmethod
+	def tearDownClass(cls):
+		super().tearDownClass()
+		cls._ov.disable()
+		shutil.rmtree(cls._media, ignore_errors=True)
+
+	def url(self, org=None):
+		return reverse('entidade-logo', args=[(org or self.org).hashed])
+
+	def up(self, role, arkivu, org=None):
+		self.login(role)
+		return self.client.post(self.url(org), {'logo': arkivu})
+
+	def test_presidente_orgaun_hatama_logo(self):
+		r = self.up(roles.PRES_ORG, _png())
+		self.assertRedirects(r, reverse('entidade-orgaun', args=[self.org.hashed]), fetch_redirect_response=False)
+		self.org.refresh_from_db()
+		self.assertTrue(self.org.logo)
+		self.assertTrue(self.org.logo.storage.exists(self.org.logo.name))
+
+	def test_troka_logo_hamoos_file_antigu(self):
+		self.up(roles.PRES_ORG, _png())
+		self.org.refresh_from_db()
+		antigu = self.org.logo.name
+		self.up(roles.PRES_ORG, _png())
+		self.org.refresh_from_db()
+		self.assertNotEqual(antigu, self.org.logo.name)
+		self.assertFalse(self.org.logo.storage.exists(antigu))
+		self.assertTrue(self.org.logo.storage.exists(self.org.logo.name))
+
+	def test_hamoos_logo(self):
+		self.up(roles.PRES_ORG, _png())
+		self.org.refresh_from_db()
+		nome = self.org.logo.name
+		self.login(roles.PRES_ORG)
+		self.client.post(self.url(), {'hamoos': '1'})
+		self.org.refresh_from_db()
+		self.assertFalse(self.org.logo)
+		self.assertFalse(self.org.logo.storage.exists(nome))
+
+	def test_peran_seluk_la_bele(self):
+		for role in (roles.PRESIDENTE, roles.SEKRETARIA, roles.VICE_ORG, roles.SEKR_ORG, roles.KOORD_ORG, roles.PRES_DEP, roles.KOORD_SUKU, roles.ADMIN):
+			r = self.up(role, _png())
+			self.assertEqual(r.status_code, 403, role)
+		self.org.refresh_from_db()
+		self.assertFalse(self.org.logo)
+		self.client.logout()
+		self.assertEqual(self.client.post(self.url(), {}).status_code, 302)
+
+	def test_la_bele_troka_logo_orgaun_seluk(self):
+		self.assertEqual(self.up(roles.PRES_ORG, _png(), org=self.org2).status_code, 404)
+		self.org2.refresh_from_db()
+		self.assertFalse(self.org2.logo)
+
+	def test_get_la_bele(self):
+		self.login(roles.PRES_ORG)
+		self.assertEqual(self.client.get(self.url()).status_code, 405)
+
+	def test_file_la_validu_la_simu(self):
+		def gif():
+			b = BytesIO(); Image.new('RGB', (50, 50)).save(b, 'GIF')
+			return SimpleUploadedFile('logo.png', b.getvalue(), content_type='image/png')   # naran .png maibé konteúdu GIF
+		def boot():
+			b = BytesIO(); Image.frombytes('RGB', (1500, 1500), __import__('os').urandom(1500 * 1500 * 3)).save(b, 'PNG')
+			return SimpleUploadedFile('boot.png', b.getvalue(), content_type='image/png')
+		for arkivu in (SimpleUploadedFile('x.png', b'<script>alert(1)</script>', content_type='image/png'), gif(), boot()):
+			self.up(roles.PRES_ORG, arkivu)
+			self.org.refresh_from_db()
+			self.assertFalse(self.org.logo, arkivu.name)
+		self.login(roles.PRES_ORG)
+		self.client.post(self.url(), {})                         # la hili file
+		self.org.refresh_from_db()
+		self.assertFalse(self.org.logo)
+
+	def test_botaun_deit_ba_presidente_orgaun_rasik(self):
+		pg = reverse('entidade-orgaun', args=[self.org.hashed])
+		self.login(roles.PRES_ORG)
+		r = self.client.get(pg)
+		self.assertContains(r, 'Hatama Logo')
+		self.assertContains(r, self.url())
+		self.assertNotContains(self.client.get(pg + '?modal=1'), 'Hatama Logo')       # modal la iha botaun
+		for role in (roles.PRESIDENTE, roles.KOORD_ORG, roles.VICE_ORG):
+			self.login(role)
+			self.assertNotContains(self.client.get(pg), 'Hatama Logo', msg_prefix=role)
+		self.up(roles.PRES_ORG, _png())
+		self.login(roles.PRES_ORG)
+		self.assertContains(self.client.get(pg), 'Troka Logo')
+		self.assertContains(self.client.get(pg), 'Hamoos Logo')
+		# 'hamoos' tenke input hidden (la botaun): ui.js hakbesik botaun submit durante submit, nune'e valór botaun la hatudu
+		self.assertContains(self.client.get(pg), '<input type="hidden" name="hamoos" value="1">')
+
+	def test_varanda_iha_ligasaun_ba_presidente_orgaun(self):
+		self.login(roles.PRES_ORG)
+		r = self.client.get(reverse('home'))
+		self.assertEqual(r.context['logo_url'], reverse('entidade-orgaun', args=[self.org.hashed]) + '#logo')
+		self.assertContains(r, 'Troka logo organizasaun')
+		self.login(roles.PRESIDENTE)
+		self.assertNotIn('logo_url', self.client.get(reverse('home')).context)

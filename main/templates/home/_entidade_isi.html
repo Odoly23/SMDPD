@@ -7,6 +7,23 @@
 			<a class="btn btn-sm btn-outline-primary" href="{% url 'membro-list' %}{% if filtru_membru %}?{{ filtru_membru }}{% endif %}"><i class="fa fa-users"></i> Lista Membru</a>
 			<a class="btn btn-sm btn-outline-success" href="{% url 'membro-kartaun-hotu' %}{% if filtru_membru %}?{{ filtru_membru }}{% endif %}"><i class="fa fa-id-card-o"></i> Imprime Kartaun Hotu</a>
 		</div>
+		{% if can_logo %}
+		<div id="logo" class="mt-2 no-print">
+			<form class="d-inline" method="post" action="{% url 'entidade-logo' org.hashed %}" enctype="multipart/form-data">
+				{% csrf_token %}
+				<label class="btn btn-sm btn-warning mb-0" for="logo_file"><i class="fa fa-upload"></i> {% if org.logo %}Troka Logo{% else %}Hatama Logo{% endif %}</label>
+				<input id="logo_file" class="d-none" type="file" name="logo" accept="image/png,image/jpeg" onchange="this.form.submit()">
+			</form>
+			{% if org.logo %}
+			<form class="d-inline" method="post" action="{% url 'entidade-logo' org.hashed %}" onsubmit="return confirm('Hamoos logo orgaun ne\'e?')">
+				{% csrf_token %}
+				<input type="hidden" name="hamoos" value="1">
+				<button class="btn btn-sm btn-outline-danger" type="submit">Hamoos Logo</button>
+			</form>
+			{% endif %}
+			<small class="text-muted d-block mt-1">JPG ka PNG, maksimu 2 MB. Logo ne'e sei sai iha navbar, Varanda no kartaun membru orgaun.</small>
+		</div>
+		{% endif %}
 	</div>
 </div>
 

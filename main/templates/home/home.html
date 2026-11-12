@@ -21,6 +21,7 @@
 			<h2 class="painel-entidade">{{ nav_entidade|upper }}</h2>
 			<div class="painel-sistema">SISTEMA PLATAFORMA BASE DE DADUS</div>
 			<img class="painel-logo" src="{{ nav_logo }}" alt="Logo">
+			{% if logo_url %}<div class="mt-1 no-print"><a class="btn btn-sm btn-outline-warning" href="{{ logo_url }}"><i class="fa fa-upload"></i> Troka logo organizasaun</a></div>{% endif %}
 		</div>
 		<form class="painel-buka" method="get" action="{% url 'membro-list' %}" role="search">
 			<div class="input-group">

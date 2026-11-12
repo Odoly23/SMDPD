@@ -7,6 +7,9 @@ from django.shortcuts import render, get_object_or_404
 from django.templatetags.static import static
 from django.urls import reverse
 from django.http import Http404
+from django.contrib import messages
+from django.views.decorators.http import require_POST
+from config.decorators import allowed_users
 from config import roles
 from django.utils import timezone
 from anunsiu.utils import anunsiu_ba
@@ -158,6 +161,10 @@ def home(request):
 	}
 	if group in roles.VIEW_ROLES:
 		context.update(_painel(request.user, group, *_tinan_param(request)))
+	if group == roles.PRES_ORG:
+		sc = c_user_scope(request.user)
+		if sc and sc.organizasaun_id and sc.organizasaun.is_active:
+			context['logo_url'] = reverse('entidade-orgaun', args=[sc.organizasaun.hashed]) + '#logo'
 	return render(request, 'home/home.html', context)
 
 
@@ -257,8 +264,39 @@ def EntidadeDetail(request, hashid=None):
 		'total': qs.count(), 'mane': hira_sex.get('Mane', 0), 'feto': hira_sex.get('Feto', 0),
 		'lideransa': lideransa, 'rows': rows,
 		'filtru_membru': ('organizasaun=%d' % org.pk) if org else '',
+		'can_logo': bool(org and group == roles.PRES_ORG and scope and scope.organizasaun_id == org.pk and not request.GET.get('modal')),
 		'title': org.name if org else 'PLP Nasionál', 'legend': org.name if org else 'PLP Nasionál',
 	}
 	if request.GET.get('modal'):
 		return render(request, 'home/_entidade_isi.html', context)    # fragmentu ba modal Varanda
 	return render(request, 'home/entidade.html', context)
+
+
+@login_required
+@require_POST
+@allowed_users(allowed_roles=[roles.PRES_ORG])
+def LogoOrgaun(request, hashid):
+	"""Presidente orgaun/movimentu hatama, troka ka hamoos logo ba nia orgaun rasik (deit orgaun ne'ebé nia ukun)."""
+	from custom.forms import LogoOrgaunForm
+	scope = c_user_scope(request.user)
+	org = get_object_or_404(Organizasaun, hashed=hashid, is_active=True)
+	if not scope or scope.organizasaun_id != org.pk:
+		raise Http404
+	url = reverse('entidade-orgaun', args=[org.hashed])
+	antigu = org.logo.name if org.logo else ''
+	if request.POST.get('hamoos'):
+		if antigu:
+			org.logo = None
+			org.save(update_fields=['logo'])
+			org.logo.storage.delete(antigu)
+			messages.success(request, 'Logo hamoos ona.')
+		return redirect(url)
+	form = LogoOrgaunForm(request.POST, request.FILES, instance=org)
+	if form.is_valid():
+		form.save()
+		if antigu and antigu != org.logo.name:
+			org.logo.storage.delete(antigu)             # la husik file antigu
+		messages.success(request, 'Logo orgaun atualiza ona.')
+	else:
+		messages.error(request, ' '.join(e for errs in form.errors.values() for e in errs))
+	return redirect(url)
