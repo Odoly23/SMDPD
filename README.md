@@ -130,6 +130,71 @@ Tuir ida ne'e, tama ho `admin` no rejista postu/suku/aldeia, departamentu no org
 
 Database default: SQLite. Ba MySQL, define `DB_ENGINE=mysql` no variavel `DB_*` iha `.env` (instala `mysqlclient`).
 
+## Deploy (produksaun)
+
+Servidór Linux ho Python 3.11+ (testa ho 3.13). Passu sira:
+
+```bash
+git clone https://github.com/Odoly23/SMDPD.git && cd SMDPD
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt          # inklui gunicorn no whitenoise
+cp .env.example .env                     # edita nilai sira iha okos
+```
+
+`.env` minimu ba produksaun:
+
+```ini
+DJANGO_SECRET_KEY=<string aleatóriu naruk: python -c "import secrets; print(secrets.token_urlsafe(50))">
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=sistema.ezemplu.tl
+DJANGO_CSRF_TRUSTED_ORIGINS=https://sistema.ezemplu.tl
+DJANGO_TRUST_PROXY=True                  # se hela hodi nginx/Caddy ho HTTPS
+ADMIN_PASSWORD=<password inisial admin>
+DJANGO_2FA_WAJIBA=True
+```
+
+Aplika no hatudu:
+
+```bash
+python manage.py migrate
+python manage.py seed_inisial            # peran, wilayah, orgaun/movimentu (inklui MODAC), user admin
+python manage.py collectstatic --noinput # CSS/JS (hatudu husi WhiteNoise)
+python manage.py check --deploy          # tenke la iha peringatan boot (kontaktu hosi HSTS preload opsionál)
+gunicorn Core.wsgi:application --bind 127.0.0.1:8000 --workers 3
+```
+
+Ezemplu `systemd` (`/etc/systemd/system/spbd-plp.service`):
+
+```ini
+[Service]
+User=www-data
+WorkingDirectory=/opt/SMDPD
+ExecStart=/opt/SMDPD/venv/bin/gunicorn Core.wsgi:application --bind 127.0.0.1:8000 --workers 3
+Restart=always
+[Install]
+WantedBy=multi-user.target
+```
+
+Ezemplu `nginx` (HTTPS ho Let's Encrypt/certbot):
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name sistema.ezemplu.tl;
+    client_max_body_size 8m;                       # upload fotu/logo
+    location / { proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host; proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr; }
+}
+```
+
+Nota importante:
+- **Backup**: kopia regular ba database (`db.sqlite3` ka MySQL), pasta `private_media/` (fotu membru, la públiku) no `media/` (logo orgaun). Teste restaura mós.
+- **Ho nginx fo `/media/` rasik** bele define `DJANGO_SERVE_MEDIA=False`. Fotu membru *la* iha `/media/`: hatudu de'it liu husi login no área uzuáriu.
+- Atualiza: `git pull && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput`, depois restart servisu.
+- Ba MySQL: define `DB_ENGINE=mysql` no `DB_*`, instala `mysqlclient`.
+- Seguransa kompletu: `SECURITY.md`.
+
 ## Teste
 
 ```bash

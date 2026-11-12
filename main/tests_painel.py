@@ -385,3 +385,33 @@ class LogoOrgaunTests(BaseData):
 		self.org.logo.save('logo.png', _png(), save=True)
 		r = self.client.get(reverse('entidade-orgaun', args=[self.org.hashed]))
 		self.assertContains(r, self.org.logo.url)
+
+
+class MediaPublikuTests(BaseData):
+	"""/media/ sai husi Django (deploy): logo orgaun públiku; la bele sai fotu membru ka file seluk."""
+	@classmethod
+	def setUpClass(cls):
+		cls._media = tempfile.mkdtemp()
+		cls._ov = override_settings(MEDIA_ROOT=cls._media)
+		cls._ov.enable()
+		super().setUpClass()
+
+	@classmethod
+	def tearDownClass(cls):
+		super().tearDownClass()
+		cls._ov.disable()
+		shutil.rmtree(cls._media, ignore_errors=True)
+
+	def test_logo_orgaun_bele_loke_sein_login(self):
+		self.org.logo.save('logo.png', _png(), save=True)
+		r = self.client.get(self.org.logo.url)
+		self.assertEqual(r.status_code, 200)
+		self.assertEqual(r['Content-Type'], 'image/png')
+
+	def test_la_bele_sai_file_seluk(self):
+		for path in ('/media/../manage.py', '/media/%2e%2e/manage.py', '/media/..%2f..%2f.env', '/media/', '/media/membro_foto/x.png'):
+			self.assertIn(self.client.get(path).status_code, (400, 404), path)      # tolak (la 200)
+
+	def test_fotu_membru_la_iha_iha_media(self):
+		from django.conf import settings
+		self.assertNotEqual(settings.MEDIA_ROOT, settings.PRIVATE_MEDIA_ROOT)

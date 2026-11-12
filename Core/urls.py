@@ -4,6 +4,11 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.static import serve
 
+def media_publiku(request, path):
+	"""Logo orgaun (MEDIA_ROOT). Safe_join husi django.views.static.serve: la bele sai husi pasta ne'e, la iha lista pasta."""
+	return serve(request, path, document_root=settings.MEDIA_ROOT)
+
+
 handler403 = 'main.views.error_403'
 handler404 = 'main.views.error_404'
 handler500 = 'main.views.error_500'
@@ -25,4 +30,4 @@ if settings.DEBUG:
 	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 elif settings.SERVE_MEDIA:
 	# logo orgaun (públiku). Fotu membru la iha iha ne'e: rai iha PRIVATE_MEDIA_ROOT no hatudu liu husi view ho login.
-	urlpatterns += [re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT})]
+	urlpatterns += [re_path(r'^media/(?P<path>.*)$', media_publiku, name='media-publiku')]

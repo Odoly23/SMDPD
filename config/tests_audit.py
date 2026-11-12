@@ -17,7 +17,7 @@ from membro.models import Membro
 
 PASS = 'x-Senha-123'
 XSS = '<script>alert(1)</script>'
-LIBRE = {'login', 'login-2fa'}          # pájina públiku (login)
+LIBRE = {'login', 'login-2fa', 'media-publiku'}          # públiku: login no logo orgaun (/media/; fotu membru la iha iha ne'e)
 
 
 def hatama_url():
