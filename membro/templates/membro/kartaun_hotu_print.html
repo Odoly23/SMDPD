@@ -1,0 +1,18 @@
+{% load static %}<!DOCTYPE html>
+<html lang="tet">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kartaun membru ({{ total }})</title>
+<link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+<style>body { margin: 0; padding: 8px; background: #fff; }</style>
+</head>
+<body>
+{% for folha in folhas %}
+<div class="kartaun-folha">
+	{% for c in folha %}{% if sisi == 'kotuk' %}{% include "membro/_kartaun_kotuk.html" %}{% else %}{% include "membro/_kartaun_depan.html" with obj=c.obj hashid=c.hashid posisaun=c.posisaun nu_militante=c.nu_militante logo_org=c.logo_org %}{% endif %}{% endfor %}
+</div>
+{% endfor %}
+<script src="{% static 'main/js/kartaun_print.js' %}"></script>
+</body>
+</html>

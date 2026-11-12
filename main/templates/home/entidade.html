@@ -1,0 +1,50 @@
+{% extends "main/layout.html" %}
+{% block crumbs %}
+<li class="breadcrumb-item active" aria-current="page">{{ naran }}</li>
+{% endblock %}
+{% block content %}
+<div class="entidade-kabesalhu">
+	<img src="{{ logo }}" alt="Logo {{ naran }}">
+	<div>
+		<h3>{{ naran }}</h3>
+		<div class="text-muted">Total membru: <strong>{{ total }}</strong> &middot; Mane: <strong>{{ mane }}</strong> &middot; Feto: <strong>{{ feto }}</strong></div>
+		<div class="mt-2 no-print">
+			<a class="btn btn-sm btn-outline-primary" href="{% url 'membro-list' %}{% if filtru_membru %}?{{ filtru_membru }}{% endif %}"><i class="fa fa-users"></i> Lista Membru</a>
+			<a class="btn btn-sm btn-outline-success" href="{% url 'membro-kartaun-hotu' %}{% if filtru_membru %}?{{ filtru_membru }}{% endif %}"><i class="fa fa-id-card-o"></i> Imprime Kartaun Hotu</a>
+		</div>
+	</div>
+</div>
+
+<h5 class="painel-seksaun">Lideransa</h5>
+<div class="lideransa-grid">
+	{% for a in lideransa %}
+	<div class="lideransa-kartu">
+		<div class="pozisaun">{{ a.pozisaun }}{% if a.municipality %} &middot; {{ a.municipality }}{% endif %}</div>
+		<div class="naran">{{ a.membro.nome }}</div>
+	</div>
+	{% empty %}
+	<div class="text-muted">Seidauk iha pozisaun lideransa ne'ebé aloka.</div>
+	{% endfor %}
+</div>
+
+<h5 class="painel-seksaun">Departamentu</h5>
+<div class="card"><div class="card-body p-2">
+	<div class="table-responsive">
+		<table class="table table-sm table-hover table-stack mb-0">
+			<thead><tr><th>DEPARTAMENTU</th><th>PRESIDENTE</th><th class="d-none d-md-table-cell">VICE / KOORDENADOR</th><th class="text-center">TOTAL MEMBRU</th></tr></thead>
+			<tbody>
+			{% for r in rows %}
+				<tr>
+					<td data-label="Departamentu"><strong>{{ r.dep.name }}</strong></td>
+					<td data-label="Presidente">{{ r.presidente|default:"-" }}</td>
+					<td data-label="Vice / Koordenador" class="d-none d-md-table-cell">{% for l in r.seluk %}<span class="d-block small">{{ l.naran }} <span class="text-muted">({{ l.pozisaun }})</span></span>{% empty %}-{% endfor %}</td>
+					<td data-label="Total Membru" class="text-center"><a href="{% url 'membro-list' %}?departamentu={{ r.dep.pk }}"><span class="badge badge-primary">{{ r.total }}</span></a></td>
+				</tr>
+			{% empty %}
+				<tr><td colspan="4" class="text-center text-muted">Seidauk iha departamentu.</td></tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div></div>
+{% endblock %}

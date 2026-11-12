@@ -11,6 +11,7 @@ urlpatterns = [
 	path('aprovasaun/bulk/', views.AprovasaunBulk, name='aprovasaun-bulk'),
 	path('aprovasaun/<str:hashid>/aprova/', views.AprovasaunAprova, name='aprovasaun-aprova'),
 	path('aprovasaun/<str:hashid>/rejeita/', views.AprovasaunRejeita, name='aprovasaun-rejeita'),
+	path('kartaun/', views.MembroKartaunHotu, name='membro-kartaun-hotu'),
 	path('struktura/', views.StrukturaPainel, name='struktura-painel'),
 	path('struktura/<str:nivel>/', views.StrukturaList, name='struktura-list'),
 	path('alokasaun/add/', views.AlokasaunAdd, name='alokasaun-add'),

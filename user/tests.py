@@ -93,7 +93,10 @@ class LogoNavbarTests(BaseData):
 			self.login(role)
 			r = self.client.get(reverse('home'))
 			self.assertContains(r, 'logo_plp.png', msg_prefix=role)
-			self.assertNotContains(r, self.org.logo.url, msg_prefix=role)
+			html = r.content.decode('utf-8')
+			brand = html[html.index('class="brand"'):html.index('</a>', html.index('class="brand"'))]   # logo navbar deit
+			self.assertIn('logo_plp.png', brand, role)
+			self.assertNotIn(self.org.logo.url, brand, role)
 
 	def test_admin_upload_logo_orgaun(self):
 		self.login(roles.ADMIN)

@@ -40,33 +40,37 @@
 			{% for a in area %}<a href="{% url 'membro-list' %}?{{ a.param }}={{ a.valor }}"><span class="naran">{{ a.naran|upper }}</span> : <b>{{ a.total }}</b></a>{% if not forloop.last %} <span class="sep">|</span> {% endif %}{% endfor %}
 		</div>
 		{% endif %}
-		{% if departamentus %}
-		<h3 class="painel-seksaun">Departamentu</h3>
-		<div class="painel-grid">
-			{% for d in departamentus %}<a class="painel-kartu" href="{% url 'membro-list' %}?departamentu={{ d.id }}"><span class="naran">{{ d.naran }}</span><b>{{ d.total }}</b></a>{% endfor %}
+		{% if entidades %}
+		<h3 class="painel-seksaun">Struktura no Orgaun / Movimentu</h3>
+		<div class="painel-grid painel-grid-entidade">
+			{% for e in entidades %}
+			<a class="painel-kartu painel-entidade-kartu" href="{{ e.url }}">
+				<img src="{{ e.logo }}" alt="" loading="lazy">
+				<span class="naran">{{ e.naran }}</span>
+				<b>{{ e.total }} membru</b>
+				{% if e.lider %}<small>Presidente: {{ e.lider }}</small>{% endif %}
+			</a>
+			{% endfor %}
 		</div>
 		{% endif %}
-		{% if orgauns %}
-		<h3 class="painel-seksaun">Orgaun / Movimentu</h3>
-		<div class="painel-grid">
-			{% for o in orgauns %}<a class="painel-kartu" href="{% url 'membro-list' %}?organizasaun={{ o.id }}"><span class="naran">{{ o.naran }}</span><b>{{ o.total }}</b></a>{% endfor %}
-		</div>
-		{% endif %}
-		{% if grafik_label %}
 		<h3 class="painel-grafik-titulu text-center">{{ grafik_titulu }}</h3>
-		<div class="painel-grafik"><div class="painel-grafik-isi" id="painel_isi" data-n="{{ grafik_label|length }}"><canvas id="painel_grafik" aria-label="{{ grafik_titulu }}" role="img"></canvas></div></div>
+		<form class="painel-tinan no-print" method="get" action="{% url 'home' %}">
+			<label for="p_tinan">Tinan</label>
+			<select id="p_tinan" name="tinan" class="form-control form-control-sm" onchange="this.form.submit()">
+				{% for t in tinan_lista %}<option value="{{ t }}"{% if t == tinan %} selected{% endif %}>{{ t }}</option>{% endfor %}
+			</select>
+			<select name="mode" class="form-control form-control-sm" onchange="this.form.submit()" aria-label="Tipu data">
+				<option value="hotu"{% if mode != 'foun' %} selected{% endif %}>Membru ativu to'o tinan ne'e</option>
+				<option value="foun"{% if mode == 'foun' %} selected{% endif %}>Membru foun iha tinan ne'e</option>
+			</select>
+			<noscript><button class="btn btn-sm btn-primary" type="submit">Hatudu</button></noscript>
+		</form>
+		<div class="painel-legenda text-center"><span class="mane"></span> Mane: <b>{{ total_mane }}</b> &nbsp; <span class="feto"></span> Feto: <b>{{ total_feto }}</b> <small class="text-muted">· membru aprovadu{% if sen_area %} · {{ sen_area }} seidauk iha {{ titulu_area|lower }} (la tama iha grafik){% endif %}</small></div>
+		<div class="painel-grafik"><div class="painel-grafik-isi" id="painel_isi"><canvas id="painel_grafik" aria-label="{{ grafik_titulu }}" role="img"></canvas></div></div>
 		{{ grafik_label|json_script:"painel-label" }}
-		{{ grafik_data|json_script:"painel-data" }}
-		{% endif %}
+		{{ grafik_mane|json_script:"painel-mane" }}
+		{{ grafik_feto|json_script:"painel-feto" }}
 	</section>
-	<div class="row mt-4">
-		<div class="col-md-6">
-			<div class="card"><div class="card-header">Sexu</div><div class="card-body"><div style="height: 240px;"><canvas id="chart_sexo"></canvas></div></div></div>
-		</div>
-		<div class="col-md-6">
-			<div class="card"><div class="card-header">Idade</div><div class="card-body"><div style="height: 240px;"><canvas id="chart_idade"></canvas></div></div></div>
-		</div>
-	</div>
 	{% if aniversarius %}
 	<div class="card"><div class="card-header"><i class="fa fa-birthday-cake"></i> Aniversariu semana ne'e</div><ul class="list-group list-group-flush">
 		{% for o in aniversarius %}<li class="list-group-item"><a href="{% url 'membro-detail' o.membru.hashed %}">{{ o.membru.nome }}</a> <small class="text-gray">· {{ o.idade }} tinan</small> <span class="float-right badge badge-{% if o.loron == 0 %}ativu{% else %}light{% endif %}">{% if o.loron == 0 %}Ohin{% else %}{{ o.data|date:"d/m" }}{% endif %}</span></li>{% endfor %}
@@ -88,9 +92,5 @@
 <script src="{% static 'main/js_custom/Chart.min.js' %}"></script>
 <script src="{% static 'main/js_custom/charts.js' %}"></script>
 <script src="{% static 'main/js_custom/painel.js' %}"></script>
-<script>
-	grafik('chart_sexo', "{% url 'api-gender' %}", 'doughnut', 'Sexu');
-	grafik('chart_idade', "{% url 'api-age' %}", 'bar', 'Membru');
-</script>
 {% endif %}
 {% endblock %}

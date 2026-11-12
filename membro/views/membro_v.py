@@ -15,6 +15,7 @@ from custom.models import Municipality, Organizasaun
 from membro.forms import MembroForm
 from membro.models import Membro, Alokasaun
 from membro.akun import sinkroniza_login, desativa_login
+from membro.kartaun import data_kartaun
 from membro.utils import snapshot, diff_snapshot, log_historia, apply_filters, export_csv
 from notif.utils import notif_aprovador
 
@@ -156,37 +157,61 @@ def MembroSearch(request):
 	return render(request, 'membro/search_options.html', {'objects': objects})
 
 
-@login_required
-@allowed_users(allowed_roles=roles.VIEW_ROLES)
-def MembroKartaun(request, hashid):
-	"""Kartaun membru (ID card) ne'ebé bele imprime. Deit ba membru aprovadu."""
-	from custom.models import Organizasaun  # noqa: F401
-	obj = get_object_or_404(membro_scope(request.user).select_related('organizasaun'), hashed=hashid, aprovasaun='Aprovadu')
-	alokasauns = Alokasaun.objects.filter(membro=obj, ativu='Sim').select_related(
-		'departamentu__organizasaun', 'municipality', 'post', 'village', 'aldeia', 'organizasaun')
-	org = obj.organizasaun
-	utama = next((a for a in alokasauns if a.pozisaun != 'Membru'), None) or next(iter(alokasauns), None)
-	posisaun = utama.pozisaun if utama else 'Membru'
-	org_kartaun = (utama.organizasaun if utama and utama.organizasaun_id else None) or (
-		utama.departamentu.organizasaun if utama and utama.departamentu_id else None) or org
-	if org_kartaun:
-		posisaun = '{0} - {1}'.format(posisaun, org_kartaun.code)
-	elif utama and utama.unit():
-		posisaun = '{0} - {1}'.format(posisaun, utama.unit())
-	context = {
-		'group': c_user_group(request.user), 'obj': obj, 'alokasauns': alokasauns, 'hashid': hashid,
-		'logo_org': org.logo.url if org and org.logo else None,
-		'posisaun': posisaun,
-		'nu_militante': '{0:06d}'.format(obj.pk)[:3] + ' ' + '{0:06d}'.format(obj.pk)[3:],
+def _kartaun_umum():
+	"""Dadus komún ba kartaun hotu: naran presidente, fotu no data emisaun."""
+	return {
 		'emitidu': datetime.date.today(),
 		'presidente_naran': settings.KARTAUN_PRESIDENTE_NARAN,
 		'presidente_titulu': settings.KARTAUN_PRESIDENTE_TITULU,
 		'presidente_fotu': bool(finders.find('main/images/presidente_plp.jpg')),
-		'title': 'Kartaun Membru', 'legend': 'Kartaun Membru'
+	}
+
+
+@login_required
+@allowed_users(allowed_roles=roles.VIEW_ROLES)
+def MembroKartaun(request, hashid):
+	"""Kartaun membru (ID card) ne'ebé bele imprime. Deit ba membru aprovadu."""
+	obj = get_object_or_404(membro_scope(request.user).select_related('organizasaun'), hashed=hashid, aprovasaun='Aprovadu')
+	alokasauns = list(Alokasaun.objects.filter(membro=obj, ativu='Sim').select_related(
+		'departamentu__organizasaun', 'municipality', 'post', 'village', 'aldeia', 'organizasaun'))
+	context = {
+		'group': c_user_group(request.user), 'obj': obj, 'alokasauns': alokasauns, 'hashid': hashid,
+		'title': 'Kartaun Membru', 'legend': 'Kartaun Membru', **_kartaun_umum(), **data_kartaun(obj, alokasauns)
 	}
 	if request.GET.get('cetak'):
 		return render(request, 'membro/kartaun_print.html', context)
 	return render(request, 'membro/kartaun.html', context)
+
+
+KARTAUN_POR_FOLHA = 10   # 2 kolona x 5 liña iha A4
+KARTAUN_POR_HALAMAN = 100
+
+
+@login_required
+@allowed_users(allowed_roles=roles.VIEW_ROLES)
+def MembroKartaunHotu(request):
+	"""Imprime kartaun membru aprovadu hotu (tuir filtru lista no área user) iha folha A4: 10 kartaun kada folha."""
+	objects = apply_filters(membro_scope(request.user).filter(aprovasaun='Aprovadu'), request.GET).select_related(
+		'municipality', 'post', 'village', 'aldeia', 'organizasaun').order_by('nome', 'pk')
+	page = Paginator(objects, KARTAUN_POR_HALAMAN).get_page(request.GET.get('page'))
+	membrus = list(page)
+	alok = {}
+	for a in Alokasaun.objects.filter(membro_id__in=[m.pk for m in membrus], ativu='Sim').select_related(
+			'departamentu__organizasaun', 'municipality', 'post', 'village', 'aldeia', 'organizasaun'):
+		alok.setdefault(a.membro_id, []).append(a)
+	kartaus = [{'obj': m, 'hashid': m.hashed, **data_kartaun(m, alok.get(m.pk, []))} for m in membrus]
+	folhas = [kartaus[i:i + KARTAUN_POR_FOLHA] for i in range(0, len(kartaus), KARTAUN_POR_FOLHA)]
+	sisi = request.GET.get('sisi') if request.GET.get('sisi') in ('depan', 'kotuk') else 'depan'
+	params = request.GET.copy()
+	for k in ('page', 'sisi', 'cetak'):
+		params.pop(k, None)
+	context = {
+		'group': c_user_group(request.user), 'page': page, 'total': page.paginator.count, 'folhas': folhas, 'sisi': sisi,
+		'qs': params.urlencode(), 'title': 'Imprime Kartaun Hotu', 'legend': 'Imprime Kartaun Hotu', **_kartaun_umum()
+	}
+	if request.GET.get('cetak'):
+		return render(request, 'membro/kartaun_hotu_print.html', context)
+	return render(request, 'membro/kartaun_hotu.html', context)
 
 
 @login_required

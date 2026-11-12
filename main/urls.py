@@ -4,6 +4,8 @@ from . import seguransa, views
 
 urlpatterns = [
 	path('', views.home, name='home'),
+	path('entidade/nasional/', views.EntidadeDetail, name='entidade-nasional'),
+	path('entidade/orgaun/<str:hashid>/', views.EntidadeDetail, name='entidade-orgaun'),
 	path('login/', views.LoginTap.as_view(), name='login'),
 	path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 	path('login/2fa/', seguransa.login_2fa, name='login-2fa'),

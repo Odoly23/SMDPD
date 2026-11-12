@@ -10,6 +10,7 @@
 					{% if can_aprova %}<a class="btn btn-sm btn-warning" href="{% url 'aprovasaun-list' %}">Hein Aprovasaun <i class="fa fa-check-square-o"></i></a>{% endif %}
 					<a class="btn btn-sm btn-outline-primary" href="?{{ qs }}{% if qs %}&{% endif %}export=csv"><i class="fa fa-file-excel-o"></i> Esporta CSV</a>
 					{% if can_add %}<a class="btn btn-sm btn-outline-primary" href="{% url 'membro-import' %}"><i class="fa fa-upload"></i> Importa CSV</a>{% endif %}
+					<a class="btn btn-sm btn-outline-success" href="{% url 'membro-kartaun-hotu' %}{% if qs %}?{{ qs }}{% endif %}"><i class="fa fa-id-card-o"></i> Imprime Kartaun Hotu</a>
 					<button class="btn btn-sm btn-outline-secondary" type="button" onclick="window.print()"><i class="fa fa-print"></i> Imprime</button>
 				</div>
 				<form method="get" class="form-row mb-3 no-print">

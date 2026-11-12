@@ -117,13 +117,17 @@ canvas { max-width: 100%; }
 .k-pres-titulu { left: 232px; width: 90px; top: 184px; font-size: 7px; line-height: 8px; text-align: center; color: #1e5aa8; }
 .k-rodape { left: 11.5px; top: 183px; font-size: 7px; line-height: 8px; color: #444; }
 .kartaun-kotuk { background-size: cover; background-position: center; }
+/* Imprime kartaun hotu: grade 2 kolona x 5 liña (10 kartaun) kada folha A4 */
+.kartaun-folha { display: grid; grid-template-columns: repeat(auto-fill, 324px); gap: 14px 18px; justify-content: center; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px dashed #ccc; }
 @media (max-width: 767px) { .kartaun-par { zoom: .95; } }
 @media print {
-	@page { size: A4; margin: 10mm; }
+	@page { size: A4; margin: 8mm 10mm; }
 	html, body, .main-content { background: #fff !important; }
 	.kartaun-wrap { display: block; }
 	.kartaun-par { flex-direction: row; gap: 8mm; align-items: flex-start; zoom: 1; }
 	.kartaun { box-shadow: none; border: .2mm solid #bbb; page-break-inside: avoid; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+	.kartaun-folha { grid-template-columns: repeat(2, 85.7mm); gap: 2mm 6mm; justify-content: start; margin: 0; padding: 0; border: 0; break-after: page; page-break-after: always; }
+	.kartaun-folha:last-child { break-after: auto; page-break-after: auto; }
 }
 
 /* ---- Dokumentu Rekursu Intelektual (formulariu) ---- */
@@ -182,3 +186,23 @@ canvas { max-width: 100%; }
 .painel-grafik { overflow-x: auto; border: 1px solid #eef1f3; border-radius: 4px; padding: 6px; background: #fff; }
 .painel-grafik-isi { position: relative; height: 360px; width: 100%; }
 @media (max-width: 575px) { .painel-entidade { font-size: 1.05rem; } .painel-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); } }
+.painel-grid-entidade { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.painel-entidade-kartu { min-height: 120px; gap: 2px; }
+.painel-entidade-kartu img { width: 38px; height: 38px; object-fit: contain; margin-bottom: 2px; }
+.painel-entidade-kartu small { font-size: .62rem; color: #666; line-height: 1.2; }
+.painel-tinan { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.painel-tinan label { margin: 0; font-size: .8rem; font-weight: 700; }
+.painel-tinan select { width: auto; }
+.painel-legenda { font-size: .78rem; margin-bottom: 4px; }
+.painel-legenda span { display: inline-block; width: 11px; height: 11px; border-radius: 2px; vertical-align: middle; margin-right: 3px; }
+.painel-legenda .mane { background: #02b0ed; }
+.painel-legenda .feto { background: #f9d71c; margin-left: 6px; }
+/* Detallu entidade */
+.entidade-kabesalhu { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.entidade-kabesalhu img { width: 72px; height: 72px; object-fit: contain; }
+.entidade-kabesalhu h3 { margin: 0; color: #036b10; font-size: 1.3rem; }
+.lideransa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.lideransa-kartu { border: 1px solid #dfe6ea; border-left: 3px solid #f9d71c; border-radius: 4px; padding: 8px 10px; background: #fff; }
+.lideransa-kartu .pozisaun { font-size: .68rem; font-weight: 700; text-transform: uppercase; color: #027a0f; }
+.lideransa-kartu .naran { font-size: .85rem; font-weight: 600; color: #222; }
+.lideransa-kartu small { color: #777; }
